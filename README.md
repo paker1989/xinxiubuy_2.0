@@ -19,3 +19,11 @@ npm run build --report
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+# git init tips
+
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/paker1989/xinxiubuy_2.0.git
+git push -u origin master
