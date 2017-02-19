@@ -53,8 +53,12 @@ module.exports = {
         loader: 'babel-loader',
         include: [
           resolve('src'),
-          resolve('test')
-          ]
+          resolve('test'),
+          //bxu1
+          resolve('node_modules/vue-awesome')
+          ],
+        exclude: /node_modules(?![\\/]vue-awesome[\\/])/
+        /* end */
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
