@@ -1,35 +1,19 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png"> -->
     <div class="title">
      <h1 class="text-title grand-title">秀秀巴黎购</h1>
      <h3 class="text-tag">母婴用品,化妆品,包包</h3>
     </div><!-- title -->
-    <div class="navbar">
-      <router-link to="/foo" class="text-nav">首页</router-link>
-      <router-link to="/foo" class="text-nav">About me</router-link>
-      <router-link to="/foo" class="text-nav">上传产品</router-link>
-      <router-link to="/foo" class="text-nav">文章</router-link>
-      <router-link to="/foo" class="text-nav">库存</router-link>
-    </div><!-- navbar : menu in big screen -->
+
+    <navbar/><!-- nav bar-->
     
-    <div class="device-navbar-wraper">
-      <div class="ui compact menu">
-          <div class="ui dropdown item">
-          <icon name="bars" class="icon icon-gray"></icon>
-           <span class="text-title">菜单</span>
-          <div class="menu">
-            <router-link to="/foo" class="item text-nav">首页</router-link>
-            <router-link to="/foo" class="item text-nav">About me</router-link>
-            <router-link to="/foo" class="item text-nav">上传产品</router-link>
-            <router-link to="/foo" class="item text-nav">文章</router-link>
-            <router-link to="/foo" class="item text-nav">库存</router-link>
-          </div>
-        </div>
-      </div>
-    </div> <!-- menu in small screen -->
+    <!-- product collection by categories -->  
+     <ProductCol :category="'化妆品'"/>
+     <ProductCol :category="'母婴用品'"/>
+     <ProductCol :category="'未分类'"/>
+    <!--- end product collection -->
 
-
+   <!-- style preview -->
     <div style="display:none">
       <span class="text-nav">首页</span>
       <span class="text-title">共享此文章：</span>
@@ -45,21 +29,6 @@
       </span>
       <div class="action-btn">发表</div>
     </div>
-    
-    <!-- product collection by categories -->
-   
-     <ProductCol :category="'化妆品'"/>
-     <ProductCol :category="'母婴用品'"/>
-     <ProductCol :category="'未分类'"/>
-
-    <!--- end product collection ->
-    
-<!--
-    <div id="test">
-     <icon name="facebook" scale="2" spin flip="vertical"></icon>
-    </div>
-  -->
-
 
     <router-view></router-view>
   </div>
@@ -67,12 +36,13 @@
 
 <script>
   import ProductCol from './components/productCollection' 
+  import Navbar from './components/navbar'
 
   export default {
     name: 'app',
 
     components: {
-     ProductCol
+     ProductCol,Navbar
     },
 
     mounted() {
@@ -102,63 +72,12 @@
    }
   }
   /* end title*/
-
-  & .navbar {
-    @media
-    only screen and (max-width: 500px)
-   /* only screen and (max-device-width: 320px) */
-     {
-     display: none;
-    }
-
-    @media
-    only screen and (min-width: 500px)
-   /* only screen and (min-device-width:320px) */
-   {
-     margin: 0 auto;
-     display: flex;
-     justify-content: center;
-     flex-wrap: nowrap;
-     flex-direction: row;
-
-      & a {
-       margin: 0 2em;
-
-       &:hover {
-        color:black;
-        font-weight: bold;
-        transform: scale(1.2);
-        transition: all .2s linear;
-       }
-      }
-
-    }
-
-  }
-  /* end navbar */
-
-  & .device-navbar-wraper {
-   
-    @media only screen and (min-width: 500px) {
-     display: none;
-    }
-  
-  & .ui.menu {
-   border: none;
-   box-shadow:none;
-  } 
-
-  & .icon-gray {
-   color: #999999;
-   margin-right: .3em;
-  }
-
-  }
-
 }
- 
-
-
-
-
 </style>
+
+    
+<!--
+    <div id="test">
+     <icon name="facebook" scale="2" spin flip="vertical"></icon>
+    </div>
+-->
