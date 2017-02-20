@@ -6,13 +6,17 @@
       <router-link to="/foo" class="text-nav">上传产品</router-link>
       <router-link to="/foo" class="text-nav">文章</router-link>
       <router-link to="/foo" class="text-nav">库存</router-link>
-      <div class="search-container">
+      <div class="search-container" >
         <div class="ui icon input">
-          <input type="text" class="text-nav" id="searchBar" placeholder="搜索...">
+          <input type="text" class="text-nav" id="searchBar" 
+           @focus="searchEvent" 
+           @blur="searchEvent" 
+           @keyup="search" debounce="1000"
+           v-model="searchStr" placeholder="搜索...">
           <i class="search link icon"></i>
         </div>
-        <div class="result-wraper">
-         <resultList :itemList="itemList" />        
+        <div :class="{'result-wraper':true,'hidden':!isInSearch || matchedList.length == 0}">
+         <resultList :itemList="matchedList" />        
         </div> 
       </div><!-- end search bar -->    
     </div><!-- navbar : menu in big screen -->
@@ -56,6 +60,7 @@ export default {
   data () {
     return {
       isInSearch: false,
+      searchStr: '',
       itemList: [
        {
         title: '香奈儿经典款包包',
@@ -100,7 +105,8 @@ export default {
         description: '欧舒丹的乳木果系列脸部护理系列产品将这些相同的成分把这些运用在面部护理，头发护理和身体护理的产品之中，这款产品含有大量的乳木果油，非常适合干性和严重干燥肌肤..',
         tags: ['高洁丝','自杀良品']
        }
-      ]
+      ],
+      matchedList: []
     }
   },
 
@@ -115,12 +121,28 @@ export default {
   },
 
   methods: {
-    search () {
-      console.log('test');
-      this.isInSearch = !this.isInSearch;
-      $('#searchBar').focus();
+    searchEvent (e) {
+     (e.type == 'focus')? this.isInSearch = true : this.isInSearch = false
+    },
+
+    search (e) {
+      if(this.isInSearch){
+       this.matchedList = []
+       if(this.searchStr && this.searchStr.length > 0){
+        console.log('!!')
+        this.matchedList = this.itemList.filter( item => {
+         return   item.title.indexOf(this.searchStr.trim()) > -1
+               || item.description.indexOf(this.searchStr.trim()) > -1
+               || item.price.indexOf(this.searchStr.trim()) > -1
+         })
+       }else{
+        console.log('??')
+        this.searchStr = ''
+      }
+     }
     }
   }
+  /* end methods */
 
 }
 </script>
@@ -184,7 +206,8 @@ export default {
           top:20px;
           min-width: 360px;
           max-height: 450px;
-          overflow: auto;
+          overflow-x:hidden;
+          overflow-y: auto;
           z-index: 999;
           background: white;
           border: 1px solid darken(#eee,4%);
