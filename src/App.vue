@@ -12,6 +12,8 @@
      <ProductCol :category="'母婴用品'"/>
      <ProductCol :category="'未分类'"/>
     <!--- end product collection -->
+    
+    <navHelper :categories="invisibleCategories"/><!--nav helper-->
 
    <!-- style preview -->
     <div style="display:none">
@@ -37,16 +39,46 @@
 <script>
   import ProductCol from './components/productCollection' 
   import Navbar from './components/navbar'
+  import NavHelper from './components/NavHelper'
 
   export default {
     name: 'app',
 
     components: {
-     ProductCol,Navbar
+     ProductCol,Navbar,NavHelper
+    },
+
+    data() {
+     return {
+      invisibleCategories:[]
+     }
+    },
+
+    methods: {
+     handleScroll() {
+      let eles = $('.category-info .text-title')
+      this.invisibleCategories = []
+
+      let windowHeight = $(window).height()
+      let scrollTop = $(window).scrollTop()
+
+      eles.each( category => {
+        let item = $(eles[category])
+        let eleTop = item.offset().top
+        let eleHeight = item.height()
+        let inVisible = ((windowHeight+scrollTop)<(eleTop+eleHeight) || (scrollTop>eleTop))
+
+        if(inVisible === true){
+          this.invisibleCategories.push(item.text())
+        }
+      })   
+     }
+     
     },
 
     mounted() {
      $('.dropdown').dropdown()
+     $(window).bind('scroll',this.handleScroll)
     }
   }
 </script>
@@ -80,4 +112,11 @@
     <div id="test">
      <icon name="facebook" scale="2" spin flip="vertical"></icon>
     </div>
+
+
+      console.log('windows height = '+$(window).height())
+      console.log('scroll top = '+$(window).scrollTop())
+      console.log('ele offset top = '+$(eles[1]).offset().top)
+      console.log('ele height = '+$(eles[1]).height())
+
 -->

@@ -7,12 +7,12 @@
       <span class="text-content">最后更新于: 19/O2/2017</span>
      </div>
     </div><!-- end category -->
-    <div class="product-container">
-       <div v-for="item in itemList" class="product-wraper">
+    <div :class="productContainer">
+        <div v-for="item in itemList" class="product-wraper">
           <productCard :product="item" />
-       </div>
+        </div>         
     </div><!-- end product-container -->
-    <div class="all">
+    <div class="all" @click="fetchMore">
       <icon name="angle-double-down" class="text-content"></icon>
       <span class="text-content">更多</span>
     </div><!-- end all -->
@@ -92,15 +92,26 @@
 
    data () {
      return {
-      itemList: []
+      itemList: [],
+      productContainer: {productContainer:true,loadingData:false}
      }
+   },
+
+   methods: {
+    fetchMore () {
+     this.productContainer.loadingData = true;
+     setTimeout(() => {
+      let newList = this.itemList.filter( _ => _)
+      newList.forEach( item => {this.itemList.push(item)})
+      this.productContainer.loadingData = false;
+     },500)
+    }
    }
  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-
  .product-col {
   position: relative;
   margin: 50px auto;
@@ -129,36 +140,14 @@
    }
   }
 
-  & .product-container {
-  /*
-    border:1px solid black;
-  */
+  & .productContainer {
     position:relative;
-    width:80vw;
+    width:75vw;
     margin: 0 auto;
     display: flex;
     justify-content: center;
     flex-direction: row;
-    flex-wrap: wrap;
-
-    /*
-    &:after {
-     content:'换一批';
-     position:absolute;
-     height: 30px;
-     width: 20px;
-     right: -20px;
-     top:98px;
-     background: white;
-     text-align: center;
-     vertical-align: middle;
-
-     &:hover {
-     background:black;
-     }
-    }
-    */
-    
+    flex-wrap: wrap;    
 
     & > * {
      margin: auto 1px;
@@ -173,7 +162,6 @@
   }/* end product-container */
 
   & .all {
-   /*width: 1092px;*/
    width: 80vw;
    max-width: 1092px;
    height: 40px;
@@ -181,8 +169,6 @@
    margin: 0 auto;
    display: relative;
    cursor: pointer;
-  // background:#eee;
-  /* border: 1px solid black; */
 
     & .text-content {
      vertical-align: text-bottom;
@@ -200,24 +186,48 @@
      transition: all .2s linear;
     }
   }
-   
-   /*
-    &:after{
-    content:'';
-    position:absolute;
-    bottom:0;
-    left:0;
-    width:100%;
-    height:5px;
-    background:black;
-    filter:blur(7px);
-    opacity:.9;
-    z-index:4;  
-  }
-  */
   } /* end all */
 
+  & .loadingData {
+    margin-bottom: 300px;
+    transition: margin-bottom .5s ease-in;
+/*    animation: load-data .5s; */
+  }
 
- }
-
+ }/* end product-col*/
 </style>
+
+
+    <!--
+    &:after {
+     content:'换一批';
+     position:absolute;
+     height: 30px;
+     width: 20px;
+     right: -20px;
+     top:98px;
+     background: white;
+     text-align: center;
+     vertical-align: middle;
+
+     &:hover {
+     background:black;
+     }
+    }
+    -->
+
+    <!--
+ @keyframes load-data {
+  0% {
+    margin-bottom: 0px;
+  }
+
+  50% {
+    margin-bottom: 300px;
+  }
+
+  100% {
+    margin-bottom: 300px;
+  }
+ }
+ -->
