@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 
 //bxu1: import semantic ui
 import '../node_modules/semantic-ui-css/semantic.min.css'
@@ -19,7 +20,7 @@ Vue.component('icon', Icon)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
+  router, store,
   template: '<App/>',
   components: { App }
 })

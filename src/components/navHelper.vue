@@ -26,7 +26,7 @@ export default {
    navToCategory(eleTop) {
     $('html,body').animate({
      scrollTop: (eleTop - $(window).height())>0?(eleTop - $(window).height()) : 0
-    },400)
+    },700)
    }
 
   }

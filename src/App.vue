@@ -88,11 +88,13 @@
      })
 
      this.displayNavHelper()
-    },
-
+    }
+    
+    /*
     created() {
       this.displayNavHelper()
     }
+    */
   }
 </script>
 
