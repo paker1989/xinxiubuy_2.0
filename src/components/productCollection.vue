@@ -20,7 +20,7 @@
 </template>
 
 <script>
- import ProductCard from './productCard' 
+ import ProductCard from './productCard'
 
  export default {
    name: 'product-col',
@@ -103,7 +103,9 @@
      setTimeout(() => {
       let newList = this.itemList.filter( _ => _)
       newList.forEach( item => {this.itemList.push(item)})
-      this.productContainer.loadingData = false;
+      this.productContainer.loadingData = false
+      /* trigger handle scroll event */
+      this.$parent.handleScroll()
      },500)
     }
    }

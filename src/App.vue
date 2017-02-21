@@ -40,6 +40,7 @@
   import ProductCol from './components/productCollection' 
   import Navbar from './components/navbar'
   import NavHelper from './components/NavHelper'
+ // import { handleScroll } from './general'
 
   export default {
     name: 'app',
@@ -73,12 +74,16 @@
         }
       })   
      }
-     
     },
 
     mounted() {
      $('.dropdown').dropdown()
      $(window).bind('scroll',this.handleScroll)
+     this.handleScroll()
+    },
+
+    created() {
+      this.handleScroll()
     }
   }
 </script>
