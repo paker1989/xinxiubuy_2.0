@@ -3,7 +3,7 @@
    <div>
      <ul>
       <li v-for="item in categories">
-        <a href="#sd" class="text-nav">{{item}}</a>
+        <span @click="navToCategory(item.eleTop);" href="#sd" class="text-nav">{{item.label}}</span>
       </li>
      </ul>
    </div>
@@ -20,6 +20,15 @@ export default {
     return {
      
     }
+  },
+
+  methods: {
+   navToCategory(eleTop) {
+    $('html,body').animate({
+     scrollTop: (eleTop - $(window).height())>0?(eleTop - $(window).height()) : 0
+    },400)
+   }
+
   }
 }
 </script>

@@ -105,7 +105,7 @@
       newList.forEach( item => {this.itemList.push(item)})
       this.productContainer.loadingData = false
       /* trigger handle scroll event */
-      this.$parent.handleScroll()
+      this.$parent.displayNavHelper()
      },500)
     }
    }

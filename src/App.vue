@@ -56,7 +56,8 @@
     },
 
     methods: {
-     handleScroll() {
+     displayNavHelper() {
+      let presetOffset = 500
       let eles = $('.category-info .text-title')
       this.invisibleCategories = []
 
@@ -70,7 +71,7 @@
         let inVisible = ((windowHeight+scrollTop)<(eleTop+eleHeight) || (scrollTop>eleTop))
 
         if(inVisible === true){
-          this.invisibleCategories.push(item.text())
+          this.invisibleCategories.push({label:item.text(),eleTop:eleTop+eleHeight+presetOffset})
         }
       })   
      }
@@ -78,12 +79,19 @@
 
     mounted() {
      $('.dropdown').dropdown()
-     $(window).bind('scroll',this.handleScroll)
-     this.handleScroll()
+     
+     /* only fire the displayNavHelper function when scroll stops*/
+     let timer
+     $(window).bind('scroll', () => {
+      clearTimeout(timer)
+      timer = setTimeout(this.displayNavHelper,500)
+     })
+
+     this.displayNavHelper()
     },
 
     created() {
-      this.handleScroll()
+      this.displayNavHelper()
     }
   }
 </script>
