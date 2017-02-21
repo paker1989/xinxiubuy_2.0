@@ -6,14 +6,16 @@
       <icon name="edit" class="text-content"></icon>
       <span class="text-content">最后更新于: 19/O2/2017</span>
      </div>
-
-     <icon></icon>
-    </div>
+    </div><!-- end category -->
     <div class="product-container">
        <div v-for="item in itemList" class="product-wraper">
           <productCard :product="item" />
        </div>
-     </div>
+    </div><!-- end product-container -->
+    <div class="all">
+      <icon name="angle-double-down" class="text-content"></icon>
+      <span class="text-content">更多</span>
+    </div><!-- end all -->
   </div>
 </template>
 
@@ -128,10 +130,35 @@
   }
 
   & .product-container {
+  /*
+    border:1px solid black;
+  */
+    position:relative;
+    width:80vw;
+    margin: 0 auto;
     display: flex;
     justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
+
+    /*
+    &:after {
+     content:'换一批';
+     position:absolute;
+     height: 30px;
+     width: 20px;
+     right: -20px;
+     top:98px;
+     background: white;
+     text-align: center;
+     vertical-align: middle;
+
+     &:hover {
+     background:black;
+     }
+    }
+    */
+    
 
     & > * {
      margin: auto 1px;
@@ -143,7 +170,52 @@
       border:1px solid #eaebec;
     }
 
+  }/* end product-container */
+
+  & .all {
+   /*width: 1092px;*/
+   width: 80vw;
+   max-width: 1092px;
+   height: 40px;
+   padding: 10px 0;
+   margin: 0 auto;
+   display: relative;
+   cursor: pointer;
+  // background:#eee;
+  /* border: 1px solid black; */
+
+    & .text-content {
+     vertical-align: text-bottom;
+     letter-spacing: 2px;
+     font-weight: 600;
+    }
+
+    &:hover {
+     background:darken(#eee,4%);
+   
+    & .text-content {
+     transform: scale(1.3);
+     color: black;
+     font-weight: 900;
+     transition: all .2s linear;
+    }
   }
+   
+   /*
+    &:after{
+    content:'';
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:5px;
+    background:black;
+    filter:blur(7px);
+    opacity:.9;
+    z-index:4;  
+  }
+  */
+  } /* end all */
 
 
  }

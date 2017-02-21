@@ -122,21 +122,27 @@ export default {
 
   methods: {
     searchEvent (e) {
-     (e.type == 'focus')? this.isInSearch = true : this.isInSearch = false
+     if(e.type == 'focus'){
+      this.isInSearch = true 
+     }else{
+      this.isInSearch = false
+      this.searchStr = ''
+     }
     },
 
     search (e) {
       if(this.isInSearch){
+      let keyWord = this.searchStr.replace(/^\s+|\s+$/g,'')
        this.matchedList = []
-       if(this.searchStr && this.searchStr.length > 0){
-        console.log('!!')
+
+       if(keyWord && keyWord.length > 0){
         this.matchedList = this.itemList.filter( item => {
-         return   item.title.indexOf(this.searchStr.trim()) > -1
-               || item.description.indexOf(this.searchStr.trim()) > -1
-               || item.price.indexOf(this.searchStr.trim()) > -1
+         return   item.title.indexOf(keyWord) > -1
+               || item.description.indexOf(keyWord) > -1
+               || item.price.indexOf(keyWord) > -1
+               || item.tags.filter(tag => {return tag.indexOf(keyWord)>-1}).length > 0
          })
        }else{
-        console.log('??')
         this.searchStr = ''
       }
      }
