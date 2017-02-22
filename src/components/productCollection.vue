@@ -7,8 +7,27 @@
       <span class="text-content">最后更新于: 19/O2/2017</span>
      </div>
     </div><!-- end category -->
+    <!--pagination-->
+      <div v-if="true" class="ui pagination menu">
+        <a class="icon item" @click="toggleNavigation('left')">
+          <i class="left arrow icon text-content"></i>
+        </a>
+        <a :class="{item:true,selected:currentPage==1}" v-if="beginPage>maxNbPage" @click="navToAnotherPage(1)">
+          <span class="text-content">1</span>
+        </a>
+        <a class="item disabled" v-if="beginPage>maxNbPage">
+          <span class="text-content">...</span>
+        </a>
+        <a :class="{item:true,selected:currentPage==i}" v-for="i in paginationList" @click="navToAnotherPage(i)">
+          <span class="text-content">{{i}}</span>
+        </a>
+        <a class="icon item" @click="toggleNavigation('right')">
+          <i class="right arrow icon text-content"></i>
+        </a>
+      </div>
+    <!-- end pagnination -->
     <div :class="productContainer">
-        <div v-for="item in itemList" class="product-wraper">
+        <div v-for="item in listToDisplay" class="product-wraper">
           <productCard :product="item" />
         </div>         
     </div><!-- end product-container -->
@@ -37,22 +56,81 @@
 
    data () {
      return {
+      currentPage: 1,
+      maxNbPage: 5,
+      beginPage: 1,
+      maxNbSlidePage: 3,
       itemList: [],
-      productContainer: {productContainer:true,loadingData:false}
+      productContainer: {productContainer:true,loadingData:false},
      }
    },
 
+   computed: {
+    maxNbItemsPerPage () {
+      return this.$store.state.maxNbItemsPerPage
+    },
+
+    totalPage() {
+      return Math.ceil(this.itemList.length/this.maxNbItemsPerPage)
+    },
+
+    endPage() {
+      return (this.totalPage<(this.beginPage+this.maxNbPage-1))?this.totalPage:(this.beginPage+this.maxNbPage-1)
+    },
+
+    paginationList() {
+     let paginationList = []
+     for(let i=this.beginPage;i<=this.endPage;i++){
+       paginationList.push(i)
+     }
+     return paginationList
+    },
+
+    listToDisplay () {
+     let itemsLength = this.itemList.length
+     if(this.currentPage<this.totalPage){
+      return this.itemList.slice(this.maxNbItemsPerPage*(this.currentPage - 1),this.maxNbItemsPerPage*this.currentPage)
+     }else{
+      return this.itemList.slice(this.maxNbItemsPerPage*(this.currentPage - 1),itemsLength)
+     }
+    }
+   },
+
    methods: {
-    fetchMore () {
+    fetchMore() {
      this.productContainer.loadingData = true;
      setTimeout(() => {
-      let newList = this.itemList.filter( _ => _)
-      newList.forEach( item => {this.itemList.push(item)})
+      let newFetchs = this.itemList.filter( _ => _)
+      newFetchs.forEach( item => {this.itemList.push(item)})
+
       this.productContainer.loadingData = false
       /* trigger handle scroll event */
       this.$parent.displayNavHelper()
      },500)
+    },
+
+   
+    navToAnotherPage(i) {
+      this.$nextTick(() => {
+       this.currentPage = i
+      })
+    },
+
+    toggleNavigation(direction) {
+      if(direction === 'right'){
+       this.$nextTick(()=>{
+        if(this.totalPage==this.endPage)return
+        this.beginPage = (this.totalPage-this.endPage)>this.maxNbSlidePage?this.beginPage+this.maxNbSlidePage:this.beginPage+(this.totalPage-this.endPage)         
+      })
+      }else{
+       this.$nextTick(()=>{
+         this.beginPage = (this.beginPage-this.maxNbSlidePage) < 1?1:(this.beginPage-this.maxNbSlidePage)
+       })
+      
+      }
+
     }
+    
    }
  }
 </script>
@@ -62,13 +140,15 @@
  .product-col {
   position: relative;
   margin: 50px auto;
-  
 
+  & #test {
+    color:green;
+  }
   & .category {
    position:relative;
    width: 30%;
    height: 80px;
-   margin: 40px auto;
+   margin: 40px auto 10px auto;
    border-top: 1px solid #eee;
    border-bottom: 1px solid #eee;
 
@@ -91,7 +171,7 @@
     position:relative;
     width:100%;
     max-width: 75vw;
-    margin: 0 auto;
+    margin: 10px auto 0 auto;
     display: flex;
     justify-content: center;
     flex-direction: row;
@@ -140,6 +220,10 @@
     margin-bottom: 300px;
     transition: margin-bottom .5s ease-in;
 /*    animation: load-data .5s; */
+  }
+
+  & .selected {
+    background:black;
   }
 
  }/* end product-col*/

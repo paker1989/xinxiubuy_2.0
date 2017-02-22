@@ -6,6 +6,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+   maxNbItemsPerPage: 12,
    itemList: [
      {
       id:1,
@@ -61,16 +62,15 @@ const store = new Vuex.Store({
       picPath: 'http://images.urbanoutfitters.com/is/image/UrbanOutfitters/32097818_000_f?$mlarge$&defaultImage=',
       description: '欧舒丹的乳木果系列脸部护理系列产品将这些相同的成分把这些运用在面部护理，头发护理和身体护理的产品之中，这款产品含有大量的乳木果油，非常适合干性和严重干燥肌肤..',
       tags: ['高洁丝','自杀良品']
-     }
-     /*
+     },
+     
      {
       title: '兰蔻新款眉笔',
       price: '¥980',
       picPath: 'http://gju4.alicdn.com/bao/uploaded/i2/160160141525170074/TB2VTnahpXXXXbeXpXXXXXXXXXX_!!45216016-0-juitemmedia.jpg_560x560Q90.jpg',
       description: '此口红是暗玫红色的,和皮肤颜色非常融合,而且色号不会太亮，偏暗的颜色..',
       tags: ['化妆品','新品','兰蔻']
-     },
-     */
+     }
     ],
 
    nbWishes: 0
