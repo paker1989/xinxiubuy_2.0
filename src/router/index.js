@@ -1,11 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from 'components/Hello'
+import generalView from 'components/generalView'
+import productDetail from 'components/productDetail'
 
 Vue.use(Router)
 
 const routes = [
- {path: '/', name: 'Hello',component: Hello}
+ {path: '/', name: 'generalView',component: generalView},
+ {path: '/product/:id',name: 'productDetail', component: productDetail},
+ {path: '/foo', redirect:'/'}
 ]
 
 export default new Router({

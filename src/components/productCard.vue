@@ -1,14 +1,15 @@
 <template>
   <div class="product-card">
 
-   <div class="action left">查看</div>
+   <div>
+    <router-link class="action left" :to="'/product/'+product.id">查看</router-link>
+   </div>
    <div :class="{'action right' : true,'wished' : product.wished}" @click="toggleCollection">
     {{product.wished?'取消收藏':'收藏'}}
    </div>
    <div class="wished-label" v-if="product.wished">已收藏</div>
 
-   <div class="product-bg" 
-    :style="{ background: 'url(\''+product.picPath+'\') no-repeat center', backgroundSize:'cover'}">
+   <div class="product-bg" :style="productImage">
    </div><!-- product bg end-->
 
    <div :class="{'product-info': true,'product-new' : product.isNew}">
@@ -39,14 +40,18 @@ export default {
   },
 
   methods: {
-
    toggleCollection() {
     this.$store.dispatch('WISH_ITEM', {id : this.product.id,wishStatus: !this.product.wished})
    }
   },
 
   computed: {
-
+   productImage() {
+    return {
+     backgroundImage : 'url(\''+this.product.picPath+'\')'
+     /*backgroundSize : 'cover'*/
+    } 
+   } 
   },
 
   mounted () {
@@ -134,8 +139,12 @@ export default {
 
     & .wished-label {
        position:absolute;
+       /*
        top:15%;
        left:20%;
+       */
+       top:0;
+       left:0;
        z-index: 3;
        color:white;
        padding: 1px 7px;
@@ -145,8 +154,7 @@ export default {
        /*border:2px solid white;*/
        border-radius:4px;
        background:#ff5722;
-       transform:rotatez(-50deg);
-       /*transition: all .2s ease-in;*/
+     /*  transform:rotatez(-50deg);*/
     }
 
   
@@ -154,6 +162,8 @@ export default {
       position:relative;
       width:100%; 
       height: 80%;
+      background-size:cover;
+      background-position:center;
       border-bottom:1px solid #eaebec; 
       transition: all .2s ease-in;
       
@@ -172,7 +182,7 @@ export default {
      & > * {
       margin: 2px 1px;
      }
-     
+
     }
 
     .product-new:after {

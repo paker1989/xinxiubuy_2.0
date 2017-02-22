@@ -9,7 +9,7 @@
     </div><!-- end category -->
     <!--pagination-->
       <div v-if="totalPage>1" class="ui pagination menu">
-        <a class="icon item" @click="toggleNavigation('left')">
+        <a class="icon item" @click="toggleNavigation('left')" v-if="beginPage!=1">
           <i class="left arrow icon text-content"></i>
         </a>
         <a :class="{item:true,selected:currentPage==1}" v-if="beginPage>maxNbPage" @click="navToAnotherPage(1)">
@@ -21,7 +21,7 @@
         <a :class="{item:true,selected:currentPage==i}" v-for="i in paginationList" @click="navToAnotherPage(i)">
           <span class="text-content">{{i}}</span>
         </a>
-        <a class="icon item" @click="toggleNavigation('right')">
+        <a class="icon item" @click="toggleNavigation('right')" v-if="endPage!=totalPage">
           <i class="right arrow icon text-content"></i>
         </a>
       </div>
@@ -57,7 +57,7 @@
    data () {
      return {
       currentPage: 1,
-      maxNbPage: 5,
+      maxNbPage: 7,
       beginPage: 1,
       maxNbSlidePage: 3,
       itemList: [],
@@ -86,7 +86,7 @@
      return paginationList
     },
 
-    listToDisplay () {
+    listToDisplay() {
      let itemsLength = this.itemList.length
      if(this.currentPage<this.totalPage){
       return this.itemList.slice(this.maxNbItemsPerPage*(this.currentPage - 1),this.maxNbItemsPerPage*this.currentPage)
@@ -185,6 +185,7 @@
       width:180px;
       height:250px;
       border:1px solid #eaebec;
+      margin-bottom: 2px;
     }
 
   }/* end product-container */
@@ -205,7 +206,7 @@
     }
 
     &:hover {
-     background:darken(#eee,4%);
+     /*background:darken(#eee,4%);*/
    
     & .text-content {
      transform: scale(1.3);
@@ -222,8 +223,13 @@
 /*    animation: load-data .5s; */
   }
 
-  & .selected {
-    background:black;
+  & .ui.menu .item.selected {
+    background:#eee;
+
+    & .text-content {
+     font-size: 14px;
+     font-weight: 900;
+    }
   }
 
  }/* end product-col*/
