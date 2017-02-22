@@ -53,7 +53,8 @@ const store = new Vuex.Store({
       picPath: 'http://18165-presscdn-0-1-81385.laedukreationpvt.netdna-cdn.com/wp-content/uploads/2015/03/Lush-Gorgeous-Facial-Moisturiser-Review.jpg',
       description: '不变的传统，一季又一季，一代传一代。这些传统，往往源于大自然的启迪。每一次遇见家乡普罗旺斯或世界各地的人，我都对这些传统惊叹不已。我与他们一样热爱传统，爱惜大自然..',
       tags: ['高洁丝','护肤']
-     },
+     }
+     /*,
      {
       id:6,
       wished:false,
@@ -62,8 +63,7 @@ const store = new Vuex.Store({
       picPath: 'http://images.urbanoutfitters.com/is/image/UrbanOutfitters/32097818_000_f?$mlarge$&defaultImage=',
       description: '欧舒丹的乳木果系列脸部护理系列产品将这些相同的成分把这些运用在面部护理，头发护理和身体护理的产品之中，这款产品含有大量的乳木果油，非常适合干性和严重干燥肌肤..',
       tags: ['高洁丝','自杀良品']
-     },
-     
+     }, 
      {
       title: '兰蔻新款眉笔',
       price: '¥980',
@@ -71,6 +71,7 @@ const store = new Vuex.Store({
       description: '此口红是暗玫红色的,和皮肤颜色非常融合,而且色号不会太亮，偏暗的颜色..',
       tags: ['化妆品','新品','兰蔻']
      }
+     */
     ],
 
    nbWishes: 0

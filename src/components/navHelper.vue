@@ -43,8 +43,8 @@ export default {
   transform:translatey(-50%);
 
   & .text-nav {
-  /* color:darken(#cccccc,9%);*/
-    color:white;
+    color:darken(#cccccc,9%);
+    /*color:white;*/
     cursor: pointer;
     font-size: 14px;
     line-height: 20px;

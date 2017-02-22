@@ -8,7 +8,7 @@
      </div>
     </div><!-- end category -->
     <!--pagination-->
-      <div v-if="true" class="ui pagination menu">
+      <div v-if="totalPage>1" class="ui pagination menu">
         <a class="icon item" @click="toggleNavigation('left')">
           <i class="left arrow icon text-content"></i>
         </a>
