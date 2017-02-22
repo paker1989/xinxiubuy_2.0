@@ -6,7 +6,7 @@
       <router-link to="/foo" class="text-nav">上传产品</router-link>
       <!--<router-link to="/foo" class="text-nav">文章</router-link> -->
       <router-link to="/foo" class="text-nav">库存</router-link>
-      <router-link to="/foo" :class="wishStatus">收藏 ({{nbWishes}})</router-link>
+      <router-link to="/foo" :class="wishStatus">收藏 <span v-if="nbWishes>0">({{nbWishes}})</span></router-link>
       <div class="search-container" >
         <div class="ui icon input">
           <input type="text" class="text-nav" id="searchBar" 

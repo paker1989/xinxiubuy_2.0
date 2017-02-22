@@ -66,7 +66,7 @@
 
   & .category {
    position:relative;
-   width: 400px;
+   width: 30%;
    height: 80px;
    margin: 40px auto;
    border-top: 1px solid #eee;
@@ -89,7 +89,8 @@
 
   & .productContainer {
     position:relative;
-    width:75vw;
+    width:100%;
+    max-width: 75vw;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -109,13 +110,13 @@
   }/* end product-container */
 
   & .all {
-   width: 80vw;
-   max-width: 1092px;
-   height: 40px;
-   padding: 10px 0;
-   margin: 0 auto;
-   display: relative;
-   cursor: pointer;
+    width:100%;
+    max-width: 71vw;
+    height: 40px;
+    padding: 10px 0;
+    margin: 0 auto;
+    display: relative;
+    cursor: pointer;
 
     & .text-content {
      vertical-align: text-bottom;

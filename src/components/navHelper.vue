@@ -43,12 +43,16 @@ export default {
   transform:translatey(-50%);
 
   & .text-nav {
-   color:darken(#cccccc,9%);
-   cursor: pointer;
+  /* color:darken(#cccccc,9%);*/
+    color:white;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 20px;
 
    &:hover {
     transform: scale(1.2);
-    color:black;
+    color:#ff5722;
+    font-weight: 1000;
     transition: all .1s linear;
    }
   }
