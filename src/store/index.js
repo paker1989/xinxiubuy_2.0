@@ -6,6 +6,10 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+   defaultCurrentPage: 1,
+   defaultBeginPage: 1,
+   maxNbPagePerPagination: 7,
+   maxNbSlidePerNav: 3,
    maxNbItemsPerPage: 6,
    itemList: [
      {

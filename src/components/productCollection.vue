@@ -26,23 +26,25 @@
       </a>
     </div>
     <!-- end pagnination -->
-    <div :class="productContainer">
+    <div class="productContainer">
         <div v-for="item in listToDisplay" class="product-wraper">
           <productCard :product="item" />
         </div>         
     </div><!-- end product-container -->
-    <div class="all" v-if="thereIsMore" @click="fetchMore">
+    <div class="all" v-if="thereIsMore && !loadingData" @click="fetchMore">
       <icon name="angle-double-down" class="text-content"></icon>
       <span class="text-content">更多</span>
     </div><!-- end all -->
-    <div class="all" v-if="thereIsMore==false">
+    <div class="all" v-if="thereIsMore==false && !loadingData">
       <span class="text-content disabled">没有更多了</span>
     </div><!-- end all -->
+    <load v-if="loadingData==true"/>
   </div>
 </template>
 
 <script>
  import ProductCard from './productCard'
+ import Load from './loading'
 
  export default {
    name: 'product-col',
@@ -50,24 +52,24 @@
    props: ['category'],
 
    components: {
-    ProductCard
+    ProductCard,Load
    },
    
    mounted () {
     let totalNbItems = this.$store.state.itemList.length
     this.itemList = this.$store.state.itemList.slice(0,
-     totalNbItems>this.maxNbItemsPerPage?this.maxNbItemsPerPage:totalNbItems)
+    totalNbItems>this.maxNbItemsPerPage?this.maxNbItemsPerPage:totalNbItems)
     this.thereIsMore = totalNbItems>this.maxNbItemsPerPage
    },
 
    data () {
      return {
-      currentPage: 1,
-      maxNbPage: 7,
-      beginPage: 1,
-      maxNbSlidePage: 3,
+      currentPage: this.$store.state.defaultCurrentPage,
+      maxNbPage: this.$store.state.maxNbPagePerPagination,
+      beginPage: this.$store.state.defaultBeginPage,
+      maxNbSlidePage: this.$store.state.maxNbSlidePerNav,
       itemList: [],
-      productContainer: {productContainer:true,loadingData:false},
+      loadingData:false,
       thereIsMore:true
      }
    },
@@ -105,7 +107,7 @@
 
    methods: {
     fetchMore() {
-     this.productContainer.loadingData = true;
+     this.loadingData = true;
      setTimeout(() => {
       let totalNb = this.$store.state.itemList.length
       let currentNbFetched = this.itemList.length  
@@ -113,7 +115,7 @@
 
       if(toFetch==0){
        this.thereIsMore = false
-       this.productContainer.loadingData = false
+       this.loadingData = false
        return
       }     
       
@@ -123,7 +125,7 @@
 
       let newFetchs = this.$store.state.itemList.slice(currentNbFetched,currentNbFetched+toFetch)
       newFetchs.forEach( item => {this.itemList.push(item)})
-      this.productContainer.loadingData = false
+      this.loadingData = false
       /* trigger handle scroll event */
       this.$parent.displayNavHelper()
      },500)
@@ -236,11 +238,12 @@
   }
   } /* end all */
 
+  /*
   & .loadingData {
     margin-bottom: 300px;
     transition: margin-bottom .5s ease-in;
-/*    animation: load-data .5s; */
   }
+  */
 
   & .ui.menu .item.selected {
     background:#eee;
