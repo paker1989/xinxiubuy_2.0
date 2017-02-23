@@ -1,13 +1,12 @@
 <template>
   <div class="product-card">
-
    <div>
     <router-link class="action left" :to="'/product/'+product.id">查看</router-link>
    </div>
    <div :class="{'action right' : true,'wished' : product.wished}" @click="toggleCollection">
     {{product.wished?'取消收藏':'收藏'}}
    </div>
-   <div class="wished-label" v-if="product.wished">已收藏</div>
+   <div class="wished-label" v-if="product.wished">已收藏</div><!--action end-->
 
    <div class="product-bg" :style="productImage">
    </div><!-- product bg end-->
@@ -35,27 +34,39 @@ export default {
 
   data () {
     return {
-      
+      currentSlide:1,
+      intervaler: null
     }
   },
 
   methods: {
    toggleCollection() {
     this.$store.dispatch('WISH_ITEM', {id : this.product.id,wishStatus: !this.product.wished})
+   },
+
+   togglePictures() {
+    if($.isArray(this.product.picPath) && this.product.picPath.length>1 && this.intervaler==null){
+      if(this.intervaler) return
+      this.intervaler = setInterval( ()=>{
+        this.currentSlide = (this.currentSlide >= this.product.picPath.length)?1:this.currentSlide+1
+      },2000)  
+      }   
    }
   },
 
-  computed: {
+  computed: {   
    productImage() {
-    return {
-     backgroundImage : 'url(\''+this.product.picPath+'\')'
-     /*backgroundSize : 'cover'*/
-    } 
-   } 
+    this.togglePictures()
+    if($.isArray(this.product.picPath) && this.product.picPath.length>1){
+     return {backgroundImage : 'url(\''+this.product.picPath[this.currentSlide-1]+'\')'}
+    }else{
+     return {backgroundImage : 'url(\''+this.product.picPath+'\')'}
+    }
+   }
   },
 
   mounted () {
-
+      this.togglePictures()    
   }
 }
 </script>
@@ -164,6 +175,7 @@ export default {
       height: 80%;
       background-size:cover;
       background-position:center;
+      background-image:url('https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShttNeu2TAfb_tvVIG26ztPWbFg26KIyNmpVHV8zdWQGdJL457');
       border-bottom:1px solid #eaebec; 
       transition: all .2s ease-in;
       

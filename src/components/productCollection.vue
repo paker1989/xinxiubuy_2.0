@@ -8,32 +8,35 @@
      </div>
     </div><!-- end category -->
     <!--pagination-->
-      <div v-if="totalPage>1" class="ui pagination menu">
-        <a class="icon item" @click="toggleNavigation('left')" v-if="beginPage!=1">
-          <i class="left arrow icon text-content"></i>
-        </a>
-        <a :class="{item:true,selected:currentPage==1}" v-if="beginPage>maxNbPage" @click="navToAnotherPage(1)">
-          <span class="text-content">1</span>
-        </a>
-        <a class="item disabled" v-if="beginPage>maxNbPage">
-          <span class="text-content">...</span>
-        </a>
-        <a :class="{item:true,selected:currentPage==i}" v-for="i in paginationList" @click="navToAnotherPage(i)">
-          <span class="text-content">{{i}}</span>
-        </a>
-        <a class="icon item" @click="toggleNavigation('right')" v-if="endPage!=totalPage">
-          <i class="right arrow icon text-content"></i>
-        </a>
-      </div>
+    <div v-if="totalPage>1" class="ui pagination menu">
+      <a class="icon item" @click="toggleNavigation('left')" v-if="beginPage!=1">
+        <i class="left arrow icon text-content"></i>
+      </a>
+      <a :class="{item:true,selected:currentPage==1}" v-if="beginPage>maxNbPage" @click="navToAnotherPage(1)">
+        <span class="text-content">1</span>
+      </a>
+      <a class="item disabled" v-if="beginPage>maxNbPage">
+        <span class="text-content">...</span>
+      </a>
+      <a :class="{item:true,selected:currentPage==i}" v-for="i in paginationList" @click="navToAnotherPage(i)">
+        <span class="text-content">{{i}}</span>
+      </a>
+      <a class="icon item" @click="toggleNavigation('right')" v-if="endPage!=totalPage">
+        <i class="right arrow icon text-content"></i>
+      </a>
+    </div>
     <!-- end pagnination -->
     <div :class="productContainer">
         <div v-for="item in listToDisplay" class="product-wraper">
           <productCard :product="item" />
         </div>         
     </div><!-- end product-container -->
-    <div class="all" @click="fetchMore">
+    <div class="all" v-if="thereIsMore" @click="fetchMore">
       <icon name="angle-double-down" class="text-content"></icon>
       <span class="text-content">更多</span>
+    </div><!-- end all -->
+    <div class="all" v-if="thereIsMore==false">
+      <span class="text-content disabled">没有更多了</span>
     </div><!-- end all -->
   </div>
 </template>
@@ -51,7 +54,10 @@
    },
    
    mounted () {
-    this.itemList = this.$store.state.itemList
+    let totalNbItems = this.$store.state.itemList.length
+    this.itemList = this.$store.state.itemList.slice(0,
+     totalNbItems>this.maxNbItemsPerPage?this.maxNbItemsPerPage:totalNbItems)
+    this.thereIsMore = totalNbItems>this.maxNbItemsPerPage
    },
 
    data () {
@@ -62,6 +68,7 @@
       maxNbSlidePage: 3,
       itemList: [],
       productContainer: {productContainer:true,loadingData:false},
+      thereIsMore:true
      }
    },
 
@@ -100,9 +107,22 @@
     fetchMore() {
      this.productContainer.loadingData = true;
      setTimeout(() => {
-      let newFetchs = this.itemList.filter( _ => _)
-      newFetchs.forEach( item => {this.itemList.push(item)})
+      let totalNb = this.$store.state.itemList.length
+      let currentNbFetched = this.itemList.length  
+      let toFetch = totalNb>currentNbFetched+this.maxNbItemsPerPage?this.maxNbItemsPerPage:totalNb-currentNbFetched
 
+      if(toFetch==0){
+       this.thereIsMore = false
+       this.productContainer.loadingData = false
+       return
+      }     
+      
+      if(currentNbFetched+toFetch==totalNb){
+       this.thereIsMore = false
+      }
+
+      let newFetchs = this.$store.state.itemList.slice(currentNbFetched,currentNbFetched+toFetch)
+      newFetchs.forEach( item => {this.itemList.push(item)})
       this.productContainer.loadingData = false
       /* trigger handle scroll event */
       this.$parent.displayNavHelper()
@@ -204,11 +224,10 @@
      letter-spacing: 2px;
      font-weight: 600;
     }
-
     &:hover {
      /*background:darken(#eee,4%);*/
    
-    & .text-content {
+    & .text-content:not(.disabled) {
      transform: scale(1.3);
      color: black;
      font-weight: 900;
