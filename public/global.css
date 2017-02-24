@@ -64,6 +64,9 @@
   display: none;
 }
 
+.float-right {
+  float:right;
+}
 /*
 .text-hover:hover {
   color:black;

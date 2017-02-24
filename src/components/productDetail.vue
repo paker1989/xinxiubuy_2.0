@@ -15,14 +15,15 @@
      </div>
    </div><!--part: pictureWrapper-->
    <div class="productInfo">
-     <h1 class="text-title grand">{{product.title}}</h1>
+     <div style="width:90%;">
+      <span class="text-title grand inline">{{product.title}}</span>
+      <span class="text-price float-right" style="font-size:20px;">{{product.price}}</span>
+     </div>
      <p class="text-content">{{product.description}}</p>
      <div class="ui divider"></div>
-     <p class="text-price" style="font-size:25px;">{{product.price}}</p>
-     <p class="text-title medium">重量:3kg</p>
      <div class="action">
-      <div class="action-btn inline">加入购物车</div>
-      <div class="action-btn inline">加入收藏</div>      
+      <div class="action-btn wish">加入收藏</div> 
+      <div class="action-btn">加入购物车</div>     
      </div>
    </div>
   </div><!--part: product details -->
@@ -79,17 +80,18 @@
 
  .productDetail{
   position:relative;
-  width: 70%;
+  width: 60%;
   margin: 50px auto;
+  padding-top:20px;
   display: flex;
   flex-direction: row;  
   flex-wrap:wrap;
-  justify-content: center;
+  justify-content: space-around;
+  border-top:1px solid #e2e2e3;
 
   
   .pictureWrapper {
     width: $pictureWrapperWidth;
-    margin-left:10%;
 
      & .currentBgStyle{
       width:100%;
@@ -118,7 +120,7 @@
 
   & .productInfo{
     position:relative;
-    width: 500px;
+    width: 400px;
     height: $currentBgHeight+$minBgMargin+$currentBgHeight/7;
  //   border:1px solid #e2e2e3;
     display: flex;
@@ -130,6 +132,7 @@
     & > * {
       /*border:1px solid #e2e2e3;*/
       margin-left: 40px;
+      margin-bottom:20px;
     }
 
     & .text-title.grand{
@@ -150,11 +153,24 @@
 
     & .action{
       margin-top: 50px;
+      width: 100%;
 
       & .action-btn{
-        padding:10px 20px;
+        display: block;
+        background:lighten(#ff5722,5%);
+        width:100%;
+        font-size:15px;
+        letter-spacing: 4px;
+        padding:12px 20px;
         margin-right: 20px;
+        margin-bottom: 20px;
       }
+
+     & .action-btn.wish{
+      background:white;
+      color:#ff5722;
+      border:2px solid #ff5722;
+     }
     }
 
   }
