@@ -58,8 +58,8 @@
    mounted () {
     let totalNbItems = this.$store.state.itemList.length
     this.itemList = this.$store.state.itemList.slice(0,
-    totalNbItems>this.maxNbItemsPerPage?this.maxNbItemsPerPage:totalNbItems)
-    this.thereIsMore = totalNbItems>this.maxNbItemsPerPage
+    totalNbItems>this.nbFirstFetch?this.nbFirstFetch:totalNbItems)
+    this.thereIsMore = totalNbItems>this.nbFirstFetch
    },
 
    data () {
@@ -68,6 +68,9 @@
       maxNbPage: this.$store.state.maxNbPagePerPagination,
       beginPage: this.$store.state.defaultBeginPage,
       maxNbSlidePage: this.$store.state.maxNbSlidePerNav,
+      nbFirstFetch: this.$store.state.nbFirstFetch,
+      maxNbItemsPerPage: this.$store.state.maxNbItemsPerPage,
+      nbItemsPerFetch: this.$store.state.nbItemsPerFetch,
       itemList: [],
       loadingData:false,
       thereIsMore:true
@@ -75,10 +78,6 @@
    },
 
    computed: {
-    maxNbItemsPerPage () {
-      return this.$store.state.maxNbItemsPerPage
-    },
-
     totalPage() {
       return Math.ceil(this.itemList.length/this.maxNbItemsPerPage)
     },
@@ -111,7 +110,7 @@
      setTimeout(() => {
       let totalNb = this.$store.state.itemList.length
       let currentNbFetched = this.itemList.length  
-      let toFetch = totalNb>currentNbFetched+this.maxNbItemsPerPage?this.maxNbItemsPerPage:totalNb-currentNbFetched
+      let toFetch = totalNb>currentNbFetched+this.nbItemsPerFetch?this.nbItemsPerFetch:totalNb-currentNbFetched
 
       if(toFetch==0){
        this.thereIsMore = false

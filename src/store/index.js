@@ -8,9 +8,13 @@ const store = new Vuex.Store({
   state: {
    defaultCurrentPage: 1,
    defaultBeginPage: 1,
-   maxNbPagePerPagination: 7,
-   maxNbSlidePerNav: 3,
-   maxNbItemsPerPage: 6,
+
+   nbFirstFetch: 6, //初次显示的产品个数
+   nbItemsPerFetch: 6,//每次提取的数量
+   maxNbItemsPerPage: 12,//单页显示的最大数量
+
+   maxNbPagePerPagination: 7, //导航条上显示的最大个数
+   maxNbSlidePerNav: 3,//点击向左或向右时滑动的数量
    itemList: [
      {
       id:1,
