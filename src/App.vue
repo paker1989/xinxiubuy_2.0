@@ -45,6 +45,7 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  min-height: 600px;
 
   & .title {
     margin: 40px auto;

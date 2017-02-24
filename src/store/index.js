@@ -252,11 +252,9 @@ const store = new Vuex.Store({
   },
 
   getters: {
-   /*
-   wishedItems: (state) => {
-    return state.itemList.filter( item => {return item.wished})
+   productDetail: (state) => (id) => {
+    return state.itemList.filter((item) => { return item.id == id})[0]
    }
-   */
   }
 });
 
