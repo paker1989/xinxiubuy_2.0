@@ -1,5 +1,6 @@
 <template>
   <div class="productDetail">    
+
    <div class="pictureWrapper">
      <div class="currentBgStyle" :style="currentBgImage"></div>
      <div class="minPictureGallery" v-if="product.nbPics">
@@ -12,45 +13,58 @@
         <div class="minPicture"
             :style="{backgroundImage : 'url(\''+product.picPath+'\')'}">
        </div>      
-     </div>
-   </div><!--part: pictureWrapper-->
+     </div><!-- end alternative minPicGallery-->
+   </div><!--                          part: pictureWrapper                                          -->
+
    <div class="productInfo">
+
      <div style="width:90%;">
       <span class="text-title grand inline">{{product.title}}</span>
       <span class="text-price float-right" style="font-size:20px;">{{product.price}}</span>
-     </div>
+     </div><!-- end title and price-->
+
      <div class="tags-rating">
        <div class="tags">
         <span class="text-nav inline">标签:</span>
         <span class="text-tag" v-for="tag in product.tags">{{tag}}</span>
-       </div>
+       </div> 
        <div class="rating">
-        <div class="ui heart rating xinxiustyle" data-rating="1" data-max-rating="5"></div>
+        <div class="ui heart rating xinxiustyle" data-rating="1" data-max-rating="5" ></div>
         <span class="text-content">(12个评论)</span>
        </div>
      </div><!--end tags and rating -->
-     <p class="text-content">{{product.description}}</p>
+     
+     <div class="description">
+      <p class="text-content">{{description}}</p><!--description-->
+      <div class="hidden-bg" v-show="displayBrefDesc"></div>
+      <span class="hidden-desc text-nav" v-show="displayBrefDesc" @click="displayWholeDesc">显示全部</span>
+      <span class="hidden-desc text-nav" v-show="isDescOverSize && !displayBrefDesc" @click="displayWholeDesc">收起</span>     
+     </div>
+
      <div class="ui divider"></div>
-     <div class="optionWraper">
-       <div class="options">
-        <span class="text-nav inline">重量:</span>
-        <span class="text-content">1公斤</span>
-        <span class="text-content">2公斤</span>
-        <span class="text-content active">2.5公斤</span>
-        <span class="text-content">3公斤</span>
-       </div>
+
+     <div class="optionWraper" v-show="product.options">
+       <div class="options" v-for="option in product.options">
+        <span class="text-nav inline">{{option.name}}:</span>
+        <span class="text-content" :class="{'text-content':true,'active':selectedValue[option.name]===value}" 
+                                   @click="selectOption(option.name,value)" 
+                                   v-for="value in option.values">{{value}}
+        </span>
+       </div><!--customized option-->
        <div class="options">
         <span class="text-nav inline">数量:</span>
-        <select class="ui dropdown">
-          <option class="text-content" v-for="i in 9" v-model="orderNb">{{i}}</option>
+        <select class="comp-dropdown">
+          <option class="text-nav" v-for="i in 9">{{i}}</option>
         </select>
        </div>
-     </div>
+     </div><!-- options such as weight, numbers -->
+
      <div class="action">
       <div class="action-btn wish">加入收藏</div> 
       <div class="action-btn">加入购物车</div>     
      </div>
-   </div>
+   </div><!--                                  end product info                                 -->
+
   </div><!--part: product details -->
 </template>
 
@@ -62,7 +76,9 @@
     	return {
           product: null,
           currentImgIndex:0,
-
+          displayBrefDesc:false,
+          isDescOverSize:false,
+          selectedValue:{}
     	}
     },
 
@@ -70,24 +86,44 @@
       currentBgImage() {
         let currentImageUrl = this.product.nbPics?this.product.picPath[this.currentImgIndex]:this.product.picPath
         return {backgroundImage:'url(\''+currentImageUrl+'\')'}
+      },
+
+      description() {
+       return  this.displayBrefDesc ? this.product.description.slice(0,this.$store.state.maxLengthBrefDescrp)
+                                              : this.product.description
       }
     },
 
     created() {
      let productId = this.$route.params.id 
      this.product = this.$store.getters.productDetail(productId)
+      /*
+      if(this.product.options){
+       Object.keys(this.product.options).forEach(key => {
+        this.selectedValue[this.product.options[key].name]=''
+       })
+      }
+      */
     },
 
     mounted() {
+      this.isDescOverSize = this.displayBrefDesc = this.product.description.length > this.$store.state.maxLengthBrefDescrp
       $('.ui.rating').rating()
     },
 
     methods: {
       togglePicture(index) {
        this.currentImgIndex = index
+      },
+
+      displayWholeDesc() {
+       this.displayBrefDesc = !this.displayBrefDesc
+      },
+
+      selectOption(option,val) {
+        this.$set(this.selectedValue,option,val)
       }
     }
-
 
   }
 </script>
@@ -100,8 +136,6 @@
     border-radius: 2px;
     border:1px solid #e2e2e3;
  }
-  
- // $productDetailWidth : 800px;
 
   $pictureWrapperWidth : 300px;
   $currentBgHeight : 350px;
@@ -127,10 +161,6 @@
       width:100%;
       height: $currentBgHeight;
       @include backgroundStyle
-
-      &:before{
-       content:''
-      }
     }
 
     & .minPictureGallery{
@@ -156,7 +186,6 @@
     position:relative;
     width: 400px;
     height: $currentBgHeight+$minBgMargin+$currentBgHeight/7;
- //   border:1px solid #e2e2e3;
     display: flex;
     flex-direction:column;
     justify-content: flex-start;
@@ -164,9 +193,47 @@
     text-align: left;
 
     & > * {
-      /*border:1px solid #e2e2e3;*/
       margin-left: 40px;
-      margin-bottom:20px;
+      margin-bottom:10px;
+    }
+
+    & .description{
+     /*border:1px solid black;*/
+     position:relative;
+     padding-bottom:10px;
+     margin-bottom:15px;
+
+     & p{
+      margin:0;
+      transition:height .3s linear;
+     }
+
+     & .hidden-bg{
+      position:absolute;
+      width: 100%;
+      height: 30%;
+      background:lighten(#eee,4%);
+      bottom:-5%;
+      filter: blur(10px);
+     }
+
+     & .hidden-desc{
+      position:absolute;
+      bottom:-10%;
+      left:50%;
+      transform: translatex(-50%);
+      z-index: 999;
+      cursor:pointer;
+
+      &:hover{
+       color: black;
+      }
+     }
+
+     & .text-nav{
+      color: darken(#eee,40%);
+      letter-spacing: 2px;
+     }
     }
 
     & .tags-rating{
@@ -193,7 +260,7 @@
          border-bottom:1px dashed black;
         }
        }
-      }
+      }/*end tags*/
 
       & .rating.inline{
        & .ui.heart.rating{
@@ -203,14 +270,8 @@
        & .text-content{
         text-decoration: underline;
        }
-
-       /*
-       & .ui.heart.rating .icon.selected.xinxiustyle, .ui.heart.rating .icon.selected.active.xinxiustyle{
-        color:black;
-       }
-       */
-      }
-    }
+      }/* end rating*/
+    }/* end tags and rating */
 
     & .text-title.grand{
       font-size: 20px;
@@ -231,17 +292,6 @@
     & .action{
       margin-top: 10px;
       width: 350px;
-      
-      /*
-      & .ui.dropdown.options{
-       width: 100%;
-       color: lighten(#ff5722,5%);
-       border:2px solid lighten(#ff5722,5%);
-       letter-spacing: 5px;
-       text-align: center;
-       margin-bottom: 10px;
-      }
-      */
 
       & .action-btn{
         display: block;
@@ -259,41 +309,51 @@
       color:#ff5722;
       border:2px solid #ff5722;
      }
-    }
+    }/*end actions*/
 
     & .optionWraper{
        text-align: left;
        padding-top:10px;
-       margin:0 auto;
  
        & > * {
-        margin:15px auto;
+        margin:15px auto 0 auto;
        }
 
        & .options{
-       & .text-nav{
-        color:darken(#eee,70%);
-        font-size: 13px;
-        letter-spacing: 3px;
-        margin-right: 10px;
-       }
+         & .text-nav{
+          color:darken(#eee,70%);
+          font-size: 13px;
+          letter-spacing: 3px;
+          margin-right: 10px;
+         }
 
-       & .text-content{
-        margin-right: 5px;
-        letter-spacing: 2px;
-        cursor:pointer;
-        padding:3px 5px;
-       }
+         & .text-content{
+          margin-right: 5px;
+          letter-spacing: 2px;
+          cursor:pointer;
+          padding:3px 5px;
+         }
 
-       & .active{
-        color: lighten(black,30%);
-        font-weight: 500;
-        border:2.5px solid lighten(#ff5722,5%);
-       }
-      }
-    }
-  }
+         & .active{
+          display: inline-block;
+          /*color: lighten(#ff5722,4%);*/
+          color:white;
+          font-weight: 500;
+          /*border:2.5px solid lighten(#ff5722,5%);*/
+          background: lighten(#ff5722,5%);
+          border-radius:3px;
+          transition:all .2s linear;
+         } 
+
+         & .comp-dropdown .text-nav{
+           color:lighten(black,40%);
+           font-size: 14px;
+           font-weight: 400;
+         }
+       }/*end options */
+    }/*end option wraper */
+  }/* end product info */
   
- }
+ } 
 </style>
 

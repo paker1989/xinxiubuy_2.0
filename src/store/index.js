@@ -15,6 +15,9 @@ const store = new Vuex.Store({
 
    maxNbPagePerPagination: 7, //导航条上显示的最大个数
    maxNbSlidePerNav: 3,//点击向左或向右时滑动的数量
+
+   maxLengthBrefDescrp: 85,  //如果超过，就显示简要说明
+
    itemList: [
      {
       id:1,
@@ -28,7 +31,10 @@ const store = new Vuex.Store({
         ],
    //   picPath: 'http://www.modeldesac.com/images/sac-chanel/sac-chanel-255-nouveau-grand-caviar-cuir-or-argent-a28600.jpg',
       description: '此口红是暗玫红色的,和皮肤颜色非常融合,而且色号不会太亮，偏暗的颜色,其实更提气色，也很适合较保守的办公室。厚涂薄涂有不同的风格，但都很美就对了！这个带了微微一点金闪..',
-      tags: ['奢侈品','经典','香奈儿']
+      tags: ['奢侈品','经典','香奈儿'],
+      options:[
+       {name:'重量',values:['1公斤','2公斤','3公斤']}
+      ]
      },
      {
       id:2,
@@ -36,8 +42,12 @@ const store = new Vuex.Store({
       title: 'M&S 香草味奶昔',
       price: '¥190',
       picPath: 'http://cdn.shopify.com/s/files/1/0341/1037/products/coconuthairoil1_1024x1024.jpg?v=1473952641',
-      description: '奶昔（Milk shake）首先出现于美国，主要有“机制奶昔”和“手摇奶昔”两种。传统奶昔是手摇的，一般都是在快餐店、冷食店出售，店里的奶昔机现做现卖，顾客现买现饮。',
-      tags: ['饮品','新品','M&S']
+      description: '奶昔（Milk shake）首先出现于美国，主要有“机制奶昔”和“手摇奶昔”两种。传统奶昔是手摇的，一般都是在快餐店、冷食店出售，店里的奶昔机现做现卖，顾客现买现饮奶昔（Milk shake）首先出现于美国，主要有“机制奶昔”和“手摇奶昔”两种。传统奶昔是手摇的，一般都是在快餐店、冷食店出售，店里的奶昔机现做现卖，顾客现买现饮。',
+      tags: ['饮品','新品','M&S'],
+      options:[
+       {name:'口味',values:['香草','巧克力','粑粑','芒果']},
+       {name:'容量',values:['MIDIUM','GRAND','VENTI']}
+      ]
      },
      {
       id:3,
@@ -55,7 +65,7 @@ const store = new Vuex.Store({
       title: '欧舒丹护肤套装',
       price: '¥450',
       picPath: 'http://cdn.shopify.com/s/files/1/0341/1037/products/Aloe_You_Set2_large.jpg?v=1484328984',
-      description: '欧舒丹希望“透过提供独特的个人护理及家居产品，成为提倡地中海式舒适安康感觉的国际模范”，并以“舒适愉悦”、“真实纯净”及“关怀尊重”等为企业理念..',
+      description: '欧舒丹希望“透过提供独特的个人护理及家居产品，成为提倡地中海式舒适安康感觉的国际模范”，并以“舒适愉悦”、“真实纯净”及“关怀尊重”等为企业理念..欧舒丹希望“透过提供独特的个人护理及家居产品，成为提倡地中海式舒适安康感觉的国际模范”，并以“舒适愉悦”、“真实纯净”及“关怀尊重”等为企业理念..欧舒丹希望“透过提供独特的个人护理及家居产品，成为提倡地中海式舒适安康感觉的国际模范”，并以“舒适愉悦”、“真实纯净”及“关怀尊重”等为企业理念..欧舒丹希望“透过提供独特的个人护理及家居产品，成为提倡地中海式舒适安康感觉的国际模范”，并以“舒适愉悦”、“真实纯净”及“关怀尊重”等为企业理念..',
       tags: ['欧苏丹','护肤']
      },
      {

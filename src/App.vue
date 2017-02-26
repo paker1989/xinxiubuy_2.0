@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <SiteHeader/>
     <div class="title">
      <h1 class="text-title grand-title">秀秀巴黎购</h1>
      <h3 class="text-tag">母婴用品,化妆品,包包</h3>
@@ -10,6 +11,7 @@
 </template>
 
 <script>
+  import SiteHeader from './components/siteHeader'
   import Navbar from './components/navbar'
   import GeneralView from './components/generalView'
 
@@ -17,7 +19,7 @@
     name: 'app',
 
     components: {
-     GeneralView,Navbar
+     SiteHeader,GeneralView,Navbar
     },
 
     data() {
@@ -32,7 +34,6 @@
 
     mounted() {
      $('.dropdown').dropdown()
-     $('.ui.rating').rating()
      
      /* only fire the displayNavHelper function when scroll stops*/
     }
@@ -49,7 +50,7 @@
   min-height: 600px;
 
   & .title {
-    margin: 40px auto;
+    margin: 60px auto;
 
     & > * {
      margin: 6px auto;
