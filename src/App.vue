@@ -32,6 +32,7 @@
 
     mounted() {
      $('.dropdown').dropdown()
+     $('.ui.rating').rating()
      
      /* only fire the displayNavHelper function when scroll stops*/
     }

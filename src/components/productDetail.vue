@@ -19,8 +19,33 @@
       <span class="text-title grand inline">{{product.title}}</span>
       <span class="text-price float-right" style="font-size:20px;">{{product.price}}</span>
      </div>
+     <div class="tags-rating">
+       <div class="tags">
+        <span class="text-nav inline">标签:</span>
+        <span class="text-tag" v-for="tag in product.tags">{{tag}}</span>
+       </div>
+       <div class="rating">
+        <div class="ui heart rating xinxiustyle" data-rating="1" data-max-rating="5"></div>
+        <span class="text-content">(12个评论)</span>
+       </div>
+     </div><!--end tags and rating -->
      <p class="text-content">{{product.description}}</p>
      <div class="ui divider"></div>
+     <div class="optionWraper">
+       <div class="options">
+        <span class="text-nav inline">重量:</span>
+        <span class="text-content">1公斤</span>
+        <span class="text-content">2公斤</span>
+        <span class="text-content active">2.5公斤</span>
+        <span class="text-content">3公斤</span>
+       </div>
+       <div class="options">
+        <span class="text-nav inline">数量:</span>
+        <select class="ui dropdown">
+          <option class="text-content" v-for="i in 9" v-model="orderNb">{{i}}</option>
+        </select>
+       </div>
+     </div>
      <div class="action">
       <div class="action-btn wish">加入收藏</div> 
       <div class="action-btn">加入购物车</div>     
@@ -51,6 +76,10 @@
     created() {
      let productId = this.$route.params.id 
      this.product = this.$store.getters.productDetail(productId)
+    },
+
+    mounted() {
+      $('.ui.rating').rating()
     },
 
     methods: {
@@ -86,7 +115,7 @@
   display: flex;
   flex-direction: row;  
   flex-wrap:wrap;
-  justify-content: space-around;
+  justify-content: center;
   border-top:1px solid #e2e2e3;
 
   
@@ -94,9 +123,14 @@
     width: $pictureWrapperWidth;
 
      & .currentBgStyle{
+      position:relative;
       width:100%;
       height: $currentBgHeight;
       @include backgroundStyle
+
+      &:before{
+       content:''
+      }
     }
 
     & .minPictureGallery{
@@ -135,6 +169,49 @@
       margin-bottom:20px;
     }
 
+    & .tags-rating{
+      width: 85%;
+      position:relative;
+      display: flex;
+      flex-direction:row;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+
+      & .tags{
+       & .text-nav{
+        margin-right: 15px;
+        color: lighten(black,20%);
+       }
+
+       & .text-tag{
+        margin-right: 5px;
+        cursor:pointer;
+        
+        &:hover{
+         color: darken(#eee,80%);
+         border-bottom:1px dashed black;
+        }
+       }
+      }
+
+      & .rating.inline{
+       & .ui.heart.rating{
+        vertical-align: text-bottom;
+       }
+
+       & .text-content{
+        text-decoration: underline;
+       }
+
+       /*
+       & .ui.heart.rating .icon.selected.xinxiustyle, .ui.heart.rating .icon.selected.active.xinxiustyle{
+        color:black;
+       }
+       */
+      }
+    }
+
     & .text-title.grand{
       font-size: 20px;
     }
@@ -145,15 +222,26 @@
     }
 
     & .ui.divider{
-      width: 80%;
+      width: 350px;
       border:1px solid #eee;
       margin-bottom: 0;
       margin-top: 0;
     }
 
     & .action{
-      margin-top: 50px;
-      width: 100%;
+      margin-top: 10px;
+      width: 350px;
+      
+      /*
+      & .ui.dropdown.options{
+       width: 100%;
+       color: lighten(#ff5722,5%);
+       border:2px solid lighten(#ff5722,5%);
+       letter-spacing: 5px;
+       text-align: center;
+       margin-bottom: 10px;
+      }
+      */
 
       & .action-btn{
         display: block;
@@ -173,6 +261,37 @@
      }
     }
 
+    & .optionWraper{
+       text-align: left;
+       padding-top:10px;
+       margin:0 auto;
+ 
+       & > * {
+        margin:15px auto;
+       }
+
+       & .options{
+       & .text-nav{
+        color:darken(#eee,70%);
+        font-size: 13px;
+        letter-spacing: 3px;
+        margin-right: 10px;
+       }
+
+       & .text-content{
+        margin-right: 5px;
+        letter-spacing: 2px;
+        cursor:pointer;
+        padding:3px 5px;
+       }
+
+       & .active{
+        color: lighten(black,30%);
+        font-weight: 500;
+        border:2.5px solid lighten(#ff5722,5%);
+       }
+      }
+    }
   }
   
  }
