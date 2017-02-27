@@ -31,15 +31,15 @@ export default {
   },
 
   mounted() {
-   let timer,scrollTop,navbarscrollTop
+   let timer,scrollTop
+
 
    $(window).bind('scroll',() => {
       clearTimeout(timer)
       timer = setTimeout(() => {
         scrollTop = $(window).scrollTop()
-        navbarscrollTop = $(".screen-navbar").offset().top
-
-        this.isLeaveTop = scrollTop>navbarscrollTop?true:false
+        this.isLeaveTop = scrollTop>60?true:false
+        console.log("isleavetop :" +this.isLeaveTop)
       },150)
    })
   }

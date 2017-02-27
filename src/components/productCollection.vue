@@ -83,7 +83,8 @@
     },
 
     endPage() {
-      return (this.totalPage<(this.beginPage+this.maxNbPage-1))?this.totalPage:(this.beginPage+this.maxNbPage-1)
+      return (this.totalPage<(this.beginPage+this.maxNbPage-1))
+             ?this.totalPage:(this.beginPage+this.maxNbPage-1)
     },
 
     paginationList() {
@@ -97,7 +98,8 @@
     listToDisplay() {
      let itemsLength = this.itemList.length
      if(this.currentPage<this.totalPage){
-      return this.itemList.slice(this.maxNbItemsPerPage*(this.currentPage - 1),this.maxNbItemsPerPage*this.currentPage)
+      return this.itemList.slice(this.maxNbItemsPerPage*(this.currentPage - 1),
+                                 this.maxNbItemsPerPage*this.currentPage)
      }else{
       return this.itemList.slice(this.maxNbItemsPerPage*(this.currentPage - 1),itemsLength)
      }
@@ -110,7 +112,8 @@
      setTimeout(() => {
       let totalNb = this.$store.state.itemList.length
       let currentNbFetched = this.itemList.length  
-      let toFetch = totalNb>currentNbFetched+this.nbItemsPerFetch?this.nbItemsPerFetch:totalNb-currentNbFetched
+      let toFetch = totalNb>currentNbFetched+this.nbItemsPerFetch
+                    ?this.nbItemsPerFetch:totalNb-currentNbFetched
 
       if(toFetch==0){
        this.thereIsMore = false
@@ -141,11 +144,13 @@
       if(direction === 'right'){
        this.$nextTick(()=>{
         if(this.totalPage==this.endPage)return
-        this.beginPage = (this.totalPage-this.endPage)>this.maxNbSlidePage?this.beginPage+this.maxNbSlidePage:this.beginPage+(this.totalPage-this.endPage)         
+        this.beginPage = (this.totalPage-this.endPage)>this.maxNbSlidePage
+                         ?this.beginPage+this.maxNbSlidePage:this.beginPage+(this.totalPage-this.endPage)         
       })
       }else{
        this.$nextTick(()=>{
-         this.beginPage = (this.beginPage-this.maxNbSlidePage) < 1?1:(this.beginPage-this.maxNbSlidePage)
+         this.beginPage = (this.beginPage-this.maxNbSlidePage) < 1 
+                          ?1:(this.beginPage-this.maxNbSlidePage)
        })
       
       }

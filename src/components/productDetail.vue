@@ -84,13 +84,14 @@
 
     computed: {
       currentBgImage() {
-        let currentImageUrl = this.product.nbPics?this.product.picPath[this.currentImgIndex]:this.product.picPath
+        let currentImageUrl = this.product.nbPics?
+                              this.product.picPath[this.currentImgIndex]:this.product.picPath
         return {backgroundImage:'url(\''+currentImageUrl+'\')'}
       },
 
       description() {
        return  this.displayBrefDesc ? this.product.description.slice(0,this.$store.state.maxLengthBrefDescrp)
-                                              : this.product.description
+                                      : this.product.description
       }
     },
 
@@ -107,7 +108,8 @@
     },
 
     mounted() {
-      this.isDescOverSize = this.displayBrefDesc = this.product.description.length > this.$store.state.maxLengthBrefDescrp
+      this.isDescOverSize = this.displayBrefDesc = 
+          this.product.description.length > this.$store.state.maxLengthBrefDescrp
       $('.ui.rating').rating()
     },
 

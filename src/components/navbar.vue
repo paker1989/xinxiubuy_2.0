@@ -165,8 +165,9 @@ export default {
       & > a:hover {
        color:black;
        font-weight: bold;
-       transform: scale(1.2);
-       transition: all .2s linear;    
+       border-bottom:2px dashed grey;
+      /* transform: scale(1.2); */
+       transition: color .2s linear;    
       }
 
       & .search {
