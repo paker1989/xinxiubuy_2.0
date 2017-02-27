@@ -9,6 +9,10 @@ var opn = require('opn')
 var path = require('path')
 var express = require('express')
 var webpack = require('webpack')
+//bxu1
+var bodyParser = require('body-parser')
+var fileUpload = require('express-fileupload')
+
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
 
@@ -20,7 +24,18 @@ var autoOpenBrowser = !!config.dev.autoOpenBrowser
 // https://github.com/chimurai/http-proxy-middleware
 var proxyTable = config.dev.proxyTable
 
+//bxu1
+var routes = require('../src/routes/api')
+
 var app = express()
+
+//bxu1
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extend: false}))
+//bxu1
+app.use(fileUpload())
+
+
 var compiler = webpack(webpackConfig)
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
@@ -57,6 +72,10 @@ app.use(devMiddleware)
 // enable hot-reload and state-preserving
 // compilation error display
 app.use(hotMiddleware)
+
+//bxu1
+app.use('/',routes)
+
 
 // serve pure static assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
