@@ -1,9 +1,15 @@
 <template>
   <div class="generalView">    
     <!-- product collection by categories -->  
+    <div class="filterBar">
+     <FilterBar/>
+    </div>
+    <div class="productColWraper">
      <ProductCol :category="'化妆品'"/>
      <ProductCol :category="'母婴用品'"/>
      <ProductCol :category="'未分类'"/>
+    </div>
+
     <!--- end product collection -->
     
     <navHelper :categories="invisibleCategories"/><!--nav helper-->
@@ -13,12 +19,13 @@
 <script>
   import ProductCol from './productCollection' 
   import NavHelper from './NavHelper'
+  import FilterBar from './filterBar'
 
   export default {
     name: 'generalView',
 
     components: {
-     ProductCol,NavHelper
+     ProductCol,NavHelper,FilterBar
     },
 
     data() {
@@ -67,6 +74,21 @@
 </script>
 
 <style lang="scss" scoped>
+ .generalView{
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: flex-start;
 
+  & .filterBar{
+    width: 15%;
+   }
+
+  & .productColWraper{
+    width: 75%;
+    border-left:1px solid #eee;
+   }
+ }
 </style>
 

@@ -164,6 +164,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
  .product-col {
+  width: 100%;
   position: relative;
   margin: 50px auto;
 

@@ -48,14 +48,16 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
- $headerHeight : 50px;
+ $headerHeight : 46px;
 
  @mixin basicStyle{
     width: 100%;
     top:0;
-    /*background: lighten(black,20%);*/
+    /*color:darken(#eee,40%);*/
+    color:white;
+    background: lighten(black,30%);
     /*background:darken(#ff5722,29%);*/
-    background:white;
+    /*background:white;*/
  }
 
  .header{
@@ -64,7 +66,7 @@ export default {
   height: $headerHeight;
   overflow:hidden;
   z-index: 999;
-  color:darken(#eee,40%);
+
   border:1px solid darken(#eee,5%);
   font-size: 15px;
   font-weight: 500;

@@ -1,12 +1,13 @@
 .text-nav{
   opacity:.8;
   display:block;
-  color: #cccccc;
+  color: #404040;
   font-size:14px;
   font-weight:700;
   letter-spacing:1px;
   text-transform:uppercase;
   transform:scaleY(.9);
+  opacity: .7;
 }
 
 .text-title{

@@ -146,13 +146,12 @@
  .productDetail{
   position:relative;
   width: 60%;
-  margin: 50px auto;
-  padding-top:20px;
+  margin: 30px auto;
   display: flex;
   flex-direction: row;  
   flex-wrap:wrap;
   justify-content: center;
-  border-top:1px solid #e2e2e3;
+  /*border-top:1px solid #e2e2e3;*/
 
   
   .pictureWrapper {
