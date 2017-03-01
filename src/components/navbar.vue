@@ -3,9 +3,9 @@
     <div class="screen-navbar">
       <router-link to="/foo" class="text-nav">首页</router-link>
       <router-link to="/foo" class="text-nav">About me</router-link>
-      <router-link to="/upload" class="text-nav">上传产品</router-link>
+      <router-link to="/foo" class="text-nav">上传产品</router-link>
       <!--<router-link to="/foo" class="text-nav">文章</router-link> -->
-      <router-link to="/foo" class="text-nav">库存</router-link>
+      <router-link to="/itemList" class="text-nav">库存</router-link>
       <router-link to="/foo" :class="wishStatus">收藏 <span v-if="nbWishes>0">({{nbWishes}})</span></router-link>
       <div class="search-container" >
         <div class="ui icon input">
