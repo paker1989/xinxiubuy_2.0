@@ -71,6 +71,8 @@
 <script>
   export default {
     name: 'productDetail',
+    
+    props:['id'],
 
     data() {
     	return {
@@ -96,8 +98,8 @@
     },
 
     created() {
-     let productId = this.$route.params.id 
-     this.product = this.$store.getters.productDetail(productId)
+   /*  let productId = this.$route.params.id */
+     this.product = this.$store.getters.productDetail(this.id)
       /*
       if(this.product.options){
        Object.keys(this.product.options).forEach(key => {
