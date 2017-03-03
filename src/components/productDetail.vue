@@ -158,6 +158,7 @@
   
   .pictureWrapper {
     width: $pictureWrapperWidth;
+    margin-right:80px;
 
      & .currentBgStyle{
       position:relative;
@@ -187,8 +188,8 @@
 
   & .productInfo{
     position:relative;
-    width: 400px;
-    height: $currentBgHeight+$minBgMargin+$currentBgHeight/7;
+    width: 500px;
+    /*height: $currentBgHeight+$minBgMargin+$currentBgHeight/7;*/
     display: flex;
     flex-direction:column;
     justify-content: flex-start;
@@ -286,7 +287,7 @@
     }
 
     & .ui.divider{
-      width: 350px;
+      width: 90%;
       border:1px solid #eee;
       margin-bottom: 0;
       margin-top: 0;

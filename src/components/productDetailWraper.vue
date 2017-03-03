@@ -2,18 +2,20 @@
   <div class="productDetailWraper">
    <productDetail :id="productId"/>
    <recommend :id="productId"/>
+   <CommentWraper :productId="productId"/>
   </div>
 </template>
 
 <script>
 import ProductDetail from './productDetail'
 import Recommend from './recommend'
+import CommentWraper from './commentWraper'
 
 export default {
   name: 'productDetailWraper',
 
   components: {
-   ProductDetail,Recommend
+   ProductDetail,Recommend,CommentWraper
   },
 
   props: [],

@@ -46,7 +46,7 @@ export default {
  .recommend{
   width: 1000px;
   height: $height;
-  margin:100px auto 100px auto;
+  margin:100px auto 50px auto;
   position: relative;
   text-align: left;
   border-top:1px solid darken(#eee,10%);

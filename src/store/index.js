@@ -18,6 +18,51 @@ const store = new Vuex.Store({
 
    maxLengthBrefDescrp: 85,  //如果超过，就显示简要说明
 
+   commentList: [
+    {
+      id:1,
+      productId:2,
+      commentUser:{pseudo:'BoomBoom'},
+      commentTimeStr:'1年前',
+      content:'那不是小偷  那是抢劫吧',
+      type:1
+    },
+    {
+      id:2,
+      productId:2,
+      commentUser:{pseudo:'浩浩',userPhoto:'https://pic2.zhimg.com/4d43d15e81d6e3639e59dd4084d73eed_s.jpg'},
+      commentTimeStr:'3小时前',
+      content:'是小偷团伙，其实已经得手了，然后被我同事抢劫回来',
+      type:2,
+      referId:1,
+    },
+    {
+      id:3,
+      productId:2,
+      commentUser:{pseudo:'冯陈'},
+      commentTimeStr:'今天',
+      content:'那不是小偷  那是抢劫吧',
+      type:1,
+      nbLike:3
+    },
+    {
+      id:4,
+      productId:2,
+      commentUser:{pseudo:'JORDAN1'},
+      commentTimeStr:'1年前',
+      content:'花了多少钱啊？环境看着确实不错，',
+      type:1
+    },
+    {
+      id:5,
+      productId:1,
+      commentUser:{pseudo:'毛小民'},
+      commentTimeStr:'1年前',
+      content:'我大天朝真是太好了',
+      type:1
+    }
+   ],
+
    itemList: [
      {
       id:1,
@@ -264,6 +309,14 @@ const store = new Vuex.Store({
   getters: {
    productDetail: (state) => (id) => {
     return state.itemList.filter((item) => { return item.id == id})[0]
+   },
+
+   comments: (state) => (productId) => {
+    return state.commentList.filter((item) => {return item.productId == productId})
+   },
+
+   fetchReply: (state) => (id) => {
+    return  state.commentList.filter((item) => {return item.id == id})[0].commentUser.pseudo
    }
   }
 });
