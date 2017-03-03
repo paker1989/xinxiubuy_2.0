@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Item from './item'
+import Item from 'components/item'
 
 export default {
   name: 'wishList',

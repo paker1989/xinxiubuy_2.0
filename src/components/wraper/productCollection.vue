@@ -43,8 +43,8 @@
 </template>
 
 <script>
- import ProductCard from './productCard'
- import Load from './loading'
+ import ProductCard from 'components/productCard'
+ import Load from 'components/loading'
 
  export default {
    name: 'product-col',

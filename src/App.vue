@@ -13,13 +13,12 @@
 <script>
   import SiteHeader from './components/siteHeader'
   import Navbar from './components/navbar'
-  import GeneralView from './components/generalView'
 
   export default {
     name: 'app',
 
     components: {
-     SiteHeader,GeneralView,Navbar
+     SiteHeader,Navbar
     },
 
     data() {

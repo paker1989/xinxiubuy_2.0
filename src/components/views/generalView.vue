@@ -17,9 +17,9 @@
 </template>
 
 <script>
-  import ProductCol from './productCollection' 
-  import NavHelper from './NavHelper'
-  import FilterBar from './filterBar'
+  import ProductCol from 'components/wraper/productCollection' 
+  import NavHelper from 'components//NavHelper'
+  import FilterBar from 'components/filterBar'
 
   export default {
     name: 'generalView',
