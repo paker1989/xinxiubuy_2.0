@@ -24,7 +24,7 @@ const store = new Vuex.Store({
       productId:2,
       commentUser:{pseudo:'BoomBoom'},
       commentTimeStr:'1年前',
-      content:'那不是小偷  那是抢劫吧',
+      content:'价格还不错，好好喝',
       type:1
     },
     {
@@ -32,7 +32,7 @@ const store = new Vuex.Store({
       productId:2,
       commentUser:{pseudo:'浩浩',userPhoto:'https://pic2.zhimg.com/4d43d15e81d6e3639e59dd4084d73eed_s.jpg'},
       commentTimeStr:'3小时前',
-      content:'是小偷团伙，其实已经得手了，然后被我同事抢劫回来',
+      content:'一点都不好喝，喝完我差点怀孕了',
       type:2,
       referId:1,
     },
@@ -41,7 +41,7 @@ const store = new Vuex.Store({
       productId:2,
       commentUser:{pseudo:'冯陈'},
       commentTimeStr:'今天',
-      content:'那不是小偷  那是抢劫吧',
+      content:'楼上傻逼',
       type:1,
       nbLike:3
     },
@@ -50,7 +50,7 @@ const store = new Vuex.Store({
       productId:2,
       commentUser:{pseudo:'JORDAN1'},
       commentTimeStr:'1年前',
-      content:'花了多少钱啊？环境看着确实不错，',
+      content:'花了多少钱啊？看着确实不错，',
       type:1
     },
     {
