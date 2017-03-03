@@ -1,12 +1,15 @@
 <template>
   <div id="app">
     <SiteHeader/>
+    <!--
     <div class="title">
      <h1 class="text-title grand-title">秀秀巴黎购</h1>
      <h3 class="text-tag">母婴用品,化妆品,包包</h3>
-    </div><!-- title -->
-    <navbar/><!-- nav bar-->
-    <router-view></router-view>
+    </div>--><!-- title -->
+    <div class="navbarContainer">
+     <navbar/>
+     <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -61,6 +64,11 @@
    }
   }
   /* end title*/
+
+  & .navbarContainer{
+   position: relative;
+   top:46px;
+  }
 }
 </style>
 

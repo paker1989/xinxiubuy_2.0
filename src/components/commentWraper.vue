@@ -1,6 +1,9 @@
 <template>
   <div class="commentWraper">
    <div class="title"><span class="text-title">评论</span></div>
+   <div class="replyWraper">
+    <reply/>
+   </div>
    <div class="commentContainer">
    	  <comment v-for="comment in comments" :comment="comment"/>
    </div>
@@ -9,6 +12,7 @@
 
 <script>
 import Comment from './comment'
+import Reply from './reply'
 
 export default {
   name: 'commentWraper',
@@ -16,7 +20,7 @@ export default {
   props:['productId'],
 
   components: {
-   Comment
+   Comment,Reply
   },
 
   data () {

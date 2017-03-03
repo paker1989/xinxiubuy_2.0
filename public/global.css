@@ -1,17 +1,15 @@
 .text-nav{
+  font-family: '微软雅黑'!important;
   opacity:.8;
-  display:block;
-  color: #404040;
+  color: black;
   font-size:14px;
-  font-weight:700;
+  font-weight:500;
   letter-spacing:1px;
   text-transform:uppercase;
-  transform:scaleY(.9);
-  opacity: .7;
+  opacity: .8;
 }
 
 .text-title{
-  display:block;
   color: #404040;
   font-size:13px;
   font-weight:700;

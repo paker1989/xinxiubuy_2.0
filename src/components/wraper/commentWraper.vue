@@ -1,6 +1,9 @@
 <template>
   <div class="commentWraper">
-   <div class="title"><span class="text-title">评论</span></div>
+   <div class="title"><span class="text-title">{{comments.length}} 条评论</span></div>
+   <div class="replyContainer">
+    
+   </div>
    <div class="commentContainer">
    	  <comment v-for="comment in comments" :comment="comment"/>
    </div>

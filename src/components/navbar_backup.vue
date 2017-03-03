@@ -1,38 +1,25 @@
 <template>
   <div class="navbar">
     <div class="screen-navbar">
-      <div class="left-container">
-        <router-link to="/foo" class="text-nav">首页</router-link>
-        <router-link to="/foo" class="text-nav">About me</router-link>
-        <router-link to="/foo" class="text-nav">上传产品</router-link>
-        <!--<router-link to="/foo" class="text-nav">文章</router-link> -->
-        <router-link to="/itemList" class="text-nav">库存</router-link>
-      </div>
-      <div class="right-container">
-        <router-link to="/foo">
-           <icon name="heart-o"  aria-hidden="true" :class="wishStatus" scale="1.2"/>
-           <span v-if="nbWishes>0" :class="wishStatus">({{nbWishes}})</span>
-        </router-link>
-        <div>
-           <icon name="search" aria-hidden="true" class="icon" scale="1.2"/></span>
+      <router-link to="/foo" class="text-nav">首页</router-link>
+      <router-link to="/foo" class="text-nav">About me</router-link>
+      <router-link to="/foo" class="text-nav">上传产品</router-link>
+      <!--<router-link to="/foo" class="text-nav">文章</router-link> -->
+      <router-link to="/itemList" class="text-nav">库存</router-link>
+      <router-link to="/foo" :class="wishStatus">收藏 <span v-if="nbWishes>0">({{nbWishes}})</span></router-link>
+      <div class="search-container" >
+        <div class="ui icon input">
+          <input type="text" class="text-nav" id="searchBar" 
+           @focus="searchEvent" 
+           @blur="searchEvent" 
+           @keyup="search" debounce="1000"
+           v-model="searchStr" placeholder="搜索...">
+          <i class="search link icon"></i>
         </div>
-        
-        <!--
-        <div class="search-container" >
-          <div class="ui icon input" style="display:none;">
-            <input type="text" class="text-nav" id="searchBar" 
-             @focus="searchEvent" 
-             @blur="searchEvent" 
-             @keyup="search" debounce="1000"
-             v-model="searchStr" placeholder="搜索...">
-            <i class="search link icon"></i>
-          </div>
-          <div :class="{'result-wraper':true,'hidden':!isInSearch || matchedList.length == 0}">
-           <resultList :itemList="matchedList" />        
-          </div> 
-        </div>
-        --><!-- end search bar -->   
-      </div>
+        <div :class="{'result-wraper':true,'hidden':!isInSearch || matchedList.length == 0}">
+         <resultList :itemList="matchedList" />        
+        </div> 
+      </div><!-- end search bar -->    
     </div><!-- navbar : menu in big screen -->
     
     <div class="device-navbar-wraper">
@@ -79,8 +66,7 @@ export default {
       matchedList: [],
       wishStatus: {
        'text-nav'       : true,
-       'addWishes'      : false,
-       'icon'           : true      
+       'addWishes'      : false       
       }
     }
   },
@@ -168,51 +154,26 @@ export default {
       only screen and (min-width: 500px)
      /* only screen and (min-device-width:320px) */
      {
-       width: 85%;
+       width: 100%;
        position: relative;
-     /*  margin: 0 auto;*/
+       margin: 0 auto;
        display: flex;
-       justify-content: space-between;
+       justify-content: center;
        flex-wrap: nowrap;
        flex-direction: row;
-       border-bottom:1px solid #eee;
 
 
         & > * {
-         margin: 0 5em;
-         display: flex;
-         justify-content: flex-start;
-         flex-direction: row;
-         flex-wrap: no;
+         margin: 0 2em;
+         height:20px;
         }
 
-        & .left-container{
-         & > * {
-          margin:1.5em 1em; 
-         }
-        }
-
-        & .right-container {
-
-         & > * {
-          height: 100%;
-          padding-left: 2em;
-          padding-right: 2em;
-          padding-top:1.3em;
-          border-left:1px solid #eee;
-         }
-
-         & .icon{
-          vertical-align: text-bottom;
-          margin-right: .4em;
-         }
-        }
-
-        &  a:hover {
-         color:#ff5722;
-         font-weight: 600;
-         border-bottom:2px dashed #ff5722;
+        & > a:hover {
+         color:black;
+         font-weight: bold;
+         border-bottom:2px dashed grey;
         /* transform: scale(1.2); */
+         transition: color .2s linear;    
         }
 
         & .search {
