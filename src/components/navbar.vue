@@ -4,7 +4,7 @@
       <div class="left-container">
         <router-link to="/foo" class="text-nav">首页</router-link>
         <router-link to="/foo" class="text-nav">About me</router-link>
-        <router-link to="/foo" class="text-nav">上传产品</router-link>
+        <router-link to="/upload" class="text-nav">上传产品</router-link>
         <!--<router-link to="/foo" class="text-nav">文章</router-link> -->
         <router-link to="/itemList" class="text-nav">库存</router-link>
       </div>
@@ -188,7 +188,7 @@ export default {
 
         & .left-container{
          & > * {
-          margin:1.5em 1em; 
+          margin:1.5em; 
          }
         }
 
@@ -212,7 +212,6 @@ export default {
          color:#ff5722;
          font-weight: 600;
          border-bottom:2px dashed #ff5722;
-        /* transform: scale(1.2); */
         }
 
         & .search {

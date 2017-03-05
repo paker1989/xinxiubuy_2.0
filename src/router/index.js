@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import generalView from 'components/views/generalView'
 import productDetailWraper from 'components/views/productDetailWraper'
-import productUploader from 'components/productUploader'
+import productUploader from 'components/wraper/uploader'
 import wishItemList from 'components/views/wishItemList'
 
 Vue.use(Router)
