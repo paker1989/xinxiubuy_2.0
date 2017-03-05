@@ -32,6 +32,35 @@
         <textarea v-model="descritption" rows="4" @focus="setValue('备注');" @blur="setValue('备注');"></textarea>
        </div>
      </div>
+     <div class="addedOptionContainer" v-show="addedOptions.length>0">
+       <span class="text-title">已添加的可选项:</span>
+       <table class="ui celled table">
+        <thead>
+          <tr>
+           <th class="three wide text-content">标题</th>
+           <th class="ten wide text-content">可选项</th>
+           <th class="three wide text-content">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(addedOption,index) in addedOptions">
+            <td>
+              <div class="text-nav">{{addedOption.key}}</div>
+            </td>
+            <td>
+             <div>
+              <span class="text-content optionItem" v-for="item in addedOption.values">{{item}}</span>
+             </div>
+            </td>
+            <td>
+             <span class="text-action editing" v-if="addedOption.editing">编辑中</span>
+             <span class="text-action" v-if="!addedOption.editing" @click="editExistingOption(index)">编辑</span>
+             <span class="text-action negative" v-if="!addedOption.editing" @click="removeExistingOption(index)">移除</span>
+            </td>
+          </tr>
+        </tbody>
+       </table>
+     </div>
      <div class="optionContainer">
       <div class="optionTitle" @click="addOption">
         <div :class="{'creating':creatingOption}">
@@ -95,7 +124,8 @@ export default {
       optionValue         : '',
       deliveryFrais       : '',
       editingAddedOptions : [],
-      addedOptions        : []
+      addedOptions        : [],
+      optionEditIdentifier: {isEdit:false,reference:-1}
     }
   },
 
@@ -123,15 +153,50 @@ export default {
    },
 
    cancelOptionEdition() {
+   if(this.optionEditIdentifier && this.optionEditIdentifier.isEdit){
+      this.optionEditIdentifier.isEdit = false
+      this.optionEditIdentifier.index = -1
+      this.addedOptions[this.optionEditIdentifier.reference].editing = false
+   }
+
     this.editingAddedOptions = []
     this.optionKey = this.optionValue = ''
-    this.$nextTick(() => {this.creatingOption = false})
+    this.creatingOption = false
    },
 
    finishOptionEdition() {
+    let newOption = {key:'',values:[],editing:false}
+
+    newOption.key = this.optionKey
+    newOption.values = []
+    this.editingAddedOptions.forEach(item => {newOption.values.push(item)})
+
+    if(this.optionEditIdentifier && this.optionEditIdentifier.isEdit){
+     this.addedOptions[this.optionEditIdentifier.reference] = newOption
+     this.optionEditIdentifier.isEdit = false
+     this.optionEditIdentifier.reference = -1
+    }else{
+     this.addedOptions.push(newOption)
+    }
+
     this.editingAddedOptions = []
     this.optionKey = this.optionValue = ''
-    this.$nextTick(() => {this.creatingOption = false})
+    this.creatingOption = false
+   },
+
+   editExistingOption(index) {
+    if(this.creatingOption) return
+    
+    this.optionEditIdentifier.isEdit = true
+    this.optionEditIdentifier.reference = index
+
+    this.addedOptions[index].editing = this.creatingOption = true
+    this.optionKey = this.addedOptions[index].key
+    this.editingAddedOptions = this.addedOptions[index].values.slice()
+   },
+
+   removeExistingOption(index) {
+    this.addedOptions.splice(index,1)
    }
 
 
@@ -146,10 +211,11 @@ export default {
 
  .uploader{
   position: relative;
-  width: 70%;
+  width: 80%;
   margin:0 auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  flex-wrap: wrap;
 
   & .text-action{
    padding:5px 0;
@@ -157,11 +223,16 @@ export default {
    font-weight: 500;
    letter-spacing: .1em;
    color: darken(#a0c982,20%);
-   cursor: pointer;
 
-   &:hover{
+   &:not(.editing):hover{
     font-weight: 600;
+    cursor: pointer;
    }
+
+   &.negative{
+    color: lighten(red,20%);
+   }
+
   }
 
   & .clickable:hover{
@@ -175,14 +246,14 @@ export default {
   }
 
   & .pictureDetail{
-   width: 40%;
+   width: 500px;
    height: 500px;
    border:1px solid #eee;
   }
 
   & .metaDataEditor{
    position:relative;
-   width: 60%;
+   width: 650px;
    text-align: left;
    padding-top:40px;
    padding-left:40px;
@@ -230,6 +301,13 @@ export default {
       top:-20px;
       left:0px;
      }
+    }
+   }
+
+   & .addedOptionContainer{
+
+    & .optionItem{
+     margin-right: 2em;
     }
    }
 
