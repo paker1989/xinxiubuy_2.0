@@ -105,6 +105,18 @@
        <icon name="plus" class="user-icon clickable" scale="1.3"></icon>
        <label class="text-nav clickable">添加标签</label>
       </div>
+      <div class="availableTags"> 
+        <span class="text-tag">化妆品</span>
+        <span class="text-tag">快消品</span>
+        <span class="text-tag">母婴用品</span>
+        <span class="text-tag">奶粉</span>
+        <span class="text-tag">快消品</span>
+        <span class="text-tag">母婴用品</span>
+        <span class="text-tag">奶粉</span>
+        <span class="text-tag">快消品</span>
+        <span class="text-tag">母婴用品</span>
+        <span class="text-tag">奶粉</span>
+      </div>
      </div>
   </div>
 </template>
@@ -318,6 +330,24 @@ export default {
      }   
    }
 
+   & .tagContainer{
+    & .availableTags{
+     display: flex;
+     justify-content: space-around;
+     flex-wrap: wrap;
+
+     & .text-tag{
+      margin:.4em 1em;
+      cursor:pointer;
+      padding: .2em .8em;
+      border-radius:12px;
+      font-size:14px;
+      color: green;
+      border:1px solid darken(#a0c982,20%);
+     }
+    }
+   }
+
    & .optionContainer{  
 
     & .optionTitle{
@@ -339,8 +369,6 @@ export default {
        }
       }
     }
-
-
 
     & .optionEditor{
       margin-top: 20px;
