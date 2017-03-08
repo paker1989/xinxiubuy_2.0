@@ -102,9 +102,13 @@
      </div>
      <div class="tagContainer">
       <div class="tagTitle">
-       <icon name="plus" class="user-icon clickable" scale="1.3"></icon>
-       <label class="text-nav clickable">添加标签</label>
+       <!--<icon name="plus" class="user-icon clickable" scale="1.3"></icon> -->
+       <label class="text-nav clickable" @click="showTagModal">已添加标签:</label>
+       <div class="selectedTag">
+         <span class="text-tag" v-for="tag in selectedTags">{{tag.value}}</span>
+       </div>
       </div>
+      <!--
       <div class="availableTags"> 
         <span class="text-tag">化妆品</span>
         <span class="text-tag">快消品</span>
@@ -117,6 +121,47 @@
         <span class="text-tag">母婴用品</span>
         <span class="text-tag">奶粉</span>
       </div>
+      -->
+
+      <!-- tag selection modal --> 
+      <div class="ui small modal tag-selection">
+        <div class="header">选择标签</div>
+        <div class="content">
+         <div class="availableTags"> 
+          <span v-for="(tag,index) in availableTags" 
+            :class="{'text-tag':true,'selected':tag.isSelected}"
+            @click="toggleSelection(index)">
+            {{tag.value}}
+          </span>
+         <!--
+          <span class="text-tag">化妆品</span>
+          <span class="text-tag">快消品</span>
+          <span class="text-tag">母婴用品</span>
+          <span class="text-tag">奶粉</span>
+          <span class="text-tag">快消品</span>
+          <span class="text-tag">母婴用品</span>
+          <span class="text-tag">奶粉</span>
+          <span class="text-tag">快消品</span>
+          <span class="text-tag">母婴用品</span>
+          <span class="text-tag">奶粉</span>
+          <span class="text-tag">化妆品</span>
+          <span class="text-tag">快消品</span>
+          <span class="text-tag">母婴用品</span>
+          <span class="text-tag">奶粉</span>
+          <span class="text-tag">快消品</span>
+          <span class="text-tag">母婴用品</span>
+          <span class="text-tag">奶粉</span>
+          <span class="text-tag">快消品</span>
+          <span class="text-tag">母婴用品</span>
+          <span class="text-tag">奶粉</span>
+        -->
+        </div>  
+        </div>
+        <div class="actions">
+          <div class="ui ok button">关闭</div>
+        </div>
+      </div>    
+     <!-- tag selection modal end -->
      </div>
   </div>
 </template>
@@ -137,7 +182,10 @@ export default {
       deliveryFrais       : '',
       editingAddedOptions : [],
       addedOptions        : [],
-      optionEditIdentifier: {isEdit:false,reference:-1}
+      optionEditIdentifier: {isEdit:false,reference:-1},
+      selectedTags        : [],
+      availableTags       :[{value:'化妆品',isSelected:false},
+      {value:'母婴用品',isSelected:false},{value:'奶粉',isSelected:false},{value:'口红',isSelected:false},{value:'奢侈品',isSelected:false},{value:'快消品',isSelected:false},{value:'其他类',isSelected:false},{value:'暂不分类',isSelected:false}]
     }
   },
 
@@ -209,6 +257,24 @@ export default {
 
    removeExistingOption(index) {
     this.addedOptions.splice(index,1)
+   },
+
+   showTagModal() {
+    $('.ui.modal.tag-selection')
+    .modal({blurring: true})
+    .modal('show')
+   },
+
+   toggleSelection(index) {
+    let selectedIndex = this.selectedTags.indexOf(this.availableTags[index])
+
+    if(selectedIndex>-1){
+     this.selectedTags.splice(selectedIndex,1)
+     this.availableTags[index].isSelected = false
+    }else{
+     this.selectedTags.push(this.availableTags[index])
+     this.availableTags[index].isSelected = true
+    }
    }
 
 
@@ -220,6 +286,30 @@ export default {
 <style lang="scss" scoped>
  $title-size : 50%;
  $lager-size: 80%;
+
+  .availableTags{
+   display: flex;
+   justify-content: space-around;
+   flex-wrap: wrap;
+
+   & .text-tag{
+    margin:.4em 1em;
+    cursor:pointer;
+    padding: .2em .8em;
+    border-radius:12px;
+    font-size:14px;
+    color: green;
+    border:1px solid darken(#a0c982,20%);
+    transition: all .3s linear;
+
+    &.selected{
+     transform: rotatex(360deg);
+     color:white;
+     background:darken(#a0c982,20%);
+    }
+   }
+  }
+
 
  .uploader{
   position: relative;
