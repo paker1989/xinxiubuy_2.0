@@ -66,7 +66,7 @@
         <div :class="{'creating':creatingOption}">
          <icon name="plus" v-if="!creatingOption" class="user-icon clickable" scale="1.3"></icon>
          <icon name="minus" v-if="creatingOption" class="user-icon clickable" scale="1.3"></icon>
-         <label :class="{'text-nav':true, 'clickable':!creatingOption}">{{creatingOption==true?'编辑可选项':'添加可选项'}}</label>
+         <label :class="{'text-title':true, 'clickable':!creatingOption}">{{creatingOption==true?'编辑可选项':'添加可选项'}}</label>
         </div>
         <label class="text-action" v-if="creatingOption" @click.stop="cancelOptionEdition">取消</label>
         <label class="text-action" v-if="creatingOption" @click.stop="finishOptionEdition">完成</label>
@@ -101,30 +101,35 @@
       </div>
      </div>
      <div class="tagContainer">
-      <div class="tagTitle">
-       <!--<icon name="plus" class="user-icon clickable" scale="1.3"></icon> -->
-       <label class="text-nav clickable" @click="showTagModal">已添加标签:</label>
-       <div class="selectedTag">
-         <span class="text-tag" v-for="tag in selectedTags">{{tag.value}}</span>
+      <div class="addTagContainer">
+       <div class="manualAddTagContainer">
+        <div :class="{'ui fluid input productFeild':true,'activated':fieldFocusFactory['标签'],
+            'hidePlaceholder':manualTagValue.trim().length>0}" data-name="标签"> 
+         <input type="text" v-model="manualTagValue" 
+                @focus="setValue('标签');" 
+                @blur="setValue('标签');"
+                @keyup="searchOrAddTag('-1')" debounce="500">
+         <span class="tag-add" @click="addTag('-1')">添加</span>
+        </div>
+        <div class="matchedTagWraper" v-if="matchedTags.length>0">
+            <span v-for="(tag,index) in matchedTags" 
+              class="matchedTag" @click="addTag(index)">
+              {{tag.value}}
+            </span> 
+        </div>
+       </div>
+       <div class="alternativeAddTag">
+        或者<a class="text-action" @click.stop="showTagModal">点击选择</a>
        </div>
       </div>
-      <!--
-      <div class="availableTags"> 
-        <span class="text-tag">化妆品</span>
-        <span class="text-tag">快消品</span>
-        <span class="text-tag">母婴用品</span>
-        <span class="text-tag">奶粉</span>
-        <span class="text-tag">快消品</span>
-        <span class="text-tag">母婴用品</span>
-        <span class="text-tag">奶粉</span>
-        <span class="text-tag">快消品</span>
-        <span class="text-tag">母婴用品</span>
-        <span class="text-tag">奶粉</span>
+      <div class="addedTagContainer">
+       <label class="text-title" @click="showTagModal">已添加标签:</label>
+       <div class="addedTags">
+         <span class="matchedTag" v-for="tag in selectedTags">{{tag.value}}</span>
+       </div>
       </div>
-      -->
-
       <!-- tag selection modal --> 
-      <div class="ui small modal tag-selection">
+      <div class="ui small modal tag-selection" id="tag-selection">
         <div class="header">选择标签</div>
         <div class="content">
          <div class="availableTags"> 
@@ -133,28 +138,6 @@
             @click="toggleSelection(index)">
             {{tag.value}}
           </span>
-         <!--
-          <span class="text-tag">化妆品</span>
-          <span class="text-tag">快消品</span>
-          <span class="text-tag">母婴用品</span>
-          <span class="text-tag">奶粉</span>
-          <span class="text-tag">快消品</span>
-          <span class="text-tag">母婴用品</span>
-          <span class="text-tag">奶粉</span>
-          <span class="text-tag">快消品</span>
-          <span class="text-tag">母婴用品</span>
-          <span class="text-tag">奶粉</span>
-          <span class="text-tag">化妆品</span>
-          <span class="text-tag">快消品</span>
-          <span class="text-tag">母婴用品</span>
-          <span class="text-tag">奶粉</span>
-          <span class="text-tag">快消品</span>
-          <span class="text-tag">母婴用品</span>
-          <span class="text-tag">奶粉</span>
-          <span class="text-tag">快消品</span>
-          <span class="text-tag">母婴用品</span>
-          <span class="text-tag">奶粉</span>
-        -->
         </div>  
         </div>
         <div class="actions">
@@ -180,6 +163,8 @@ export default {
       optionKey           : '',
       optionValue         : '',
       deliveryFrais       : '',
+      manualTagValue      : '',
+      matchedTags         : [],
       editingAddedOptions : [],
       addedOptions        : [],
       optionEditIdentifier: {isEdit:false,reference:-1},
@@ -275,9 +260,45 @@ export default {
      this.selectedTags.push(this.availableTags[index])
      this.availableTags[index].isSelected = true
     }
+   },
+
+   searchOrAddTag() {
+    let e = event
+    if(this.manualTagValue.trim().length==0)
+    {
+      this.matchedTags = []
+      return
+    }
+
+    if(e.keyCode == 13){
+      return this.addTag('-1')
+    }
+    else{
+     this.matchedTags = this.availableTags.filter(tag => {
+      return !tag.isSelected && tag.value.indexOf(this.manualTagValue.trim())>-1
+     })
+    }
+   },
+
+   addTag(index) {
+    if(index != '-1' && this.selectedTags.indexOf(this.availableTags[index])==-1){
+     this.availableTags[index].isSelected = true
+     this.selectedTags.push(this.availableTags[index])
+     this.matchedTags = []
+    }else{
+     if(this.manualTagValue.trim().length==0)return
+
+     let newTag = {value:this.manualTagValue,isSelected:true}
+
+     if(this.selectedTags.indexOf(newTag)==-1){
+      this.selectedTags.push(newTag)
+      this.availableTags.push(newTag)
+
+      this.manualTagValue = ''
+      this.matchedTags = []
+     }
+    } 
    }
-
-
   }
 }
 </script>
@@ -287,9 +308,18 @@ export default {
  $title-size : 50%;
  $lager-size: 80%;
 
+/*
+@media screen and (min-width: 1px) {
+  #tag-selection {
+    width: 700px;
+    margin: 0 0 0 -275px;
+  }
+}
+*/
+
   .availableTags{
    display: flex;
-   justify-content: space-around;
+   justify-content: flex-start;
    flex-wrap: wrap;
 
    & .text-tag{
@@ -421,6 +451,91 @@ export default {
    }
 
    & .tagContainer{
+
+     & .matchedTag{
+      background:lighten(#b3b3b3,8%);
+      color:white;
+      padding:.2em .5em;
+      margin:.2em;
+      border-radius:5px;
+      cursor: pointer;
+     }   
+
+    & .addTagContainer{
+      position:relative;
+      display: flex;
+      margin-bottom: 10px;
+
+      & > * {
+       width: 200px;
+       vertical-align: text-bottom;
+      }
+
+      & .manualAddTagContainer{
+       & .matchedTagWraper{
+         position:relative;
+         width: 100%;
+         border:1px solid rgba(34,36,38,.15);
+         border-bottom-left-radius:.28571429rem;
+         border-bottom-right-radius:.28571429rem;  
+         display: flex;
+         flex-wrap: wrap; 
+       }
+      }
+
+      & .alternativeAddTag{
+       vertical-align: bottom;
+       padding-top:10px;
+       margin-left:20px;
+
+       & .text-action{
+        margin-left:20px;
+        font-size:16px;
+       }
+      }
+
+      & .tag-add{
+         position:absolute;
+         right:10px;
+         top:10px;
+         font-weight:600;
+         color:darken(#a0c982,12%);
+         letter-spacing: .1em;
+         transition:all .1s linear;  
+         cursor:pointer;
+
+        &:hover{
+         color:darken(#a0c982,30%);
+        }
+      }
+    }
+
+    & .addedTagContainer {
+     & .addedTags{
+      margin-top:10px;
+      display: flex;
+      flex-wrap: wrap;
+
+      & .matchedTag{
+       margin:.2em .8em;
+       position:relative;
+       cursor: pointer;
+
+       &:hover:before{
+         content:'x';
+         position:absolute;
+         bottom:5px;
+         right:-15px;
+         transform: scaley(.8);
+         font-weight: 700;
+         color:lighten(red,30%);
+         font-size: 25px;
+         z-index:999;
+       }
+      }
+     }
+    }
+/*
     & .availableTags{
      display: flex;
      justify-content: space-around;
@@ -436,9 +551,14 @@ export default {
       border:1px solid darken(#a0c982,20%);
      }
     }
+*/
+
    }
 
    & .optionContainer{  
+    border-bottom:1px solid lighten(#b3b3b3,10%);
+    padding-bottom: 10px;
+    margin-bottom: 25px;
 
     & .optionTitle{
       display: flex;
