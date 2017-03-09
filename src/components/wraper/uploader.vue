@@ -122,7 +122,7 @@
         或者<a class="text-action" @click.stop="showTagModal">点击选择</a>
        </div>
       </div>
-      <div class="addedTagContainer">
+      <div class="addedTagContainer" v-if="selectedTags.length>0">
        <label class="text-title" @click="showTagModal">已添加标签:</label>
        <div class="addedTags">
          <span class="matchedTag" v-for="tag in selectedTags">{{tag.value}}</span>
@@ -281,18 +281,37 @@ export default {
    },
 
    addTag(index) {
-    if(index != '-1' && this.selectedTags.indexOf(this.availableTags[index])==-1){
-     this.availableTags[index].isSelected = true
-     this.selectedTags.push(this.availableTags[index])
+    if(index != '-1' && this.selectedTags.indexOf(this.matchedTags[index])==-1){
+     let indexInAvail = this.availableTags.indexOf(this.matchedTags[index])
+     this.availableTags[indexInAvail].isSelected = true
+     this.selectedTags.push(this.availableTags[indexInAvail])
+
+     this.manualTagValue = ''
      this.matchedTags = []
     }else{
      if(this.manualTagValue.trim().length==0)return
 
-     let newTag = {value:this.manualTagValue,isSelected:true}
+     let isExistInSelectedTags = this.selectedTags.filter(
+                  tag => {return tag.value == this.manualTagValue.trim()})
+                  .length>0
 
-     if(this.selectedTags.indexOf(newTag)==-1){
+     if(!isExistInSelectedTags){
+      let indexInSelectedTag = -1
+      for(let i=0;i<this.availableTags.length;i++){
+       if(this.availableTags[i].value == this.manualTagValue.trim()){
+          indexInSelectedTag = i
+          break
+        }
+      }
+
+      let newTag = indexInSelectedTag>-1?this.availableTags[indexInSelectedTag]:
+                                         {value:this.manualTagValue.trim(),isSelected:true}
+
+      newTag.isSelected = true
       this.selectedTags.push(newTag)
-      this.availableTags.push(newTag)
+      
+      if(indexInSelectedTag==-1)
+        this.availableTags.push(newTag)
 
       this.manualTagValue = ''
       this.matchedTags = []
