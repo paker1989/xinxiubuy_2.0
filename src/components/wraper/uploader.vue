@@ -1,35 +1,36 @@
 <template>
   <div class="uploader">
-    <div class="pictureDetail">
+   <div class="pictureDetail">
      picture area
-    </div>
-    <div class="metaDataEditor">
-     <div :class="{'ui fluid input title-size productFeild':true,
+   </div><!-- picture area-->
+   <div class="metaDataEditor">
+    <form class="ui form" action="/foo">
+     <div :class="{'ui fluid input field title-size productFeild':true,
                    'activated':fieldFocusFactory['产品名称'],
                    'hidePlaceholder':productName.trim().length>0}" data-name="产品名称">
-      <input type="text" v-model="productName" @focus="setValue('产品名称');" @blur="setValue('产品名称');">
+      <input type="text" v-model="productName" name="productName" @focus="setValue('产品名称');" @blur="setValue('产品名称');">
      </div>
-     <div :class="{'ui fluid input title-size productFeild':true,
+     <div :class="{'ui fluid input field title-size productFeild':true,
                    'activated':fieldFocusFactory['价格'],
                    'hidePlaceholder':price.trim().length>0}" data-name="价格">
-        <input type="text" v-model="price" @focus="setValue('价格');" @blur="setValue('价格');">
+        <input type="text" v-model="price" name="price" @focus="setValue('价格');" @blur="setValue('价格');">
         <div class="ui basic label text-content">
           元
         </div>
      </div>
-     <div :class="{'ui fluid input title-size productFeild':true,
+     <div :class="{'ui fluid input field title-size productFeild':true,
                    'activated':fieldFocusFactory['运费'],
                    'hidePlaceholder':deliveryFrais.trim().length>0}" data-name="运费">
-        <input type="text" v-model="deliveryFrais" @focus="setValue('运费');" @blur="setValue('运费');">
+        <input type="text" v-model="deliveryFrais" name="livraisonFee" @focus="setValue('运费');" @blur="setValue('运费');">
         <div class="ui basic label text-content">
           元
         </div>
      </div>
-     <div :class="{'ui form largr-size productFeild':true,
+     <div :class="{'ui form largr-size field productFeild':true,
                    'activated':fieldFocusFactory['备注'],
                    'hidePlaceholder':descritption.trim().length>0}" data-name="备注">
        <div class="field">
-        <textarea v-model="descritption" rows="4" @focus="setValue('备注');" @blur="setValue('备注');"></textarea>
+        <textarea v-model="descritption" rows="4" name="comment" @focus="setValue('备注');" @blur="setValue('备注');"></textarea>
        </div>
      </div>
      <div class="addedOptionContainer" v-show="addedOptions.length>0">
@@ -60,13 +61,13 @@
           </tr>
         </tbody>
        </table>
-     </div>
+     </div><!-- added option container end -->
      <div class="optionContainer">
       <div class="optionTitle" @click="addOption">
         <div :class="{'creating':creatingOption}">
          <icon name="plus" v-if="!creatingOption" class="user-icon clickable" scale="1.3"></icon>
          <icon name="minus" v-if="creatingOption" class="user-icon clickable" scale="1.3"></icon>
-         <label :class="{'text-title':true, 'clickable':!creatingOption}">{{creatingOption==true?'编辑可选项':'添加可选项'}}</label>
+         <label :class="{'text-title':creatingOption==false,'text-nav':creatingOption, 'clickable':!creatingOption}">{{creatingOption==true?'编辑可选项':'添加可选项'}}</label>
         </div>
         <label class="text-action" v-if="creatingOption" @click.stop="cancelOptionEdition">取消</label>
         <label class="text-action" v-if="creatingOption" @click.stop="finishOptionEdition">完成</label>
@@ -99,7 +100,7 @@
          </div>
        </div>
       </div>
-     </div>
+     </div><!-- end optionContainer -->
      <div class="tagContainer">
       <div class="addTagContainer">
        <div class="manualAddTagContainer">
@@ -121,7 +122,7 @@
        <div class="alternativeAddTag">
         或者<a class="text-action" @click.stop="showTagModal">点击选择</a>
        </div>
-      </div>
+      </div><!--addTagContainer end -->
       <div class="addedTagContainer" v-if="selectedTags.length>0">
        <label class="text-title" @click="showTagModal">已添加标签:</label>
        <div class="addedTags">
@@ -133,9 +134,8 @@
            </div>
           </span>         
        </div>
-      </div>
-      <!-- tag selection modal --> 
-      <div class="ui small modal tag-selection" id="tag-selection">
+      </div><!-- addedTagContainer end -->
+      <div class="ui small modal tag-selection" id="tag-selection">      <!-- tag selection modal --> 
         <div class="header">选择标签</div>
         <div class="content">
          <div class="availableTags"> 
@@ -149,9 +149,12 @@
         <div class="actions">
           <div class="ui ok button">关闭</div>
         </div>
-      </div>    
-     <!-- tag selection modal end -->
-     </div>
+      </div>                                                              <!-- tag selection modal end -->
+     </div><!-- end tagContainer -->
+     <div class="ui submit button" @click="testSubmit">submit</div>
+     <div class="ui error message"></div>
+    </form>
+   </div><!--end metadata editor-->
   </div>
 </template>
 
@@ -186,8 +189,51 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
+    $.fn.form.settings.rules.greaterThan = (input) => {
+      return input.trim().length>0 && !isNaN(input) && input > 0
+    }
 
+    $('.ui.form').form({
+      fields: {
+        productName  : {
+          identifier:'productName',
+          rules: [
+           {
+            type   : 'empty',
+            prompt : '请输入产品名称'
+           }
+          ]
+        },
+        price  : {
+          identifier:'price',
+          rules: [
+           {
+            type   : 'greaterThan',
+            prompt : '价格不能为空，且类型必须为一个大于0的数字'
+           },
+          ]
+        },
+        livraisonFee  : {
+          identifier:'livraisonFee',
+          rules: [
+           {
+            type   : 'greaterThan',
+            prompt : '运费不能为空，且类型必须为一个大于0的数字'
+           }
+          ]
+        },
+        comment      : {
+          identifier:'comment',
+          rules: [
+           {
+            type   : 'empty',
+            prompt : '备注不能为空'
+           }
+          ]          
+        }
+      }
+    });
   },
 
   methods: {
@@ -325,6 +371,10 @@ export default {
    removeSelectedTag(index) {
     this.selectedTags[index].isSelected = false
     this.selectedTags.splice(index,1)
+   },
+
+   testSubmit() {
+    $('.ui.form').submit()
    }
   }
 }
@@ -441,6 +491,7 @@ export default {
    }
 
    & .productFeild{
+    margin-bottom: 1.3em;
     &:before{
      content: attr(data-name);
      position:absolute;

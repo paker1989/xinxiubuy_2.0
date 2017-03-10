@@ -21,7 +21,7 @@ export default {
     border-radius: 5px;
     text-align: center;
 
-  & p {padding: 0 0 20px;}
+  & .load {padding: 0 0 10px;}
 
   & .line {
       display: inline-block;
