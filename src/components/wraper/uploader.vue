@@ -125,7 +125,13 @@
       <div class="addedTagContainer" v-if="selectedTags.length>0">
        <label class="text-title" @click="showTagModal">已添加标签:</label>
        <div class="addedTags">
-         <span class="matchedTag" v-for="tag in selectedTags">{{tag.value}}</span>
+          <span  v-for="(tag,index) in selectedTags">
+           <div class="ui button selectedTag" data-tooltip="点击移除" 
+                data-position="bottom center" data-inverted=""
+                @click="removeSelectedTag(index)">
+            {{tag.value}}
+           </div>
+          </span>         
        </div>
       </div>
       <!-- tag selection modal --> 
@@ -150,6 +156,12 @@
 </template>
 
 <script>
+function existingTag(array,value){
+ if(value.trim().length==0)return
+ 
+  return array.find(item => {return item.value == value.trim()})
+}
+
 export default {
   name: 'uploader',
 
@@ -281,7 +293,7 @@ export default {
    },
 
    addTag(index) {
-    if(index != '-1' && this.selectedTags.indexOf(this.matchedTags[index])==-1){
+    if(index != '-1' && typeof existingTag(this.selectedTags,this.matchedTags[index].value) == 'undefined'){
      let indexInAvail = this.availableTags.indexOf(this.matchedTags[index])
      this.availableTags[indexInAvail].isSelected = true
      this.selectedTags.push(this.availableTags[indexInAvail])
@@ -289,34 +301,30 @@ export default {
      this.manualTagValue = ''
      this.matchedTags = []
     }else{
+
      if(this.manualTagValue.trim().length==0)return
 
-     let isExistInSelectedTags = this.selectedTags.filter(
-                  tag => {return tag.value == this.manualTagValue.trim()})
-                  .length>0
-
+     let isExistInSelectedTags = typeof existingTag(this.selectedTags,this.manualTagValue) != 'undefined'
      if(!isExistInSelectedTags){
-      let indexInSelectedTag = -1
-      for(let i=0;i<this.availableTags.length;i++){
-       if(this.availableTags[i].value == this.manualTagValue.trim()){
-          indexInSelectedTag = i
-          break
-        }
-      }
-
-      let newTag = indexInSelectedTag>-1?this.availableTags[indexInSelectedTag]:
-                                         {value:this.manualTagValue.trim(),isSelected:true}
+      let existingAvailTag = existingTag(this.availableTags,this.manualTagValue)  
+      let newTag = typeof existingAvailTag == 'undefined'? {value:this.manualTagValue.trim(),isSelected:true}
+                                                  : existingAvailTag
 
       newTag.isSelected = true
       this.selectedTags.push(newTag)
       
-      if(indexInSelectedTag==-1)
+      if(typeof existingAvailTag == 'undefined')
         this.availableTags.push(newTag)
 
       this.manualTagValue = ''
       this.matchedTags = []
      }
     } 
+   },
+
+   removeSelectedTag(index) {
+    this.selectedTags[index].isSelected = false
+    this.selectedTags.splice(index,1)
    }
   }
 }
@@ -472,8 +480,8 @@ export default {
    & .tagContainer{
 
      & .matchedTag{
-      background:lighten(#b3b3b3,8%);
-      color:white;
+      background:#E0E1E2;
+      color:rgba(0,0,0,.6);
       padding:.2em .5em;
       margin:.2em;
       border-radius:5px;
@@ -535,48 +543,20 @@ export default {
       display: flex;
       flex-wrap: wrap;
 
-      & .matchedTag{
-       margin:.2em .8em;
+      & .selectedTag{
+       margin:.5em;
+       padding: .5em 1.5em;
        position:relative;
        cursor: pointer;
-
-       &:hover:before{
-         content:'x';
-         position:absolute;
-         bottom:5px;
-         right:-15px;
-         transform: scaley(.8);
-         font-weight: 700;
-         color:lighten(red,30%);
-         font-size: 25px;
-         z-index:999;
-       }
+       font-weight:500;
       }
      }
     }
-/*
-    & .availableTags{
-     display: flex;
-     justify-content: space-around;
-     flex-wrap: wrap;
-
-     & .text-tag{
-      margin:.4em 1em;
-      cursor:pointer;
-      padding: .2em .8em;
-      border-radius:12px;
-      font-size:14px;
-      color: green;
-      border:1px solid darken(#a0c982,20%);
-     }
-    }
-*/
-
    }
 
    & .optionContainer{  
     border-bottom:1px solid lighten(#b3b3b3,10%);
-    padding-bottom: 10px;
+    padding-bottom: 25px;
     margin-bottom: 25px;
 
     & .optionTitle{
