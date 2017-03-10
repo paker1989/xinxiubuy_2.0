@@ -1,7 +1,7 @@
 <template>
   <div class="uploader">
    <div class="pictureDetail">
-     picture area
+     <imgUploader/>
    </div><!-- picture area-->
    <div class="metaDataEditor">
     <form class="ui form" action="/foo">
@@ -87,7 +87,7 @@
                        'hidePlaceholder':optionValue.trim().length>0}" 
               data-name="可选项"> 
            <input type="text" class="optionValueInput" v-model="optionValue"
-            @keyup.13="addOptionValue"
+            @keyup.stop.prev.13="addOptionValue"
             @focus="setValue('可选项');"
             @blur="setValue('可选项');">
            <span class="optionValue" @click="addOptionValue">添加</span>
@@ -151,7 +151,7 @@
         </div>
       </div>                                                              <!-- tag selection modal end -->
      </div><!-- end tagContainer -->
-     <div class="ui submit button" @click="testSubmit">submit</div>
+     <div class="ui submit button" @click="testSubmit" style="display:none;">submit</div>
      <div class="ui error message"></div>
     </form>
    </div><!--end metadata editor-->
@@ -165,8 +165,14 @@ function existingTag(array,value){
   return array.find(item => {return item.value == value.trim()})
 }
 
+import ImgUploader from 'components/imgUploader'
+
 export default {
   name: 'uploader',
+
+  components: {
+   ImgUploader
+  },
 
   data () {
     return {
@@ -455,9 +461,8 @@ export default {
   }
 
   & .pictureDetail{
-   width: 500px;
+   width: 600px;
    height: 500px;
-   border:1px solid #eee;
   }
 
   & .metaDataEditor{
@@ -491,7 +496,7 @@ export default {
    }
 
    & .productFeild{
-    margin-bottom: 1.3em;
+
     &:before{
      content: attr(data-name);
      position:absolute;
@@ -515,6 +520,7 @@ export default {
    }
 
    & .addedOptionContainer{
+    margin-bottom:10px;
 
     & .optionItem{
      margin-right: 2em;
