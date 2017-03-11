@@ -7,6 +7,7 @@
         <router-link to="/upload" class="text-nav">上传产品</router-link>
         <!--<router-link to="/foo" class="text-nav">文章</router-link> -->
         <router-link to="/itemList" class="text-nav">库存</router-link>
+        <router-link to="/xinxiuRecCats" class="text-nav">店长推荐</router-link>
       </div>
       <div class="right-container">
         <router-link to="/foo">
@@ -211,7 +212,7 @@ export default {
         &  a:hover {
          color:#ff5722;
          font-weight: 600;
-         border-bottom:2px dashed #ff5722;
+        /* border-bottom:2px dashed #ff5722;*/
         }
 
         & .search {

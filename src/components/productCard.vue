@@ -175,7 +175,6 @@ export default {
       height: 80%;
       background-size:cover;
       background-position:center;
-      background-image:url('https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShttNeu2TAfb_tvVIG26ztPWbFg26KIyNmpVHV8zdWQGdJL457');
       border-bottom:1px solid #eaebec; 
       transition: all .2s ease-in;
       

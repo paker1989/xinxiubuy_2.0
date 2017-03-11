@@ -1,10 +1,11 @@
 <template>
+ <div class="uploaderContainer">
   <div class="uploader">
    <div class="pictureDetail">
-     <imgUploader/>
+     <imgUploader :submitStatus="submitStatus" v-on:imgStatusCheckResult="checkIfSubmit"/>
    </div><!-- picture area-->
    <div class="metaDataEditor">
-    <form class="ui form" action="/foo" onsubmit="return false;">
+    <form class="ui form upload" action="/foo" onsubmit="return false;">
      <div :class="{'ui fluid input field title-size productFeild':true,
                    'activated':fieldFocusFactory['产品名称'],
                    'hidePlaceholder':productName.trim().length>0}" data-name="产品名称">
@@ -151,11 +152,15 @@
         </div>
       </div>                                                              <!-- tag selection modal end -->
      </div><!-- end tagContainer -->
-     <div class="ui submit button" @click="testSubmit" style="display:none;">submit</div>
+     <div class="ui submit button" @click="submitUpload" style="display:none;">submit</div>
      <div class="ui error message"></div>
     </form>
    </div><!--end metadata editor-->
   </div>
+  <div class="upload-button">
+   <button class="ui button" @click.stop="checkIfPicUploaded">确定上传</button>
+  </div>
+ </div>
 </template>
 
 <script>
@@ -176,7 +181,8 @@ export default {
 
   data () {
     return {
-      fieldFocusFactory:  {},
+      submitStatus        :  0, /*0 normal,1 try submit*/
+      fieldFocusFactory   :  {},
       creatingOption      : false,
       productName         : '',
       price               : '',
@@ -200,7 +206,7 @@ export default {
       return input.trim().length>0 && !isNaN(input) && input > 0
     }
 
-    $('.ui.form').form({
+    $('.ui.form.upload').form({
       fields: {
         productName  : {
           identifier:'productName',
@@ -382,10 +388,16 @@ export default {
     this.selectedTags[index].isSelected = false
     this.selectedTags.splice(index,1)
    },
+   
+   checkIfPicUploaded() {
+    this.submitStatus = 1
+   },
 
-   testSubmit() {
-    $('.ui.form').submit()
+   checkIfSubmit(imgCheckRes) {
+    this.submitStatus = 0
+    $('.ui.form.upload').submit()
    }
+   
   }
 }
 </script>
@@ -427,254 +439,276 @@ export default {
    }
   }
 
+.uploaderContainer{
+ position:relative;
 
- .uploader{
-  position: relative;
-  width: 80%;
-  margin:40px auto;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+ & .upload-button .ui.button{
+  margin-bottom: 40px;
+  color:white;
+  font-size: 17px;
+  font-weight: 500;
+  font-family: '微软雅黑'!important;
+  background:#ff7a50;
 
-  & .text-action{
-   padding:5px 0;
-   font-size:14px;
-   font-weight: 500;
-   letter-spacing: .1em;
-   color: darken(#a0c982,20%);
-
-   &:not(.editing):hover{
-    font-weight: 600;
-    cursor: pointer;
-   }
-
-   &.negative{
-    color: lighten(red,20%);
-   }
-
+  &:hover{
+   background:#ccc;
+   color:black;
   }
+ }
 
-  & .clickable:hover{
-   color:#ff5722;
-   cursor: pointer;
-   border-bottom:1px dashed #ff5722;
+ & .uploader{
+    position: relative;
+    width: 80%;
+    margin:40px auto 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* to remove */
+   /*border:1px solid black;*/
 
-   &:active{
-    font-weight: 800;
-   }
-  }
-
-  & .pictureDetail{
-   width: 600px;
-   height: 500px;
-  }
-
-  & .metaDataEditor{
-   position:relative;
-   width: 650px;
-   text-align: left;
-   padding-top:40px;
-   padding-left:40px;
-   padding-right:100px;
-
-   & > * {
-    position:relative;
-    margin-bottom: 20px;
-   }
-
-   & .title-size{
-    width: $title-size;
-    min-width: 150px;
-   }
-
-   & .lager-size{
-    width: $lager-size;
-    min-width: 240px;
-   }
-
-   & .user-icon{
-    color:black;
-    opacity: .7;
-    margin-right: .3em;
-    vertical-align: text-bottom;
-   }
-
-   & .productFeild{
-
-    &:before{
-     content: attr(data-name);
-     position:absolute;
-     left:10px;
-     top:10px;
-     color:#ccc;
+    & .text-action{
+     padding:5px 0;
+     font-size:14px;
+     font-weight: 500;
      letter-spacing: .1em;
-     transition:all .2s linear;  
-     pointer-events: none; 
-    }
+     color: darken(#a0c982,20%);
 
-    &.activated,&.hidePlaceholder{
-     &:before{
-      font-weight:600;
-      transform: scale(.8);
-      color:lighten(black,10%);
-      top:-20px;
-      left:0px;
-     }
-    }
-   }
-
-   & .addedOptionContainer{
-    margin-bottom:10px;
-
-    & .optionItem{
-     margin-right: 2em;
-    }
-   }
-
-   & .optionContainer, & .tagContainer{
-     & .text-nav{
-      vertical-align: top;
-      font-size: 16px;
-     }   
-   }
-
-   & .tagContainer{
-
-     & .matchedTag{
-      background:#E0E1E2;
-      color:rgba(0,0,0,.6);
-      padding:.2em .5em;
-      margin:.2em;
-      border-radius:5px;
+     &:not(.editing):hover{
+      font-weight: 600;
       cursor: pointer;
-     }   
+     }
 
-    & .addTagContainer{
-      position:relative;
-      display: flex;
-      margin-bottom: 10px;
+     &.negative{
+      color: lighten(red,20%);
+     }
 
-      & > * {
-       width: 200px;
-       vertical-align: text-bottom;
-      }
-
-      & .manualAddTagContainer{
-       & .matchedTagWraper{
-         position:relative;
-         width: 100%;
-         border:1px solid rgba(34,36,38,.15);
-         border-bottom-left-radius:.28571429rem;
-         border-bottom-right-radius:.28571429rem;  
-         display: flex;
-         flex-wrap: wrap; 
-       }
-      }
-
-      & .alternativeAddTag{
-       vertical-align: bottom;
-       padding-top:10px;
-       margin-left:20px;
-
-       & .text-action{
-        margin-left:20px;
-        font-size:16px;
-       }
-      }
-
-      & .tag-add{
-         position:absolute;
-         right:10px;
-         top:10px;
-         font-weight:600;
-         color:darken(#a0c982,12%);
-         letter-spacing: .1em;
-         transition:all .1s linear;  
-         cursor:pointer;
-
-        &:hover{
-         color:darken(#a0c982,30%);
-        }
-      }
     }
 
-    & .addedTagContainer {
-     & .addedTags{
-      margin-top:10px;
-      display: flex;
-      flex-wrap: wrap;
+    & .clickable:hover{
+     color:#ff5722;
+     cursor: pointer;
+     border-bottom:1px dashed #ff5722;
 
-      & .selectedTag{
-       margin:.5em;
-       padding: .5em 1.5em;
-       position:relative;
-       cursor: pointer;
-       font-weight:500;
-      }
+     &:active{
+      font-weight: 800;
      }
     }
-   }
 
-   & .optionContainer{  
-    border-bottom:1px solid lighten(#b3b3b3,10%);
-    padding-bottom: 25px;
-    margin-bottom: 25px;
-
-    & .optionTitle{
-      display: flex;
-
-      & > * {
-       margin-right:1em;
-      }
-
-      & .creating{
-       background: lighten(grey,20%);
-       width: 140px;
-       text-align: center;
-       padding: .3em .7em;
-       border-radius:4px;
-
-       & .text-nav, & .user-icon{
-        color:white;
-       }
-      }
+    & .pictureDetail{
+     width: 600px;
+    /* height: 500px;*/
+     /*to remove*/
+     /*border:1px solid black;*/
     }
 
-    & .optionEditor{
-      margin-top: 20px;
-      width: 80%;
+    & .metaDataEditor{
+     position:relative;
+     width: 650px;
+     text-align: left;
+     padding-top:40px;
+     padding-left:40px;
+     padding-right:100px;
+     /*to remove*/
+     /*border:1px solid black;*/
+
+     & > * {
       position:relative;
-      display: flex;
-      justify-content: space-between;
-      
-      & .option:nth-child(1){
-       width: 70%;
-       margin-right: 10px;
+      margin-bottom: 20px;
+     }
+
+     & .title-size{
+      width: $title-size;
+      min-width: 150px;
+     }
+
+     & .lager-size{
+      width: $lager-size;
+      min-width: 240px;
+     }
+
+     & .user-icon{
+      color:black;
+      opacity: .7;
+      margin-right: .3em;
+      vertical-align: text-bottom;
+     }
+
+     & .productFeild{
+
+      &:before{
+       content: attr(data-name);
+       position:absolute;
+       left:10px;
+       top:10px;
+       color:#ccc;
+       letter-spacing: .1em;
+       transition:all .2s linear;  
+       pointer-events: none; 
       }
 
-      & .option:nth-child(2){
-       width: 100%;
+      &.activated,&.hidePlaceholder{
+       &:before{
+        font-weight:600;
+        transform: scale(.8);
+        color:lighten(black,10%);
+        top:-20px;
+        left:0px;
+       }
       }
+     }
 
-      & .optionValueInput{
-      border-bottom-left-radius:0em;
-      border-bottom-right-radius:0em;
+     & .addedOptionContainer{
+      margin-bottom:10px;
+
+      & .optionItem{
+       margin-right: 2em;
       }
+     }
 
-      .optionValue{
-         position:absolute;
-         right:10px;
-         top:10px;
-         font-weight:600;
-         color:darken(#a0c982,12%);
-         letter-spacing: .1em;
-         transition:all .1s linear;  
-         cursor:pointer;
+     & .optionContainer, & .tagContainer{
+       & .text-nav{
+        vertical-align: top;
+        font-size: 16px;
+       }   
+     }
 
-        &:hover{
-         color:darken(#a0c982,30%);
+     & .tagContainer{
+
+       & .matchedTag{
+        background:#E0E1E2;
+        color:rgba(0,0,0,.6);
+        padding:.2em .5em;
+        margin:.2em;
+        border-radius:5px;
+        cursor: pointer;
+       }   
+
+      & .addTagContainer{
+        position:relative;
+        display: flex;
+        margin-bottom: 10px;
+
+        & > * {
+         width: 200px;
+         vertical-align: text-bottom;
+        }
+
+        & .manualAddTagContainer{
+         & .matchedTagWraper{
+           position:relative;
+           width: 100%;
+           border:1px solid rgba(34,36,38,.15);
+           border-bottom-left-radius:.28571429rem;
+           border-bottom-right-radius:.28571429rem;  
+           display: flex;
+           flex-wrap: wrap; 
+         }
+        }
+
+        & .alternativeAddTag{
+         vertical-align: bottom;
+         padding-top:10px;
+         margin-left:20px;
+
+         & .text-action{
+          margin-left:20px;
+          font-size:16px;
+         }
+        }
+
+        & .tag-add{
+           position:absolute;
+           right:10px;
+           top:10px;
+           font-weight:600;
+           color:darken(#a0c982,12%);
+           letter-spacing: .1em;
+           transition:all .1s linear;  
+           cursor:pointer;
+
+          &:hover{
+           color:darken(#a0c982,30%);
+          }
         }
       }
+
+      & .addedTagContainer {
+       & .addedTags{
+        margin-top:10px;
+        display: flex;
+        flex-wrap: wrap;
+
+        & .selectedTag{
+         margin:.5em;
+         padding: .5em 1.5em;
+         position:relative;
+         cursor: pointer;
+         font-weight:500;
+        }
+       }
+      }
+     }
+
+     & .optionContainer{  
+      border-bottom:1px solid lighten(#b3b3b3,10%);
+      padding-bottom: 25px;
+      margin-bottom: 25px;
+
+      & .optionTitle{
+        display: flex;
+
+        & > * {
+         margin-right:1em;
+        }
+
+        & .creating{
+         background: lighten(grey,20%);
+         width: 140px;
+         text-align: center;
+         padding: .3em .7em;
+         border-radius:4px;
+
+         & .text-nav, & .user-icon{
+          color:white;
+         }
+        }
+      }
+
+      & .optionEditor{
+        margin-top: 20px;
+        width: 80%;
+        position:relative;
+        display: flex;
+        justify-content: space-between;
+        
+        & .option:nth-child(1){
+         width: 70%;
+         margin-right: 10px;
+        }
+
+        & .option:nth-child(2){
+         width: 100%;
+        }
+
+        & .optionValueInput{
+        border-bottom-left-radius:0em;
+        border-bottom-right-radius:0em;
+        }
+
+        .optionValue{
+           position:absolute;
+           right:10px;
+           top:10px;
+           font-weight:600;
+           color:darken(#a0c982,12%);
+           letter-spacing: .1em;
+           transition:all .1s linear;  
+           cursor:pointer;
+
+          &:hover{
+           color:darken(#a0c982,30%);
+          }
+        }
 
       & .addedOptionWraper{
        position:relative;
@@ -707,7 +741,7 @@ export default {
       }
     }
    }
-
-  }/* end meta data editor*/
+   }/* end meta data editor*/
+  }
  }
 </style>

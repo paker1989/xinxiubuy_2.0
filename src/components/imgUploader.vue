@@ -7,56 +7,79 @@
       <div class="currentUploadPic" :style="previewPicture"></div>
      </div>
      <div class="loadedPicsPrevContainer">
-       <img class="loadedPicsPrev" v-for="(url,index) in currentUploadPicUrls" :src="url"/>
+       <img class="loadedPicsPrev" v-for="(url,index) in currentUploadPicUrls" :src="url"
+            @click="setCurrentUploadPic(index)"/>
      </div>
      <button class="ui button fluid upload-button" @click.stop="triggerFileInput">上传文件</button>  
-     <div class="ui error message">{{errorMessage}}</div>
+     <div class="ui error message error-hide">{{errorMessage}}</div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'imgUploader',
-
+  
+  props: ['submitStatus'],
+  
   data () {
     return {
       currentUploadPicUrls : [],
-      errorMessage         : ''
+      errorMessage         : '',
+      defaultPrvPicIndex   : 0
     }
   },
 
   watch: {
    errorMessage() {
-    alert('changed!')
+    $('.ui.error.message.error-hide').removeClass('error-hide')
+                                     .addClass('pictureUploadError')
+
+    let delay = this.errorMessage.trim().length==0?100:3000
+    setTimeout(() => {
+     $('.ui.error.message.pictureUploadError').addClass('error-hide')
+                                              .removeClass('pictureUploadError')
+      this.errorMessage = ''
+    },delay)
+   },
+
+   submitStatus(val) {
+    if(val == 1){
+      let validCheck = this.currentUploadPicUrls.length>0
+      if(validCheck==false)
+       this.errorMessage = '宝贝，必须上传至少一张图片哦~'
+
+      this.$emit('imgStatusCheckResult',validCheck) 
+    }
    }
   },
 
   mounted() {
+
    $('.dropFileWraper')
-   .bind('dragover',(e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    $('.drag-drop-draw').addClass('dragover')
-    $('.drag-drop-draw .drag-drop-text').text('宝贝，将图片放在这个框框里')
+     .bind('dragover',(e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      $('.drag-drop-draw').addClass('dragover')
+      $('.drag-drop-draw .drag-drop-text').text('宝贝，将图片放在这个框框里')
    })
    .bind('dragleave', (e) => {
-    $('.drag-drop-draw').removeClass('dragover')
-    $('.drag-drop-draw .drag-drop-text').text('')
+     $('.drag-drop-draw').removeClass('dragover')
+     $('.drag-drop-draw .drag-drop-text').text('')
    })
    .bind('drop',(e)=>{
-    e.preventDefault()
-    e.stopPropagation()
+     e.preventDefault()
+     e.stopPropagation()
     
-    let file = e.originalEvent.dataTransfer.files[0]
+     let file = e.originalEvent.dataTransfer.files[0]
 
-    if(/^image\//g.test(file.type)){
-     this.handleFile(file)
-    }else{
-     this.errorMessage = '只能上传图片'
-    }
+     if(/^image\//g.test(file.type)){
+      this.handleFile(file)
+     }else{
+      this.errorMessage = '只能上传图片'
+     }
 
-    $('.drag-drop-draw').removeClass('dragover')
-    $('.drag-drop-draw .drag-drop-text').text('')
+     $('.drag-drop-draw').removeClass('dragover')
+     $('.drag-drop-draw .drag-drop-text').text('')
    })
 
   },
@@ -64,7 +87,7 @@ export default {
   computed: {
     previewPicture() {
       if(this.currentUploadPicUrls.length==0)return
-      return {backgroundImage : 'url(\''+this.currentUploadPicUrls[0]+'\')'}      
+      return {backgroundImage : 'url(\''+this.currentUploadPicUrls[this.defaultPrvPicIndex]+'\')'}      
     }
   },
 
@@ -74,7 +97,10 @@ export default {
    },
 
    handleFile(file) {
-    if(this.currentUploadPicUrls.length>4) return
+    if(this.currentUploadPicUrls.length==4){
+     this.errorMessage = '乖，最多4张图片~'
+     return   
+    }
 
     file = file?file:$('.file-input')[0].files[0]
   
@@ -85,6 +111,10 @@ export default {
       }
       reader.readAsDataURL(file)
      }
+   },
+
+   setCurrentUploadPic(index) {
+     this.defaultPrvPicIndex = index
    }
   }
 }
@@ -98,10 +128,20 @@ export default {
   padding: 1em;
   margin-top:1em;
 
-  .dragover{
+  & .dragover{
    background: lighten(#1FB264,10%);
    color:white;
    z-index: 3;
+  }
+
+  & .pictureUploadError{
+   opacity: 1;
+   transition: opacity 1s linear;
+  }
+
+  & .error-hide{
+   opacity: 0;
+   transition: opacity .1s linear;
   }
   
   & .dropFileWraper{
@@ -138,6 +178,7 @@ export default {
       position:absolute;
       width:100%; 
       height: 100%;
+      transition: backgroundImage .3s ease-in;
       background-size:cover;
       background-position:center;
     }
