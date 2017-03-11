@@ -4,7 +4,7 @@
      <imgUploader/>
    </div><!-- picture area-->
    <div class="metaDataEditor">
-    <form class="ui form" action="/foo">
+    <form class="ui form" action="/foo" onsubmit="return false;">
      <div :class="{'ui fluid input field title-size productFeild':true,
                    'activated':fieldFocusFactory['产品名称'],
                    'hidePlaceholder':productName.trim().length>0}" data-name="产品名称">
@@ -238,7 +238,8 @@ export default {
            }
           ]          
         }
-      }
+      },
+      on : 'blur'
     });
   },
 
@@ -252,6 +253,9 @@ export default {
    },
 
    addOptionValue() {
+    this.optionValue = this.optionValue.replace(/^\s+|\s+$/g,'')
+    if(this.optionValue.trim().length==0 || this.editingAddedOptions.indexOf(this.optionValue)>-1)return
+
     this.editingAddedOptions.push(this.optionValue)
     this.optionValue = ''
    },
@@ -427,7 +431,7 @@ export default {
  .uploader{
   position: relative;
   width: 80%;
-  margin:0 auto;
+  margin:40px auto;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

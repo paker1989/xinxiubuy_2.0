@@ -36,6 +36,14 @@
 
     mounted() {
      $('.dropdown').dropdown()
+     /*
+     $(document).bind('keypress keydown keyup', (e)=>{
+      if(e.keyCode == 13){
+             console.log('detect')
+       e.preventDefault()
+      }
+     })
+     */
      
      /* only fire the displayNavHelper function when scroll stops*/
     }

@@ -1,14 +1,16 @@
 <template>
   <div class="imgUploader">
      <div class="dropFileWraper">
-      <input class="file-input" type="file" accept="image/*" @change="handleFile">
+      <div class="drag-drop-draw"><p class="drag-drop-text"></p></div>
+      <input class="file-input" type="file" accept="image/*" @change="handleFile()">
       <p class="drag-drop-text">拖放文件至此处</p>
       <div class="currentUploadPic" :style="previewPicture"></div>
      </div>
      <div class="loadedPicsPrevContainer">
-       <img class="loadedPicsPrev" v-for="url in currentUploadPicUrls" :src="url"/>
+       <img class="loadedPicsPrev" v-for="(url,index) in currentUploadPicUrls" :src="url"/>
      </div>
-     <button class="ui button fluid upload-button" @click="triggerFileInput">上传文件</button>  
+     <button class="ui button fluid upload-button" @click.stop="triggerFileInput">上传文件</button>  
+     <div class="ui error message">{{errorMessage}}</div>
   </div>
 </template>
 
@@ -18,11 +20,44 @@ export default {
 
   data () {
     return {
-      currentUploadPicUrls : []
+      currentUploadPicUrls : [],
+      errorMessage         : ''
     }
   },
 
+  watch: {
+   errorMessage() {
+    alert('changed!')
+   }
+  },
+
   mounted() {
+   $('.dropFileWraper')
+   .bind('dragover',(e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    $('.drag-drop-draw').addClass('dragover')
+    $('.drag-drop-draw .drag-drop-text').text('宝贝，将图片放在这个框框里')
+   })
+   .bind('dragleave', (e) => {
+    $('.drag-drop-draw').removeClass('dragover')
+    $('.drag-drop-draw .drag-drop-text').text('')
+   })
+   .bind('drop',(e)=>{
+    e.preventDefault()
+    e.stopPropagation()
+    
+    let file = e.originalEvent.dataTransfer.files[0]
+
+    if(/^image\//g.test(file.type)){
+     this.handleFile(file)
+    }else{
+     this.errorMessage = '只能上传图片'
+    }
+
+    $('.drag-drop-draw').removeClass('dragover')
+    $('.drag-drop-draw .drag-drop-text').text('')
+   })
 
   },
 
@@ -38,16 +73,16 @@ export default {
     $('.file-input').trigger('click')
    },
 
-   handleFile() {
-     let file = $('.file-input')[0].files[0]
+   handleFile(file) {
+    if(this.currentUploadPicUrls.length>4) return
 
-     if(file){
+    file = file?file:$('.file-input')[0].files[0]
+  
+    if(file){
       let reader = new FileReader()
-
       reader.onload = (e) => {
         this.currentUploadPicUrls.unshift(e.target.result)
       }
-
       reader.readAsDataURL(file)
      }
    }
@@ -62,6 +97,12 @@ export default {
   width: 100%;
   padding: 1em;
   margin-top:1em;
+
+  .dragover{
+   background: lighten(#1FB264,10%);
+   color:white;
+   z-index: 3;
+  }
   
   & .dropFileWraper{
     position:relative;
@@ -69,6 +110,13 @@ export default {
     min-height: 350px;
     border:3px dashed lighten(#1FB264,10%);
     margin-bottom: 10px;
+
+    & .drag-drop-draw{
+     position:absolute;
+     width: 100%;
+     height: 100%;
+     z-index:1;
+    }
 
     & .file-input{
       position:absolute;
@@ -87,7 +135,6 @@ export default {
     }
 
     & .currentUploadPic{
-      z-index: 3;
       position:absolute;
       width:100%; 
       height: 100%;
