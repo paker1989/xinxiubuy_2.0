@@ -65,7 +65,7 @@ export default {
 
      this.$http.post('uploadPics',formData).then((res)=>{
        if(res.status == 200){
-       // this.$emit('fileUuidsGenerated',res.body.data)
+        this.$emit('fileUuidsGenerated',res.body.data)
        }
      })
     }
@@ -204,7 +204,7 @@ export default {
   }/* dropFileWraper end */
 
   & .loadedPicsPrevContainer{
-   diplay:flex;
+   display:flex;
    justify-content: center;
    flex-wrap:wrap;
    margin: .5em 0;

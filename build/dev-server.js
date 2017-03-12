@@ -1,3 +1,4 @@
+require('../db.js')
 require('./check-versions')()
 
 var config = require('../config')

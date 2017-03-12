@@ -410,10 +410,13 @@ export default {
     formData.append('description',this.description)
 
     if(this.addedOptions.length>0){
-     formData.append('addedOptions',this.addedOptions)
+     formData.append('addedOptions',this.addedOptions.map(option => {
+      return option.key+'&'+option.values.join('-')
+     }))
     }
+    
     formData.append('selectedTags',this.selectedTags.length>0?
-                                   this.selectedTags:['未分类'])                                  
+                                   this.selectedTags.map(tag => {return tag.value}):['未分类'])                                  
     formData.append('filePaths',filePaths)
 
     this.$http.post('/uploadProduct',formData)

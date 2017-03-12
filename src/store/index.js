@@ -18,7 +18,7 @@ const store = new Vuex.Store({
 
    maxLengthBrefDescrp: 85,  //如果超过，就显示简要说明
 
-   commentList: [
+   commentList: [ 
     {
       id:1,
       productId:2,
