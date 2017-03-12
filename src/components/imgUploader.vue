@@ -20,9 +20,10 @@ export default {
   name: 'imgUploader',
   
   props: ['submitStatus'],
-  
+
   data () {
     return {
+      currentUploadedFiles : [],
       currentUploadPicUrls : [],
       errorMessage         : '',
       defaultPrvPicIndex   : 0
@@ -43,18 +44,35 @@ export default {
    },
 
    submitStatus(val) {
+    /* 1 : check if can submit */
     if(val == 1){
       let validCheck = this.currentUploadPicUrls.length>0
       if(validCheck==false)
        this.errorMessage = '宝贝，必须上传至少一张图片哦~'
 
       this.$emit('imgStatusCheckResult',validCheck) 
+    /*2 : get confirm from fileds check, submit*/
+    }else if(val == 2){
+     let formData = new FormData()
+     let fileNameEntries = new Array()
+
+     this.currentUploadedFiles.forEach(file => {
+      formData.append(file.name,file)
+      fileNameEntries.push(file.name)
+     })
+
+     formData.append('fileNameEntries',fileNameEntries)
+
+     this.$http.post('uploadPics',formData).then((res)=>{
+       if(res.status == 200){
+        this.$emit('fileUuidsGenerated',res.body.data)
+       }
+     })
     }
    }
   },
 
   mounted() {
-
    $('.dropFileWraper')
      .bind('dragover',(e) => {
       e.preventDefault()
@@ -103,7 +121,8 @@ export default {
     }
 
     file = file?file:$('.file-input')[0].files[0]
-  
+    this.currentUploadedFiles.push(file)
+
     if(file){
       let reader = new FileReader()
       reader.onload = (e) => {

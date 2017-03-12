@@ -2,7 +2,9 @@
  <div class="uploaderContainer">
   <div class="uploader">
    <div class="pictureDetail">
-     <imgUploader :submitStatus="submitStatus" v-on:imgStatusCheckResult="checkIfSubmit"/>
+     <imgUploader :submitStatus="submitStatus" 
+       v-on:imgStatusCheckResult="uploadPictures"
+       v-on:fileUuidsGenerated="resumeUpload"/>
    </div><!-- picture area-->
    <div class="metaDataEditor">
     <form class="ui form upload" action="/foo" onsubmit="return false;">
@@ -21,17 +23,17 @@
      </div>
      <div :class="{'ui fluid input field title-size productFeild':true,
                    'activated':fieldFocusFactory['运费'],
-                   'hidePlaceholder':deliveryFrais.trim().length>0}" data-name="运费">
-        <input type="text" v-model="deliveryFrais" name="livraisonFee" @focus="setValue('运费');" @blur="setValue('运费');">
+                   'hidePlaceholder':deliveryFee.trim().length>0}" data-name="运费">
+        <input type="text" v-model="deliveryFee" name="livraisonFee" @focus="setValue('运费');" @blur="setValue('运费');">
         <div class="ui basic label text-content">
           元
         </div>
      </div>
      <div :class="{'ui form largr-size field productFeild':true,
                    'activated':fieldFocusFactory['备注'],
-                   'hidePlaceholder':descritption.trim().length>0}" data-name="备注">
+                   'hidePlaceholder':description.trim().length>0}" data-name="备注">
        <div class="field">
-        <textarea v-model="descritption" rows="4" name="comment" @focus="setValue('备注');" @blur="setValue('备注');"></textarea>
+        <textarea v-model="description" rows="4" name="comment" @focus="setValue('备注');" @blur="setValue('备注');"></textarea>
        </div>
      </div>
      <div class="addedOptionContainer" v-show="addedOptions.length>0">
@@ -152,7 +154,7 @@
         </div>
       </div>                                                              <!-- tag selection modal end -->
      </div><!-- end tagContainer -->
-     <div class="ui submit button" @click="submitUpload" style="display:none;">submit</div>
+     <div class="ui submit button" style="display:none;">submit</div>
      <div class="ui error message"></div>
     </form>
    </div><!--end metadata editor-->
@@ -181,15 +183,15 @@ export default {
 
   data () {
     return {
-      submitStatus        :  0, /*0 normal,1 try submit*/
-      fieldFocusFactory   :  {},
+      submitStatus        : 0, /*0 normal,1 try submit* 2 submit*/
+      fieldFocusFactory   : {},
       creatingOption      : false,
       productName         : '',
       price               : '',
-      descritption        : '',
+      description         : '',
       optionKey           : '',
       optionValue         : '',
-      deliveryFrais       : '',
+      deliveryFee         : '',
       manualTagValue      : '',
       matchedTags         : [],
       editingAddedOptions : [],
@@ -363,7 +365,6 @@ export default {
      this.manualTagValue = ''
      this.matchedTags = []
     }else{
-
      if(this.manualTagValue.trim().length==0)return
 
      let isExistInSelectedTags = typeof existingTag(this.selectedTags,this.manualTagValue) != 'undefined'
@@ -393,9 +394,29 @@ export default {
     this.submitStatus = 1
    },
 
-   checkIfSubmit(imgCheckRes) {
-    this.submitStatus = 0
-    $('.ui.form.upload').submit()
+
+
+   uploadPictures(imgCheckRes) {
+   /* TO DO: check fileds status */
+    this.submitStatus = 2
+   },
+
+   resumeUpload(filePaths) {   
+    let formData = new FormData()
+    
+    formData.append('title',this.productName)
+    formData.append('price',this.price)
+    formData.append('deliveryFee',this.deliveryFee)
+    formData.append('description',this.description)
+
+    if(this.addedOptions.length>0){
+     formData.append('addedOptions',this.addedOptions)
+    }
+    formData.append('selectedTags',this.selectedTags.length>0?
+                                   this.selectedTags:['未分类'])                                  
+    formData.append('filePaths',filePaths)
+
+    this.$http.post('/uploadProduct',formData)
    }
    
   }
