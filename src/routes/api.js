@@ -5,7 +5,7 @@ const path = require('path')
 const config = require('../../config')
 const util = require('./util')
 
-let rootPicPath = path.join(config.dev.assetsSubDirectory,'productPic')
+let rootPicPath = path.join(config.dev.assetsSubDirectory,'productResource')
 
 /*
 let upload = (req, res, next) => {

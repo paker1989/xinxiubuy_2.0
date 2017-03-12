@@ -65,7 +65,7 @@ export default {
 
      this.$http.post('uploadPics',formData).then((res)=>{
        if(res.status == 200){
-        this.$emit('fileUuidsGenerated',res.body.data)
+       // this.$emit('fileUuidsGenerated',res.body.data)
        }
      })
     }
