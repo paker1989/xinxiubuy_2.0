@@ -35,7 +35,7 @@ let uploadProduct = (req, res, next) => {
    description  : req.body.description,
    picPaths     : req.body.filePaths.split(','),
    options      : req.body.addedOptions.split(','),
-   tags         : req.body.selectedTags.split(',')
+   tags         : req.body.selectedTags.split(','),
    createDate   : new Date()
   })
 
