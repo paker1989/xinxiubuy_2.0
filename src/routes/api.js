@@ -27,8 +27,7 @@ let upload = (req, res, next) => {
 */
 
 let uploadProduct = (req, res, next) => {
-  console.log(req.body)
-
+//  console.log(req.body)
   let product = new Product({
    productName  : req.body.title,
    price        : req.body.price, 
@@ -53,40 +52,36 @@ let uploadProduct = (req, res, next) => {
 
 let getProducts = (req,res,next) => {
    productCollection.find({}).toArray((err,data) => {
-    console.log(data)
+    let wrapedProducts = new Array()
+
     if(!err){
-       data.map( product => {
+       data.forEach( product => {
         let wrapItem = {
              id          : product._id,
              title       : product.productName,
              price       : product.price,
              description : product.description,
              tags        : product.tags,
-             options     : product.options.map( option => {
-                            let optionkey    = option.split('&')[0]
-                            console.log(option.split('&')[1])
-                            let optionValues = option.split('&')[1].split('-')
-                            console.log(optionValues)
+             options     : product.options.map( option => {                 
                             return {
-                                    name   :optionkey,
-                                    values :optionValues 
+                                    name   :option.split('&')[0],
+                                    values :option.split('&')[1].split('-')  
                                     }
                            }),
              picPath     : product.picPaths.length == 1?
-                            path.join('rootPicPath',product.picPaths[0])
-                           :product.picPaths.map(picPath => { return path.join('rootPicPath',picPath)})
+                            path.join(rootPicPath,product.picPaths[0]).replace(/\\/g,'/')
+                           :product.picPaths.map(picPath => { return path.join(rootPicPath,picPath).replace(/\\/g,'/')})
         }
 
         if(product.picPaths.length>1)
          wrapItem.nbPics = product.picPaths.length
 
-         console.log(wrapItem)
-         return wrapItem
+        wrapedProducts.push(wrapItem)
        })
 
        res.send({
          msg:'success',
-         products:data
+         products:wrapedProducts
        })
     }
    })

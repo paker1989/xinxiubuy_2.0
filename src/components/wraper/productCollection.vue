@@ -58,18 +58,25 @@
    mounted () {
     let totalNbItems = this.$store.state.itemList.length
     //test: add back after
-    this.itemList = this.$store.state.itemList.slice(0,
-    totalNbItems>this.nbFirstFetch?this.nbFirstFetch:totalNbItems)
+ //   this.itemList = this.$store.state.itemList.slice(0,
+ //   totalNbItems>this.nbFirstFetch?this.nbFirstFetch:totalNbItems)
 
     //test : to remove
+    
     /*
     this.$http.get('/getProducts',(data) => {
+      console.log(data)
      data.products.forEach( product => {
       this.itemList.push(product)
      })
     })
     */
 
+    this.$http.get('/getProducts').then((res)=>{
+     res.body.products.forEach( product => {
+      this.itemList.push(product)
+     })   
+    })
     this.thereIsMore = totalNbItems>this.nbFirstFetch
    },
 
