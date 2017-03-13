@@ -263,6 +263,7 @@ export default {
    addOptionValue() {
     this.optionValue = this.optionValue.replace(/^\s+|\s+$/g,'')
     if(this.optionValue.trim().length==0 || this.editingAddedOptions.indexOf(this.optionValue)>-1)return
+    if(/-/g.test(this.optionValue))return //不能有-字符
 
     this.editingAddedOptions.push(this.optionValue)
     this.optionValue = ''
@@ -286,13 +287,24 @@ export default {
    },
 
    finishOptionEdition() {
+    let isEdit = this.optionEditIdentifier && this.optionEditIdentifier.isEdit
+
+    this.optionKey = this.optionKey.replace(/^\s+|\s+$/g,'')
+
+    let isDuplicateKey = this.addedOptions.find((item,i) => 
+                          {return isEdit?
+                           (item.key==this.optionKey&&i!=this.optionEditIdentifier.reference)
+                           :item.key==this.optionKey})
+
+    if(isDuplicateKey) return
+
     let newOption = {key:'',values:[],editing:false}
 
     newOption.key = this.optionKey
     newOption.values = []
     this.editingAddedOptions.forEach(item => {newOption.values.push(item)})
 
-    if(this.optionEditIdentifier && this.optionEditIdentifier.isEdit){
+    if(isEdit){
      this.addedOptions[this.optionEditIdentifier.reference] = newOption
      this.optionEditIdentifier.isEdit = false
      this.optionEditIdentifier.reference = -1
@@ -397,8 +409,13 @@ export default {
 
 
    uploadPictures(imgCheckRes) {
-   /* TO DO: check fileds status */
-    this.submitStatus = 2
+  //  if($('.ui.form.upload').form('is valid')==false)
+  //try to submit for validation
+     $('.ui.form.upload').submit()
+    
+    this.submitStatus = ($('.ui.form.upload').form('is valid') && imgCheckRes)?
+                        2:0 //if both valid, resume upload, otherwise no
+    
    },
 
    resumeUpload(filePaths) {   
@@ -419,7 +436,10 @@ export default {
                                    this.selectedTags.map(tag => {return tag.value}):['未分类'])                                  
     formData.append('filePaths',filePaths)
 
-    this.$http.post('/uploadProduct',formData)
+    this.$http.post('/uploadProduct',formData).then((res) => {
+     if(res.status == 200)
+      this.$router.replace('/')
+    })
    }
    
   }
@@ -558,6 +578,7 @@ export default {
      }
 
      & .productFeild{
+      margin-bottom: 20px;
 
       &:before{
        content: attr(data-name);

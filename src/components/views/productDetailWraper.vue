@@ -1,8 +1,10 @@
 <template>
   <div class="productDetailWraper">
    <productDetail :id="productId"/>
+   <!-- hide for tempo
    <recommend :id="productId"/>
    <CommentWraper :productId="productId"/>
+   -->
   </div>
 </template>
 

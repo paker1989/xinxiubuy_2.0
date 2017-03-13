@@ -5,6 +5,10 @@
       <input class="file-input" type="file" accept="image/*" @change="handleFile()">
       <p class="drag-drop-text">拖放文件至此处</p>
       <div class="currentUploadPic" :style="previewPicture"></div>
+      <div :class="{'removeCurrentPic':true,'remove-hide':currentUploadPicUrls.length==0}"
+           @click="removeCurrentPic">
+       移除
+       </div>
      </div>
      <div class="loadedPicsPrevContainer">
        <img class="loadedPicsPrev" v-for="(url,index) in currentUploadPicUrls" :src="url"
@@ -134,6 +138,13 @@ export default {
 
    setCurrentUploadPic(index) {
      this.defaultPrvPicIndex = index
+   },
+
+   removeCurrentPic() {
+    this.currentUploadPicUrls.splice(this.defaultPrvPicIndex,1)
+    this.currentUploadedFiles.splice(this.defaultPrvPicIndex,1)
+
+    this.defaultPrvPicIndex = 0
    }
   }
 }
@@ -200,6 +211,23 @@ export default {
       transition: backgroundImage .3s ease-in;
       background-size:cover;
       background-position:center;
+    }
+
+    & .removeCurrentPic{
+     position:absolute;
+     top:85%;
+     right:5%;
+     background:lighten(black,15%);
+     color:white;
+     font-size: 16px;
+     padding: .3em .8em;
+     border-radius:4px;
+     cursor:pointer;
+     z-index:2;
+    }
+
+    & .remove-hide{
+     opacity: 0;
     }
   }/* dropFileWraper end */
 

@@ -33,7 +33,7 @@ let uploadProduct = (req, res, next) => {
    price        : req.body.price, 
    description  : req.body.description,
    picPaths     : req.body.filePaths.split(','),
-   options      : req.body.addedOptions.split(','),
+   options      : req.body.addedOptions?req.body.addedOptions.split(','):[],
    tags         : req.body.selectedTags.split(','),
    createDate   : new Date()
   })
@@ -56,27 +56,7 @@ let getProducts = (req,res,next) => {
 
     if(!err){
        data.forEach( product => {
-        let wrapItem = {
-             id          : product._id,
-             title       : product.productName,
-             price       : product.price,
-             description : product.description,
-             tags        : product.tags,
-             options     : product.options.map( option => {                 
-                            return {
-                                    name   :option.split('&')[0],
-                                    values :option.split('&')[1].split('-')  
-                                    }
-                           }),
-             picPath     : product.picPaths.length == 1?
-                            path.join(rootPicPath,product.picPaths[0]).replace(/\\/g,'/')
-                           :product.picPaths.map(picPath => { return path.join(rootPicPath,picPath).replace(/\\/g,'/')})
-        }
-
-        if(product.picPaths.length>1)
-         wrapItem.nbPics = product.picPaths.length
-
-        wrapedProducts.push(wrapItem)
+        wrapedProducts.push(util.wrapItem(product,rootPicPath))
        })
 
        res.send({
@@ -86,6 +66,18 @@ let getProducts = (req,res,next) => {
     }
    })
 } 
+
+let getProductById = (req,res,next) => {
+ // console.log(req.body)
+  Product.findById(req.body.id,(err,data) => {
+  // console.log(data)
+   res.send({
+     msg:'success',
+     product:util.wrapItem(data,rootPicPath)
+   })
+  })
+
+}
 
 let uploadPics = (req, res, next) => {
   let fileUuids = new Array()
@@ -115,5 +107,6 @@ let uploadPics = (req, res, next) => {
 router.post('/uploadPics',uploadPics)
 router.post('/uploadProduct',uploadProduct)
 router.get('/getProducts',getProducts)
+router.post('/getProductById',getProductById)
 
 module.exports = router

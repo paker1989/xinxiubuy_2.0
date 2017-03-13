@@ -98,21 +98,16 @@
     },
 
     created() {
-   /*  let productId = this.$route.params.id */
      this.product = this.$store.getters.productDetail(this.id)
-      /*
-      if(this.product.options){
-       Object.keys(this.product.options).forEach(key => {
-        this.selectedValue[this.product.options[key].name]=''
-       })
-      }
-      */
-    },
+     if(this.product == 'undefined')
+      this.$http.post('/getProductById',{id : this.id}).then((res) => {
+       this.product = res.body.product
+       console.log(this.product)
 
-    mounted() {
-      this.isDescOverSize = this.displayBrefDesc = 
-          this.product.description.length > this.$store.state.maxLengthBrefDescrp
-      $('.ui.rating').rating()
+       this.isDescOverSize = this.displayBrefDesc = 
+                            this.product.description.length > this.$store.state.maxLengthBrefDescrp
+       $('.ui.rating').rating()
+      })
     },
 
     methods: {
