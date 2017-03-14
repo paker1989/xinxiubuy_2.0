@@ -97,6 +97,10 @@
       }
     },
 
+    preFetch() {
+      console.log('preFetch')
+    },
+
     created() {
      this.product = this.$store.getters.productDetail(this.id)
      if(this.product == 'undefined')

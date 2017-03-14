@@ -95,12 +95,13 @@ export default {
     }
 
     & .text-title {
-     font-size: 12px;
+     font-size: 15px;
      display: inline;
     }
 
     & .description {
-     font-size: 10px;
+     font-size: 15px;
+     color:black;
      opacity: 0;
     }
 
@@ -119,10 +120,9 @@ export default {
      top:15%;
      z-index: 3;
      color:white;
-     padding: 1px 7px;
-     font-weight: 900;
-     font-size: 11px;
-     letter-spacing: 1px;
+     padding: 4px 10px;
+     font-weight: 500;
+     font-size: 15px;
      border:2px solid white;
      cursor: pointer;
      transform:scale(1.2);

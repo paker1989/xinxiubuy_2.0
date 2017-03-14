@@ -2,7 +2,7 @@
   <div class="product-col"> 
     <div class="category">
      <div class="category-info">
-      <span class="text-title">{{category}}</span>
+      <span class="text-title block">{{category}}</span>
       <icon name="edit" class="text-content"></icon>
       <span class="text-content">最后更新于: 19/O2/2017</span>
      </div>
@@ -207,7 +207,7 @@
     & .text-content {
      vertical-align: text-top;
      font-style: italic;
-     font-size: 11px;
+     font-size: 14px;
     }
    }
   }
@@ -227,9 +227,9 @@
     }
 
     & .product-wraper {
-      width:180px;
-      height:250px;
-      border:1px solid #eaebec;
+      width:240px;
+      height:320px;
+      border:1px solid darken(#eaebec,4%);
       margin-bottom: 2px;
     }
 

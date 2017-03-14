@@ -10,11 +10,9 @@
 }
 
 .text-title{
-  color: #404040;
-  font-size:13px;
-  font-weight:700;
-  text-transform:uppercase;
-  transform:scaleY(.9);  	
+  color: black;
+  font-size:19px;
+  font-weight:400;	
 }
 
 .text-content{
@@ -26,14 +24,14 @@
 .text-tag{
   color:#999999;
   font-weight:100;
-  font-size:11px;
+  font-size:14px;
   opacity: .7;
 }
 
 .text-price{
   color:#ff5722;
   font-weight:600;
-  font-size:11px;
+  font-size:15px;
 }
 
 .action-btn{
@@ -85,6 +83,10 @@
   border-radius: .28571429rem;
   transition: box-shadow .1s ease,width .1s ease;
 
+ }
+
+ .block{
+  display: block;
  }
 /*
 .text-hover:hover {
