@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import * as filters from './filter'
 
 import VueResource from 'vue-resource'
 
@@ -20,7 +21,11 @@ import Icon from 'vue-awesome/components/Icon.vue';
 Vue.use(VueResource)
 Vue.component('icon', Icon)
 
+//sync(store,router)
 
+Object.keys(filters).forEach(key => {
+	Vue.filter(key,filters[key])
+})
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -491,7 +491,6 @@ export default {
   color:white;
   font-size: 17px;
   font-weight: 500;
-  font-family: '微软雅黑'!important;
   background:#ff7a50;
 
   &:hover{
@@ -502,7 +501,7 @@ export default {
 
  & .uploader{
     position: relative;
-    width: 80%;
+    width: 100%;
     margin:40px auto 0 auto;
     display: flex;
     justify-content: center;

@@ -20,7 +20,7 @@
 
      <div style="width:90%;">
       <span class="text-title grand inline">{{product.title}}</span>
-      <span class="text-price float-right" style="font-size:20px;">{{product.price}}</span>
+      <span class="text-price float-right" style="font-size:20px;">{{product.price | price}}</span>
      </div><!-- end title and price-->
 
      <div class="tags-rating">
@@ -97,10 +97,6 @@
       }
     },
 
-    preFetch() {
-      console.log('preFetch')
-    },
-
     created() {
      this.product = this.$store.getters.productDetail(this.id)
      if(this.product == 'undefined')
@@ -140,13 +136,13 @@
     border:1px solid #e2e2e3;
  }
 
-  $pictureWrapperWidth : 300px;
+  $pictureWrapperWidth : 500px;
   $currentBgHeight : 350px;
   $minBgMargin: 10px;
 
  .productDetail{
   position:relative;
-  width: 60%;
+  width: 100%;
   margin: 30px auto;
   display: flex;
   flex-direction: row;  
@@ -197,7 +193,11 @@
 
     & > * {
       margin-left: 40px;
-      margin-bottom:10px;
+      margin-bottom:18px;
+    }
+
+    & .text-title{
+     font-weight: bold;
     }
 
     & .description{
@@ -210,6 +210,12 @@
       margin:0;
       transition:height .3s linear;
      }
+
+     & .text-content{
+      font-size: 15px;
+      color: lighten(black,40%);
+     }
+
 
      & .hidden-bg{
       position:absolute;

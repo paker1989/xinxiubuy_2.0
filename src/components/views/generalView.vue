@@ -5,9 +5,7 @@
      <FilterBar/>
     </div>
     <div class="productColWraper">
-     <ProductCol :category="'化妆品'"/>
-     <ProductCol :category="'母婴用品'"/>
-     <ProductCol :category="'未分类'"/>
+     <productCol v-for="category in userCategories" :category="category"/>
     </div>
 
     <!--- end product collection -->
@@ -30,6 +28,7 @@
 
     data() {
      return {
+      userCategories: ['化妆品','母婴用品','未分类'],
       invisibleCategories:[]
      }
     },

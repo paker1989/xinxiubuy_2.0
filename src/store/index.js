@@ -21,7 +21,7 @@ const store = new Vuex.Store({
    commentList: [ 
     {
       id:1,
-      productId:2,
+      productId:'58c861652d6ab5bfd8db58f9',
       commentUser:{pseudo:'BoomBoom'},
       commentTimeStr:'1年前',
       content:'价格还不错，好好喝',
@@ -29,7 +29,7 @@ const store = new Vuex.Store({
     },
     {
       id:2,
-      productId:2,
+      productId:'58c861652d6ab5bfd8db58f9',
       commentUser:{pseudo:'浩浩',userPhoto:'https://pic2.zhimg.com/4d43d15e81d6e3639e59dd4084d73eed_s.jpg'},
       commentTimeStr:'3小时前',
       content:'一点都不好喝，喝完我差点怀孕了',
@@ -38,7 +38,7 @@ const store = new Vuex.Store({
     },
     {
       id:3,
-      productId:2,
+      productId:'58c861652d6ab5bfd8db58f9',
       commentUser:{pseudo:'冯陈'},
       commentTimeStr:'今天',
       content:'楼上傻逼',
@@ -47,7 +47,7 @@ const store = new Vuex.Store({
     },
     {
       id:4,
-      productId:2,
+      productId:'58c861652d6ab5bfd8db58f9',
       commentUser:{pseudo:'JORDAN1'},
       commentTimeStr:'1年前',
       content:'花了多少钱啊？看着确实不错，',

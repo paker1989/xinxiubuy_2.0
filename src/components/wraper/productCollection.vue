@@ -28,7 +28,7 @@
     <!-- end pagnination -->
     <div class="productContainer">
         <div v-for="item in listToDisplay" class="product-wraper">
-          <productCard :product="item" />
+          <productCard :product="item" :limitedText="60"/>
         </div>         
     </div><!-- end product-container -->
     <div class="all" v-if="thereIsMore && !loadingData" @click="fetchMore">
@@ -46,6 +46,10 @@
  import ProductCard from 'components/productCard'
  import Load from 'components/loading'
 
+ function fetchItem(category,store){
+  store.$dispatch('fetchItem',{ category })
+ }
+
  export default {
    name: 'product-col',
 
@@ -55,7 +59,8 @@
     ProductCard,Load
    },
    
-   mounted () {
+   created () {
+
     let totalNbItems = this.$store.state.itemList.length
     //test: add back after
  //   this.itemList = this.$store.state.itemList.slice(0,
@@ -191,7 +196,7 @@
   }
   & .category {
    position:relative;
-   width: 30%;
+   width: 60%;
    height: 80px;
    margin: 40px auto 10px auto;
    border-top: 1px solid #eee;

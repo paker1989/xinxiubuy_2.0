@@ -29,7 +29,7 @@ export default {
   },
 
   created() {
-  	console.log('comments length : '+this.comments.length)
+  	/*console.log('comments length : '+this.comments.length)*/
   }
 }
 </script>

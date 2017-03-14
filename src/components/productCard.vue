@@ -13,10 +13,10 @@
 
    <div :class="{'product-info': true,'product-new' : product.isNew}">
     <p class="text-title">{{product.title}}</p>
-    <p class="text-price"> {{product.price}}</p>
+    <p class="text-price"> {{product.price | price}}</p>
     <p class="text-content description">
       <span class="text-title description">描述: </span>
-      {{product.description}}
+      {{product.description | breakDesc(limitedText)}}
       <a class="text-content description more">查看</a>
     </p>
     <a href="" class="text-tag more" v-for="tag in product.tags">{{tag}}</a> 
@@ -30,7 +30,7 @@
 export default {
   name: 'product-card',
   
-  props: ['product'],
+  props: ['product','limitedText'],
 
   data () {
     return {
@@ -75,10 +75,9 @@ export default {
 <style lang="scss" scoped>
 
    @mixin hover-effect {
+      color: black;
       border-bottom: 1px dashed #999999;
       transform: scale(1.1);
-      color: black;
-      font-weight: bold;
       transition: all .2s linear;
    }
 
@@ -90,12 +89,12 @@ export default {
      text-align: center;
 
     & .text-tag {
-
      color: black;
     }
 
     & .text-title {
      font-size: 15px;
+     font-weight: 600;
      display: inline;
     }
 
@@ -105,9 +104,14 @@ export default {
      opacity: 0;
     }
 
+    & .description.more{
+      font-weight: bold;
+    }
+
     & .more {
      cursor: pointer;
      margin-left: 1px;
+     color: lighten(black,40%);
 
      &:hover {
       @include hover-effect;
@@ -191,7 +195,12 @@ export default {
      padding: 2px 4px;
 
      & > * {
-      margin: 2px 1px;
+      margin: 4px 2px;
+     }
+     
+
+     & .text-tag{
+      margin: 2px 4px;
      }
 
     }

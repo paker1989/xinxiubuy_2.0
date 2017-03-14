@@ -1,5 +1,10 @@
 <template>
   <div class="recommend">
+    <div class="mayLikeItemsWraper">
+        <div v-for="item in itemList" class="product-wraper">
+          <productCard :product="item" :limitedText="15"/>
+        </div>         
+    </div><!-- end product-container -->
     <div class="titleWraper">
      <label class="text-title title">你可能还喜欢</label>
      <div class="randomWrapper">
@@ -7,11 +12,6 @@
       <label class="text-content">换一批</label>
      </div>
     </div>
-    <div class="mayLikeItemsWraper">
-        <div v-for="item in itemList" class="product-wraper">
-          <productCard :product="item" />
-        </div>         
-    </div><!-- end product-container -->
   </div>
 </template>
 
@@ -29,7 +29,13 @@ export default {
     }
   },
   created() {
-   this.itemList = this.$store.state.itemList.slice(0,9)
+  //temp code for css
+    this.$http.get('/getProducts').then((res)=>{
+     res.body.products.forEach( product => {
+      this.itemList.push(product)
+     })   
+    })
+ //  this.itemList = this.$store.state.itemList.slice(0,9)
   }
   
 }
@@ -41,7 +47,7 @@ export default {
  .recommend{
   width: 1000px;
   height: $height;
-  margin:100px auto 50px auto;
+  margin:50px auto 50px auto;
   position: relative;
   text-align: left;
   border-top:1px solid darken(#eee,10%);
