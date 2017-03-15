@@ -24,7 +24,7 @@ export default {
    productCard
   },
 
-  props: ['id'],
+  props: ['product'],
 
   data () {
     return {

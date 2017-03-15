@@ -76,6 +76,11 @@ const store = new Vuex.Store({
       return
       }
     })
+   },
+
+   FETCH_PRODUCT: ({ state }, { id }) => {
+    //to do
+    console.log(id)
    }
 
   },

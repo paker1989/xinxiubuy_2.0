@@ -10,7 +10,7 @@
 import ProductDetail from 'components/productDetail'
 import Recommend from 'components/wraper/recommendWraper'
 import CommentWraper from 'components/wraper/commentWraper'
-
+import store from '../../store'
 export default {
   name: 'productDetailWraper',
 
@@ -18,7 +18,19 @@ export default {
    ProductDetail,Recommend,CommentWraper
   },
 
-  props: [],
+  beforeRouteEnter(to,from,next) {
+    let id = to.params.id
+    store.dispatch('FETCH_PRODUCT', { id })
+    //handle error here: for ex: next(false): how?
+    next()
+  },
+
+  watch: {
+   $route() {
+    let id = this.productId = this.$route.params.id
+    this.$store.dispatch('FETCH_PRODUCT', { id })
+   }
+  },
 
   data () {
     return {
@@ -35,4 +47,3 @@ export default {
   position: relative;
  }
 </style>
- 

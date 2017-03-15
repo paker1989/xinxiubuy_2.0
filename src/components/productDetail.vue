@@ -73,15 +73,20 @@
     name: 'productDetail',
     
     props:['id'],
-
     data() {
-    	return {
+      return {
           product: null,
           currentImgIndex:0,
           displayBrefDesc:false,
           isDescOverSize:false,
           selectedValue:{}
-    	}
+      }
+    },
+
+    watch: {
+      id() {
+        this.fetchData()
+      }
     },
 
     computed: {
@@ -90,24 +95,15 @@
                               this.product.picPath[this.currentImgIndex]:this.product.picPath
         return {backgroundImage:'url(\''+currentImageUrl+'\')'}
       },
-
       description() {
+       if(this.product == 'undefined')return ''
        return  this.displayBrefDesc ? this.product.description.slice(0,this.$store.state.maxLengthBrefDescrp)
                                       : this.product.description
       }
     },
 
     created() {
-     this.product = this.$store.getters.productDetail(this.id)
-     if(this.product == 'undefined')
-      this.$http.post('/getProductById',{id : this.id}).then((res) => {
-       this.product = res.body.product
-       console.log(this.product)
-
-       this.isDescOverSize = this.displayBrefDesc = 
-                            this.product.description.length > this.$store.state.maxLengthBrefDescrp
-       $('.ui.rating').rating()
-      })
+     this.fetchData()
     },
 
     methods: {
@@ -121,25 +117,33 @@
 
       selectOption(option,val) {
         this.$set(this.selectedValue,option,val)
+      },
+
+      fetchData() {
+       this.product = this.$store.getters.productDetail(this.id)
+       //should avoid afterwards
+       if(this.product == 'undefined')
+        this.$http.post('/getProductById',{id : this.id}).then((res) => {
+         this.product = res.body.product
+         this.isDescOverSize = this.displayBrefDesc = 
+                              this.product.description.length > this.$store.state.maxLengthBrefDescrp
+         $('.ui.rating').rating()
+        })
       }
     }
-
   }
 </script>
 
 <style lang="scss" scoped>
-
  @mixin backgroundStyle {
     background-size:cover;
     background-position:center;
     border-radius: 2px;
     border:1px solid #e2e2e3;
  }
-
   $pictureWrapperWidth : 500px;
   $currentBgHeight : 350px;
   $minBgMargin: 10px;
-
  .productDetail{
   position:relative;
   width: 100%;
@@ -149,19 +153,16 @@
   flex-wrap:wrap;
   justify-content: center;
   /*border-top:1px solid #e2e2e3;*/
-
   
   .pictureWrapper {
     width: $pictureWrapperWidth;
     margin-right:80px;
-
      & .currentBgStyle{
       position:relative;
       width:100%;
       height: $currentBgHeight;
       @include backgroundStyle
     }
-
     & .minPictureGallery{
       width: 100%;
       display: flex;
@@ -170,7 +171,6 @@
       overflow-x: auto;
       overflow-y: hidden;
       justify-content: center;
-
       & .minPicture{
         width: $pictureWrapperWidth/6;
         height: $currentBgHeight/7;
@@ -180,7 +180,6 @@
       }
     }
   }/* end image wrapper */
-
   & .productInfo{
     position:relative;
     width: 500px;
@@ -190,33 +189,26 @@
     justify-content: flex-start;
     align-items: flex-start;
     text-align: left;
-
     & > * {
       margin-left: 40px;
       margin-bottom:18px;
     }
-
     & .text-title{
      font-weight: bold;
     }
-
     & .description{
      /*border:1px solid black;*/
      position:relative;
      padding-bottom:10px;
      margin-bottom:15px;
-
      & p{
       margin:0;
       transition:height .3s linear;
      }
-
      & .text-content{
       font-size: 15px;
       color: lighten(black,40%);
      }
-
-
      & .hidden-bg{
       position:absolute;
       width: 100%;
@@ -225,7 +217,6 @@
       bottom:-5%;
       filter: blur(10px);
      }
-
      & .hidden-desc{
       position:absolute;
       bottom:-10%;
@@ -233,18 +224,15 @@
       transform: translatex(-50%);
       z-index: 999;
       cursor:pointer;
-
       &:hover{
        color: black;
       }
      }
-
      & .text-nav{
       color: darken(#eee,40%);
       letter-spacing: 2px;
      }
     }
-
     & .tags-rating{
       width: 85%;
       position:relative;
@@ -253,13 +241,11 @@
       justify-content: space-between;
       flex-wrap: wrap;
       margin-bottom: 25px;
-
       & .tags{
        & .text-nav{
         margin-right: 15px;
         color: lighten(black,20%);
        }
-
        & .text-tag{
         margin-right: 5px;
         cursor:pointer;
@@ -270,38 +256,31 @@
         }
        }
       }/*end tags*/
-
       & .rating.inline{
        & .ui.heart.rating{
         vertical-align: text-bottom;
        }
-
        & .text-content{
         text-decoration: underline;
        }
       }/* end rating*/
     }/* end tags and rating */
-
     & .text-title.grand{
       font-size: 20px;
     }
-
     & .text-title.medium{
       font-size: 14px;
       color:lighten(#000,40%);
     }
-
     & .ui.divider{
       width: 90%;
       border:1px solid #eee;
       margin-bottom: 0;
       margin-top: 0;
     }
-
     & .action{
       margin-top: 10px;
       width: 350px;
-
       & .action-btn{
         display: block;
         background:lighten(#ff5722,5%);
@@ -312,14 +291,12 @@
         margin-right: 20px;
         margin-bottom: 20px;
       }
-
      & .action-btn.wish{
       background:white;
       color:#ff5722;
       border:2px solid #ff5722;
      }
     }/*end actions*/
-
     & .optionWraper{
        text-align: left;
        padding-top:10px;
@@ -327,7 +304,6 @@
        & > * {
         margin:15px auto 0 auto;
        }
-
        & .options{
          & .text-nav{
           color:darken(#eee,70%);
@@ -335,14 +311,12 @@
           letter-spacing: 3px;
           margin-right: 10px;
          }
-
          & .text-content{
           margin-right: 5px;
           letter-spacing: 2px;
           cursor:pointer;
           padding:3px 5px;
          }
-
          & .active{
           display: inline-block;
           /*color: lighten(#ff5722,4%);*/
@@ -353,7 +327,6 @@
           border-radius:3px;
           transition:all .2s linear;
          } 
-
          & .comp-dropdown .text-nav{
            color:lighten(black,40%);
            font-size: 14px;
@@ -365,4 +338,3 @@
   
  } 
 </style>
-
