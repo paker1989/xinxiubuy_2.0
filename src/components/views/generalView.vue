@@ -28,7 +28,7 @@
 
     data() {
      return {
-      userCategories: ['美女','憋屈'],
+      userCategories: ['美女'],
       invisibleCategories:[]
      }
     },

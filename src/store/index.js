@@ -19,7 +19,7 @@ const store = new Vuex.Store({
    maxLengthBrefDescrp: 85,  //如果超过，就显示简要说明
    fecthGap: 60*60,
   
-   fetchedTags: {/*[tagName:string]:lastFetchedTime*/},  
+   fetchedTags: {/*[tagName:string]:lastFetchedTime*/'美女':['58c736b326ff9bacb4676a0a']},  
    /*activeItemIds: [],*/
    users: {/*[id:string]: User*/},
    items: {/*[id:string]: Product*/},
