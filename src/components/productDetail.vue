@@ -35,7 +35,7 @@
      </div><!--end tags and rating -->
      
      <div class="description">
-      <p class="text-content">{{description}}</p><!--description-->
+      <pre class="text-content">{{description}}</pre><!--description-->
       <div class="hidden-bg" v-show="displayBrefDesc"></div>
       <span class="hidden-desc text-nav" v-show="displayBrefDesc" @click="displayWholeDesc">显示全部</span>
       <span class="hidden-desc text-nav" v-show="isDescOverSize && !displayBrefDesc" @click="displayWholeDesc">收起</span>     
@@ -201,7 +201,11 @@
      position:relative;
      padding-bottom:10px;
      margin-bottom:15px;
-     & p{
+     width:100%;
+
+     & pre{
+      white-space: pre-wrap;
+      word-break: break-word;
       margin:0;
       transition:height .3s linear;
      }
