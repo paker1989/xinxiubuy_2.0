@@ -85,7 +85,7 @@ const store = new Vuex.Store({
    FETCH_ITEM_BY_TAG: ({ state,commit },tag) => {
     return new Promise((resolve, reject) => {
       let isNeedFetch = (state.fetchedTags[tag] == undefined)
-      console.log('isNeedFetch :'+isNeedFetch)
+
       if(isNeedFetch){
        Vue.http.post('getProductByTag',{category:tag}).then(res=>{
         commit('SET_ITEMS',{
@@ -132,9 +132,10 @@ const store = new Vuex.Store({
   },
 
   getters: {
-   productDetail: (state) => (id) => {
-    let product = state.itemList.filter((item) => { return item.id == id})
-    return product.length>0?product[0]:'undefined'
+   itemById: (state) => (id) => {
+    /*let product = state.itemList.filter((item) => { return item.id == id})*/
+    //return product.length>0?product[0]:'undefined'
+    return state.items[id]?state.items[id]:undefined
    },
 
    itemsByTag: (state) => (tag) => {

@@ -120,8 +120,9 @@
       },
 
       fetchData() {
+        this.product = this.$store.getters.itemById(this.id)
+     /*
        this.product = this.$store.getters.productDetail(this.id)
-       //should avoid afterwards
        if(this.product == 'undefined')
         this.$http.post('/getProductById',{id : this.id}).then((res) => {
          this.product = res.body.product
@@ -131,8 +132,9 @@
                               this.product.description.length > this.$store.state.maxLengthBrefDescrp
          $('.ui.rating').rating()
         },(error)=>{
-         /* handle error */
+         
         })
+      */
       }
     }
   }
