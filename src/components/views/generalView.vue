@@ -18,6 +18,8 @@
   import ProductCol from 'components/wraper/productCollection' 
   import NavHelper from 'components//NavHelper'
   import FilterBar from 'components/filterBar'
+  import store from '../../store'
+  import Vue from 'vue'
 
   export default {
     name: 'generalView',
@@ -28,9 +30,16 @@
 
     data() {
      return {
-      userCategories: ['美女'],
+      userCategories: ['未分类','布拉格','美女'],
       invisibleCategories:[]
      }
+    },
+
+    beforeRouteEnter(to,from,next) {
+     store.dispatch('FETCH_ITEM_FOR_TAG',{value:['未分类','布拉格','美女']}).then(() =>{
+      next()
+     })
+     
     },
 
     methods: {

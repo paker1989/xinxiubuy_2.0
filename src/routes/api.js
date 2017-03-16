@@ -12,22 +12,7 @@ let productCollection = db.collection('products')
 
 let rootPicPath = path.join(config.dev.assetsSubDirectory,'productResource')
 
-/*
-let upload = (req, res, next) => {
-  console.log(req.files.thumbnail);
-  var file = req.files.thumbnail
-
-  fs.writeFile('./public/sdsds.jpg',file.data, err => {
-    if(err)
-     return res.status(500).send(err)
-
-     res.send('File uploaded!')
-  })
-}
-*/
-
 let uploadProduct = (req, res, next) => {
-//  console.log(req.body)
   let product = new Product({
    productName  : req.body.title,
    price        : req.body.price, 
@@ -69,9 +54,7 @@ let getProducts = (req,res,next) => {
 } 
 
 let getProductById = (req,res,next) => {
- // console.log(req.body)
   Product.findById(req.body.id,(err,data) => {
-  // console.log(data)
    res.send({
      msg:'success',
      product:util.wrapItem(data,rootPicPath)
@@ -80,20 +63,18 @@ let getProductById = (req,res,next) => {
 }
 
 let getProductByTag = (req, res, next) => {
-       console.log(req.body.category)
-  Product.find({ tags : { '$in' : [req.body.category] } },(err,data) => {
+ // productCollection.find({}).toArray((err,data) => {
+ Product.find({ tags : { '$in' : [req.body.category] } },(err,data) => {
    if(err){
-    console.log('err')
     res.status(404).redirect('/') 
    }else{
       let wrapedProducts = new Array() 
 
-      console.log(req.body.category)
-      console.log(data)
       data.forEach( product => {
       wrapedProducts.push(util.wrapItem(product,rootPicPath))
      }) 
 
+     console.log(wrapedProducts)
      res.send({
        msg:'success',
        products:wrapedProducts
@@ -127,7 +108,6 @@ let uploadPics = (req, res, next) => {
 
 
 
-//router.post('/upload',upload)
 router.post('/uploadPics',uploadPics)
 router.post('/uploadProduct',uploadProduct)
 router.get('/getProducts',getProducts)
@@ -135,3 +115,17 @@ router.post('/getProductById',getProductById)
 router.post('/getProductByTag',getProductByTag)
 
 module.exports = router
+
+/*
+let upload = (req, res, next) => {
+  console.log(req.files.thumbnail);
+  var file = req.files.thumbnail
+
+  fs.writeFile('./public/sdsds.jpg',file.data, err => {
+    if(err)
+     return res.status(500).send(err)
+
+     res.send('File uploaded!')
+  })
+}
+*/

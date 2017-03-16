@@ -19,8 +19,7 @@ const store = new Vuex.Store({
    maxLengthBrefDescrp: 85,  //如果超过，就显示简要说明
    fecthGap: 60*60,
   
-   fetchedTags: {/*[tagName:string]:lastFetchedTime*/'美女':['58c736b326ff9bacb4676a0a']},  
-   /*activeItemIds: [],*/
+   fetchedTags: {/*[tagName:string]:lastFetchedTime*/},  
    users: {/*[id:string]: User*/},
    items: {/*[id:string]: Product*/},
 
@@ -70,7 +69,6 @@ const store = new Vuex.Store({
    ],
 
  //  itemList: [],
-
    nbWishes: 0
   },
   
@@ -84,63 +82,47 @@ const store = new Vuex.Store({
     })
    },
 
-/*
-   FETCH_PRODUCT: ({ state }, { id }) => {
-    //to do
-  //  console.log(Vue.http)
-    Vue.http.post('getProductById',{ id }).then(res => {
-     console.log(res.body)
+   FETCH_ITEM_BY_TAG: ({ state,commit },tag) => {
+    return new Promise((resolve, reject) => {
+      let isNeedFetch = (state.fetchedTags[tag] == undefined)
+      console.log('isNeedFetch :'+isNeedFetch)
+      if(isNeedFetch){
+       Vue.http.post('getProductByTag',{category:tag}).then(res=>{
+        commit('SET_ITEMS',{
+                            fetchedData :res.body.products,
+                            category    :tag
+                            })
+        resolve()
+       })
+      }else{
+        resolve()
+      }
     })
    },
-   */
-   FETCH_ITEM_BY_TAG: ({ state,commit },tag) => {
-   /*
-    let isNoNeedFetch = ((state.fetchedTags[tag] != 'undefined')
-                      && (new Number(new Date()) - 3600) > state.fecthGap))
-                      */
-  //  console.log('tag : '+tag.value)
-    let isNeedFetch = (state.fetchedTags[tag.value] == undefined)
-    //console.log(isNeedFetch)
-    if(isNeedFetch){
-     Vue.http.post('getProductByTag',{category:tag.value}).then(res=>{
-    //  console.log('start set items')
-    //  console.log(res.body.products[0])
-      commit('SET_ITEMS',{
-                          fetchedData :res.body.products,
-                          category    :tag.value
-                          })
-     })
-    }
-   }
 
+   FETCH_ITEM_FOR_TAG: ({ state,commit,dispatch},tags) => {
+    let promiseArray = []
+    tags.value.forEach( tag => {
+      promiseArray.push( dispatch('FETCH_ITEM_BY_TAG',tag))
+    })
+    return Promise.all(promiseArray)
+   }
   },
 
+
+
   mutations: {
-   /*
-   SET_ITEMS: (state, items) => {
-    state.allItems = items;
-   }
-   */
    SET_ITEM: ({ state },{ product }) => {
-    //console.log('item settled')
     state.items[product.id] = product
    },
 
    SET_ITEMS: (state, fetchedInfo) => {
-  //  console.log('set items')
- //   console.log(products.fetchedData)
     let itemIdbyTags = new Array()
     fetchedInfo.fetchedData.forEach( product => {
-                                    //  state.items[product.id] = product
-                                    //  state.fetchedTags[fetchedInfo.category].push(product.id)
-                                   //   console.log(product)
                                       Vue.set(state.items,product.id,product)
                                       itemIdbyTags.push(product.id)
                                      })
-    console.log(state.fetchedTags)
-    console.log('set:'+fetchedInfo.category+' as '+itemIdbyTags)
     Vue.set(state.fetchedTags,fetchedInfo.category,itemIdbyTags)
-    console.log(state.fetchedTags)
    },
 
    ADD_WISH: (state,{ index,wishStatus }) => {
@@ -156,23 +138,11 @@ const store = new Vuex.Store({
    },
 
    itemsByTag: (state) => (tag) => {
-   /*
-    console.log('itemsByTag')
-    console.log(state.fetchedTags)
-    console.log(tag)
-    console.log(console.log(Object.keys(state.fetchedTags)))
-*/
-/*
-    let id = '58c736b326ff9bacb4676a0a'
-    console.log(state.items)
-    return state.items['58c736b326ff9bacb4676a0a']
-    */
-   return  state.fetchedTags[tag].map(productId => {return state.items[productId]})
-    /*
-    let id = '58c736b326ff9bacb4676a0a'
-    console.log(state.items[id])
-    return state.items['58c736b326ff9bacb4676a0a']
-    */
+    if(state.fetchedTags[tag]){
+     return  state.fetchedTags[tag].map(productId => {return state.items[productId]})      
+    }else{
+      return []
+    }
    },
 
    comments: (state) => (productId) => {
@@ -186,3 +156,18 @@ const store = new Vuex.Store({
 });
 
 export default store;
+
+/*
+   FETCH_PRODUCT: ({ state }, { id }) => {
+    //to do
+  //  console.log(Vue.http)
+    Vue.http.post('getProductById',{ id }).then(res => {
+     console.log(res.body)
+    })
+   },
+
+   /*
+   SET_ITEMS: (state, items) => {
+    state.allItems = items;
+   }
+   */
