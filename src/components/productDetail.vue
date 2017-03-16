@@ -125,9 +125,13 @@
        if(this.product == 'undefined')
         this.$http.post('/getProductById',{id : this.id}).then((res) => {
          this.product = res.body.product
+         this.$store.commit('SET_ITEM',{product:this.product})
+         
          this.isDescOverSize = this.displayBrefDesc = 
                               this.product.description.length > this.$store.state.maxLengthBrefDescrp
          $('.ui.rating').rating()
+        },(error)=>{
+         /* handle error */
         })
       }
     }

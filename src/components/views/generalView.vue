@@ -28,7 +28,7 @@
 
     data() {
      return {
-      userCategories: ['化妆品','母婴用品','未分类'],
+      userCategories: ['美女'],
       invisibleCategories:[]
      }
     },

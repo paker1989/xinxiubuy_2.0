@@ -60,8 +60,6 @@
    },
    
    created () {
-
-    let totalNbItems = this.$store.state.itemList.length
     //test: add back after
  //   this.itemList = this.$store.state.itemList.slice(0,
  //   totalNbItems>this.nbFirstFetch?this.nbFirstFetch:totalNbItems)
@@ -76,12 +74,19 @@
      })
     })
     */
+ //   console.log(this.category)
+    this.$store.dispatch('FETCH_ITEM_BY_TAG',{ value : this.category })
+    this.itemList = this.$store.getters.itemsByTag(this.category)
+    console.log("this.itemList : "+this.itemList)
 
+    /*
     this.$http.get('/getProducts').then((res)=>{
      res.body.products.forEach( product => {
       this.itemList.push(product)
      })   
     })
+    */
+    let totalNbItems = this.itemList.length
     this.thereIsMore = totalNbItems>this.nbFirstFetch
    },
 

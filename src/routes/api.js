@@ -50,6 +50,7 @@ let uploadProduct = (req, res, next) => {
   })  
 }
 
+//may deprecated
 let getProducts = (req,res,next) => {
    productCollection.find({}).toArray((err,data) => {
     let wrapedProducts = new Array()
@@ -76,7 +77,30 @@ let getProductById = (req,res,next) => {
      product:util.wrapItem(data,rootPicPath)
    })
   })
+}
 
+let getProductByTag = (req, res, next) => {
+       console.log(req.body.category)
+  Product.find({ tags : { '$in' : [req.body.category] } },(err,data) => {
+   if(err){
+    console.log('err')
+    res.status(404).redirect('/') 
+   }else{
+      let wrapedProducts = new Array() 
+
+      console.log(req.body.category)
+      console.log(data)
+      data.forEach( product => {
+      wrapedProducts.push(util.wrapItem(product,rootPicPath))
+     }) 
+
+     res.send({
+       msg:'success',
+       products:wrapedProducts
+     })
+
+   }
+  })
 }
 
 let uploadPics = (req, res, next) => {
@@ -108,5 +132,6 @@ router.post('/uploadPics',uploadPics)
 router.post('/uploadProduct',uploadProduct)
 router.get('/getProducts',getProducts)
 router.post('/getProductById',getProductById)
+router.post('/getProductByTag',getProductByTag)
 
 module.exports = router

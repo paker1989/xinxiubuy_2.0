@@ -21,7 +21,7 @@ export default {
   beforeRouteEnter(to,from,next) {
     console.log('??')
     let id = to.params.id
-    store.dispatch('FETCH_PRODUCT', { id })
+   // store.dispatch('FETCH_PRODUCT', { id })
     //handle error here: for ex: next(false): how?
     next()
   },
@@ -29,7 +29,7 @@ export default {
   watch: {
    $route() {
     let id = this.productId = this.$route.params.id
-    this.$store.dispatch('FETCH_PRODUCT', { id })
+//    this.$store.dispatch('FETCH_PRODUCT', { id })
    }
   },
 
