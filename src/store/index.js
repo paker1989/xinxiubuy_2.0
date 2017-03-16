@@ -100,7 +100,7 @@ const store = new Vuex.Store({
     })
    },
 
-   FETCH_ITEM_FOR_TAG: ({ state,commit,dispatch},tags) => {
+   FETCH_ITEM_FOR_TAG: ({ state,commit,dispatch },tags) => {
     let promiseArray = []
     tags.value.forEach( tag => {
       promiseArray.push( dispatch('FETCH_ITEM_BY_TAG',tag))
