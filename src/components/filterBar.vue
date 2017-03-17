@@ -73,8 +73,8 @@ export default {
    selectTmpTag(newTag) {
     if(this.currentTags.find((item) => {return item.tagName == newTag}) == undefined){
       this.currentTags.push({tagName      : newTag, 
-                            isUserlinked : false}
-                          )
+                            isUserlinked  : false
+                           })
       this.checkedTags.push(newTag)
       this.$emit('updateCategory',newTag,true)     
     }
