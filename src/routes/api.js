@@ -41,6 +41,7 @@ let getProducts = (req,res,next) => {
     let wrapedProducts = new Array()
 
     if(!err){
+       console.log(data)
        data.forEach( product => {
         wrapedProducts.push(util.wrapItem(product,rootPicPath))
        })
@@ -74,7 +75,6 @@ let getProductByTag = (req, res, next) => {
       wrapedProducts.push(util.wrapItem(product,rootPicPath))
      }) 
 
-     console.log(wrapedProducts)
      res.send({
        msg:'success',
        products:wrapedProducts

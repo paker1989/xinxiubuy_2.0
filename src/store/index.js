@@ -27,7 +27,7 @@ const store = new Vuex.Store({
    currentUser: {
     id             : 'fakeduuid1',
     userPseudo     : 'xinxiu',
-    selectedTags   : ['海贼王','美女','香水'],
+    selectedTags   : ['未分类','美女','香水'],
     createDate     : new Date(),
     isAuth         : true,
     wishedList     : []

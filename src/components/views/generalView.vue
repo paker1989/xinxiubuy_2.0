@@ -30,7 +30,7 @@
 
     data() {
      return {
-      userCategories: this.$store.state.currentUser.selectedTags,
+      userCategories: [],
       invisibleCategories:[]
      }
     },
@@ -43,6 +43,14 @@
     },
 
     methods: {
+     fetchCategories() {
+       this.userCategories = []
+       let currentUserSelectedTags = this.$store.state.currentUser.selectedTags
+       for(let i=0;i<currentUserSelectedTags.length;i++){
+        this.userCategories.push(currentUserSelectedTags[i])
+       }
+     },
+
      displayNavHelper() {
       let presetOffset = 500
       let eles = $('.category-info .text-title')
@@ -68,12 +76,13 @@
        this.userCategories.splice( this.userCategories.indexOf(tagName),1)
       }
       else if(this.userCategories.indexOf(tagName)<0 && isToAdd){
-       this.userCategories.push(tagName)
+       this.userCategories.unshift(tagName)
       }
      }
     },
 
     mounted() {
+     this.fetchCategories()
      /* only fire the displayNavHelper function when scroll stops*/
      let timer
      $(window).bind('scroll', () => {
@@ -85,6 +94,7 @@
     },
 
     created() {
+      this.fetchCategories()
       this.displayNavHelper()
     }
   }

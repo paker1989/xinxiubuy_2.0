@@ -106,6 +106,12 @@
      this.fetchData()
     },
 
+    mounted() {
+     this.isDescOverSize = this.displayBrefDesc = 
+                            this.product.description.length > this.$store.state.maxLengthBrefDescrp
+     $('.ui.rating').rating()
+    },
+
     methods: {
       togglePicture(index) {
        this.currentImgIndex = index
@@ -121,9 +127,12 @@
 
       fetchData() {
         this.product = this.$store.getters.itemById(this.id)
+        //debugger
+        /*
         this.isDescOverSize = this.displayBrefDesc = 
                               this.product.description.length > this.$store.state.maxLengthBrefDescrp
          $('.ui.rating').rating()
+         */
      /*
        this.product = this.$store.getters.productDetail(this.id)
        if(this.product == 'undefined')
