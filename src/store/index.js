@@ -23,6 +23,16 @@ const store = new Vuex.Store({
    users: {/*[id:string]: User*/},
    items: {/*[id:string]: Product*/},
 
+   /*temp data, should be replaced. it should not be handled in store*/
+   currentUser: {
+    id             : 'fakeduuid1',
+    userPseudo     : 'xinxiu',
+    selectedTags   : ['海贼王','美女','香水'],
+    createDate     : new Date(),
+    isAuth         : true,
+    wishedList     : []
+   },
+
    commentList: [ 
     {
       id:1,
@@ -82,11 +92,11 @@ const store = new Vuex.Store({
     })
    },
 
-   FETCH_ITEM_BY_TAG: ({ state,commit },tag) => {
+   FETCH_ITEM_BY_TAG: ({ state,getters,commit },tag) => {
     return new Promise((resolve, reject) => {
-      let isNeedFetch = (state.fetchedTags[tag] == undefined)
+      /*let isNeedFetch = (state.fetchedTags[tag] == undefined)*/
 
-      if(isNeedFetch){
+      if(getters.isTagNeedFetch(tag)){
        Vue.http.post('getProductByTag',{category:tag}).then(res=>{
         commit('SET_ITEMS',{
                             fetchedData :res.body.products,
@@ -136,6 +146,10 @@ const store = new Vuex.Store({
     /*let product = state.itemList.filter((item) => { return item.id == id})*/
     //return product.length>0?product[0]:'undefined'
     return state.items[id]?state.items[id]:undefined
+   },
+
+   isTagNeedFetch: (state) => (tag) => {
+    return state.fetchedTags[tag] == undefined
    },
 
    itemsByTag: (state) => (tag) => {

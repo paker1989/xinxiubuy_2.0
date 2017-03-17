@@ -121,6 +121,9 @@
 
       fetchData() {
         this.product = this.$store.getters.itemById(this.id)
+        this.isDescOverSize = this.displayBrefDesc = 
+                              this.product.description.length > this.$store.state.maxLengthBrefDescrp
+         $('.ui.rating').rating()
      /*
        this.product = this.$store.getters.productDetail(this.id)
        if(this.product == 'undefined')

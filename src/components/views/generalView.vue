@@ -2,7 +2,7 @@
   <div class="generalView">    
     <!-- product collection by categories -->  
     <div class="filterBar">
-     <FilterBar/>
+     <FilterBar :usersCats="userCategories" v-on:updateCategory="updateCategory"/>
     </div>
     <div class="productColWraper">
      <productCol v-for="category in userCategories" :category="category"/>
@@ -30,13 +30,13 @@
 
     data() {
      return {
-      userCategories: ['未分类','布拉格','美女'],
+      userCategories: this.$store.state.currentUser.selectedTags,
       invisibleCategories:[]
      }
     },
 
     beforeRouteEnter(to,from,next) {
-     store.dispatch('FETCH_ITEM_FOR_TAG',{value:['未分类','布拉格','美女']}).then(() =>{
+     store.dispatch('FETCH_ITEM_FOR_TAG',{value:store.state.currentUser.selectedTags}).then(() =>{
       next()
      })
      
@@ -61,6 +61,15 @@
           this.invisibleCategories.push({label:item.text(),eleTop:eleTop+eleHeight+presetOffset})
         }
       })   
+     },
+
+     updateCategory(tagName,isToAdd) {
+      if(this.userCategories.indexOf(tagName)>-1 && isToAdd == false){
+       this.userCategories.splice( this.userCategories.indexOf(tagName),1)
+      }
+      else if(this.userCategories.indexOf(tagName)<0 && isToAdd){
+       this.userCategories.push(tagName)
+      }
      }
     },
 

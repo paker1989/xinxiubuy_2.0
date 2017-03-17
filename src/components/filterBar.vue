@@ -4,15 +4,10 @@
      <h3 class="title text-title">已选择标签</h3>
      <div class="catList">
        <ul>
-         <li>
-          <input type="checkbox" class="hide-check" id="化妆品"><label class="text-content" for="化妆品">化妆品</label>
-          </li>
-         <li>
-          <input type="checkbox" class="hide-check" id="母婴用品"><label class="text-content" for="母婴用品">母婴用品</label>
-         </li>
-         <li>
-          <input type="checkbox" class="hide-check" id="未分类"><label class="text-content" for="未分类">未分类</label>
-         </li>
+        <li v-for="(tag,index) in currentTags">
+          <input type="checkbox" class="hide-check" :id="tag.tagName" :value="tag.tagName" v-model="checkedTags">
+          <label class="text-content" :for="tag.tagName" @click="toggleSelection(index)">{{tag.tagName}}</label>
+        </li> 
        </ul>
      </div>
     </div>
@@ -23,7 +18,7 @@
        <span class="text-tag">酒类</span>
        <span class="text-tag">奶嘴</span>
        <span class="text-tag">餐具</span>
-       <span class="text-tag">奶粉</span>
+       <span class="text-tag" @click="selectTmpTag('奶粉')">奶粉</span>
        <span class="text-tag">卫生巾</span>
        <span class="text-tag">杂志</span>
        <span class="text-tag">夫妻用品</span>
@@ -41,10 +36,50 @@
 <script>
 export default {
   name: 'filterBar',
+
+  props: ['usersCats'],
+
   data () {
     return {
-     
+     currentTags:[],
+     checkedTags:[]
     }
+  },
+
+  created() {
+   this.usersCats.forEach( userAttachedCats => {
+    this.currentTags.push({
+     tagName      : userAttachedCats,
+     isUserLinked : true
+    })
+    this.checkedTags.push(userAttachedCats)
+   })
+  },
+
+  methods: {
+   toggleSelection(index) {
+    let tagName = this.currentTags[index].tagName
+    //if not isUserlinked, it can only be remove
+    if(this.currentTags[index].isUserlinked == false){
+     this.currentTags.splice(index,1)
+     this.$emit('updateCategory',tagName,false) 
+    }else{
+    //else, check action type
+      let isChecked = this.checkedTags.indexOf(tagName)>-1
+      this.$emit('updateCategory',tagName,!isChecked)   
+    }
+   },
+
+   selectTmpTag(newTag) {
+    if(this.currentTags.find((item) => {return item.tagName == newTag}) == undefined){
+      this.currentTags.push({tagName      : newTag, 
+                            isUserlinked : false}
+                          )
+      this.checkedTags.push(newTag)
+      this.$emit('updateCategory',newTag,true)     
+    }
+
+   }
   }
 }
 </script>

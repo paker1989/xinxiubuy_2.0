@@ -63,9 +63,13 @@
     //test: add back after
  //   this.itemList = this.$store.state.itemList.slice(0,
  //   totalNbItems>this.nbFirstFetch?this.nbFirstFetch:totalNbItems)
-    this.itemList = this.$store.getters.itemsByTag(this.category)
-    let totalNbItems = this.itemList.length
-    this.thereIsMore = totalNbItems>this.nbFirstFetch
+    this.fetchData()
+   },
+
+   watch: {
+    category(val,oldVal) {
+     this.fetchData()
+    }
    },
 
    data () {
@@ -113,6 +117,18 @@
    },
 
    methods: {
+    fetchData() { 
+     if(this.$store.getters.isTagNeedFetch(this.category)){
+      this.$store.dispatch('FETCH_ITEM_BY_TAG', this.category).then((res) => {
+       this.itemList = this.$store.getters.itemsByTag(this.category)
+      })
+     }else{
+       this.itemList = this.$store.getters.itemsByTag(this.category)  
+     }
+     let totalNbItems = this.itemList.length
+     this.thereIsMore = totalNbItems>this.nbFirstFetch
+    },
+
     fetchMore() {
      this.loadingData = true;
      setTimeout(() => {
