@@ -5,7 +5,9 @@
      <FilterBar :usersCats="userCategories" v-on:updateCategory="updateCategory"/>
     </div>
     <div class="productColWraper">
-     <productCol v-for="category in userCategories" :category="category"/>
+      <transition-group name="productCols">
+       <productCol v-for="category in userCategories" :category="category" :key="category"/>
+      </transition-group>
     </div>
 
     <!--- end product collection -->
@@ -115,6 +117,20 @@
   & .productColWraper{
     width: 75%;
     border-left:1px solid #eee;
+
+    & .productCols-enter-active{
+     transition: all 1s linear;
+    }
+   
+    & .productCols-enter{
+     opacity: 0;
+     transform:translateY(-50px);
+    }
+
+    & .productCols-move{
+     transition: transform 1s;
+    }
+
    }
  }
 </style>

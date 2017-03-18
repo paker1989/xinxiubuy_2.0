@@ -3,32 +3,21 @@
     <div class="selectedCats">
      <h3 class="title text-title">已选择标签</h3>
      <div class="catList">
-       <ul>
-        <li v-for="(tag,index) in currentTags">
+       <transition-group name="selectedTags" tag="ul">
+        <li v-for="(tag,index) in currentTags" :key="tag">
           <input type="checkbox" class="hide-check" :id="tag.tagName" :value="tag.tagName" v-model="checkedTags">
           <label class="text-content" :for="tag.tagName" @click="toggleSelection(index)">{{tag.tagName}}</label>
         </li> 
-       </ul>
+       </transition-group>    
      </div>
     </div>
     <div class="availableCats">
      <div class="title"><h3 class="text-title">可选择</h3></div>
-     <div class="availableCatWraper">
-       <span class="text-tag">婴儿玩具</span>
-       <span class="text-tag">酒类</span>
-       <span class="text-tag">奶嘴</span>
-       <span class="text-tag">餐具</span>
-       <span class="text-tag" @click="selectTmpTag('奶粉')">奶粉</span>
-       <span class="text-tag">卫生巾</span>
-       <span class="text-tag">杂志</span>
-       <span class="text-tag">夫妻用品</span>
-       <span class="text-tag">口红类</span>
-       <span class="text-tag">保健品</span>
-       <span class="text-tag">奢侈品</span>
-       <span class="text-tag">轻奢品</span>
-       <span class="text-tag">零食</span>
-       <span class="text-tag">小样</span>
-     </div>
+      <transition-group name="availableCats" tag="div" class="availableCatWraper">
+       <span class="text-tag" v-for="tag in allTags" :key="tag" @click="selectTmpTag(tag)">
+        {{tag}}
+       </span>
+      </transition-group>
     </div>
   </div>
 </template>
@@ -42,26 +31,43 @@ export default {
   data () {
     return {
      currentTags:[],
-     checkedTags:[]
+     checkedTags:[],
+     allTags    :[]
     }
   },
 
-  created() {
-   this.usersCats.forEach( userAttachedCats => {
-    this.currentTags.push({
-     tagName      : userAttachedCats,
-     isUserLinked : true
+  mounted() {
+   if(this.$store.state.isTagInitialized == false){
+    this.$store.dispatch('FETCH_ALL_TAGS').then(() => {
+     this.init()
     })
-    this.checkedTags.push(userAttachedCats)
-   })
+   }else
+     this.init()
+
   },
 
   methods: {
+   init() {
+     this.allTags = this.$store.state.allTags.slice(0)
+
+     this.usersCats.forEach( userAttachedCats => {
+      this.currentTags.push({
+       tagName      : userAttachedCats,
+       isUserLinked : true
+      })
+      this.checkedTags.push(userAttachedCats)
+
+      if(this.allTags.indexOf(userAttachedCats)>-1)
+        this.allTags.splice(this.allTags.indexOf(userAttachedCats),1)
+     })    
+   },
+
    toggleSelection(index) {
     let tagName = this.currentTags[index].tagName
     //if not isUserlinked, it can only be remove
     if(this.currentTags[index].isUserlinked == false){
      this.currentTags.splice(index,1)
+     this.allTags.unshift(tagName)
      this.$emit('updateCategory',tagName,false) 
     }else{
     //else, check action type
@@ -76,6 +82,7 @@ export default {
                             isUserlinked  : false
                            })
       this.checkedTags.push(newTag)
+      this.allTags.splice(this.allTags.indexOf(newTag),1)
       this.$emit('updateCategory',newTag,true)     
     }
 
@@ -165,6 +172,19 @@ export default {
       }
     }
 
+   & .selectedTags-enter-active{
+   transition: all .6s linear;
+   }
+ 
+   & .selectedTags-enter{
+   opacity: 0;
+   transform:translateY(50px);
+   }
+
+   & .selectedTags-move{
+    transition: transform .6s;
+   }
+
   }/*end selectedCats*/
 
   & .availableCats{
@@ -177,7 +197,6 @@ export default {
     padding-left:30%;
     margin-bottom: 10%;
    }
-
 
    & .availableCatWraper{
      width: 100%;
@@ -197,6 +216,19 @@ export default {
        border-bottom:1px dashed #ff5722;
       }
      }   
+   }/*availableCatWraper*/
+
+   & .availableCats-enter-active{
+   transition: all .6s linear;
+   }
+ 
+   & .availableCats-enter{
+   opacity: 0;
+   transform:translateY(-50px);
+   }
+
+   & .availableCats-move{
+    transition: transform .6s;
    }
   }
 

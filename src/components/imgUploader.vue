@@ -70,14 +70,12 @@ export default {
   mounted() {
    $('.dropFileWraper')
      .bind('dragover',(e) => {
-      console.log('dragover')
       e.preventDefault()
       e.stopPropagation()
       $('.drag-drop-draw').addClass('dragover')
       $('.drag-drop-draw .drag-drop-text').text('宝贝，将图片放在这个框框里')
    })
    .bind('dragleave', (e) => {
-     console.log('dragleave')
      $('.drag-drop-draw').removeClass('dragover')
      $('.drag-drop-draw .drag-drop-text').text('')
    })

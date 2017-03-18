@@ -8,7 +8,9 @@
     </div>--><!-- title -->
     <div class="navbarContainer">
      <navbar/>
-     <router-view></router-view>
+     <transition name="fade" mode="out-in">
+      <router-view></router-view>
+     </transition>
     </div>
   </div>
 </template>
@@ -39,8 +41,7 @@
      /*
      $(document).bind('keypress keydown keyup', (e)=>{
       if(e.keyCode == 13){
-             console.log('detect')
-       e.preventDefault()
+         e.preventDefault()
       }
      })
      */
@@ -77,6 +78,16 @@
    position: relative;
    top:46px;
   }
+
+  & .fade-enter-active, .fade-leave-active{
+      transition : all .4s ease;
+  }
+
+  & .fade-enter, .fade-leave-active{
+      opacity : 0;
+      transform: translateX(15px);
+  }
+
 }
 </style>
 
@@ -86,11 +97,6 @@
      <icon name="facebook" scale="2" spin flip="vertical"></icon>
     </div>
 
-
-      console.log('windows height = '+$(window).height())
-      console.log('scroll top = '+$(window).scrollTop())
-      console.log('ele offset top = '+$(eles[1]).offset().top)
-      console.log('ele height = '+$(eles[1]).height())
 
     <div style="display:none">
       <span class="text-nav">首页</span>

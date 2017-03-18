@@ -1,5 +1,4 @@
 export function handleScroll() {
-      console.log('test')
       let eles = $('.category-info .text-title')
       let invisibleCategories = []
 

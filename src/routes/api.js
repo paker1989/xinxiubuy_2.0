@@ -7,8 +7,10 @@ const config = require('../../config')
 const util = require('./util')
 const db = require('../../db')
 const Product = require('../model/product')
+const Tag = require('../model/tag')
 
 let productCollection = db.collection('products')
+let tagCollection = db.collection('tags')
 
 let rootPicPath = path.join(config.dev.assetsSubDirectory,'productResource')
 
@@ -41,7 +43,6 @@ let getProducts = (req,res,next) => {
     let wrapedProducts = new Array()
 
     if(!err){
-       console.log(data)
        data.forEach( product => {
         wrapedProducts.push(util.wrapItem(product,rootPicPath))
        })
@@ -106,6 +107,43 @@ let uploadPics = (req, res, next) => {
   })
 }
 
+let fetchAllTags = (req, res, next) => {
+  tagCollection.find({}).toArray((err,data) => {
+   if(!err){
+    res.status(200).send({
+     msg     : 'success',
+     allTags : data
+    })
+   }
+  })
+}
+
+let saveNewTags = (req, res, next) => {
+   let errs =     []
+   let savedTags = []
+
+   req.body.tagsToSave.split(',').forEach(tag => {
+    let tagToSave = new Tag({
+                      tagName     : tag,
+                      createdDate : new Date()
+                    })
+//should refactor here
+    tagToSave.save(function(err,data){
+      if(err){
+       errs.push(err)
+      }else{
+       savedTags.push(tag)
+      }
+    })
+   })
+
+  res.status(200).send({
+   msg    : 'success'
+  })
+   
+
+}
+
 
 
 router.post('/uploadPics',uploadPics)
@@ -113,12 +151,13 @@ router.post('/uploadProduct',uploadProduct)
 router.get('/getProducts',getProducts)
 router.post('/getProductById',getProductById)
 router.post('/getProductByTag',getProductByTag)
+router.post('/fetchAllTags',fetchAllTags)
+router.post('/saveNewTags',saveNewTags)
 
 module.exports = router
 
 /*
 let upload = (req, res, next) => {
-  console.log(req.files.thumbnail);
   var file = req.files.thumbnail
 
   fs.writeFile('./public/sdsds.jpg',file.data, err => {

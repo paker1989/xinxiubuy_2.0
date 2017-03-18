@@ -19,7 +19,6 @@ export default {
   },
 
   beforeRouteEnter(to,from,next) {
-    console.log('??')
     let id = to.params.id
    // store.dispatch('FETCH_PRODUCT', { id })
     //handle error here: for ex: next(false): how?

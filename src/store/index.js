@@ -17,9 +17,12 @@ const store = new Vuex.Store({
    maxNbSlidePerNav: 3,//点击向左或向右时滑动的数量
 
    maxLengthBrefDescrp: 85,  //如果超过，就显示简要说明
-   fecthGap: 60*60,
-  
+
+   isTagInitialized: false,
+   allTags    : [], //all tags exist in db
+   updatedTags: [], //if tag exist in this array, meaning tag is updated, so need to fetch again
    fetchedTags: {/*[tagName:string]:lastFetchedTime*/},  
+
    users: {/*[id:string]: User*/},
    items: {/*[id:string]: Product*/},
 
@@ -27,7 +30,7 @@ const store = new Vuex.Store({
    currentUser: {
     id             : 'fakeduuid1',
     userPseudo     : 'xinxiu',
-    selectedTags   : ['未分类','美女','香水'],
+    selectedTags   : ['动漫','游戏','香水'],
     createDate     : new Date(),
     isAuth         : true,
     wishedList     : []
@@ -94,14 +97,19 @@ const store = new Vuex.Store({
 
    FETCH_ITEM_BY_TAG: ({ state,getters,commit },tag) => {
     return new Promise((resolve, reject) => {
-      /*let isNeedFetch = (state.fetchedTags[tag] == undefined)*/
-
       if(getters.isTagNeedFetch(tag)){
        Vue.http.post('getProductByTag',{category:tag}).then(res=>{
         commit('SET_ITEMS',{
                             fetchedData :res.body.products,
                             category    :tag
                             })
+       //提取以后就从updatedTags这个集合中删除
+        if(state.updatedTags.indexOf(tag)>-1){
+        commit('UPDATE_TAG', {
+                              tagName : tag,
+                              isAdd   : false
+                             })
+        }
         resolve()
        })
       }else{
@@ -116,10 +124,41 @@ const store = new Vuex.Store({
       promiseArray.push( dispatch('FETCH_ITEM_BY_TAG',tag))
     })
     return Promise.all(promiseArray)
+   },
+
+   FETCH_ALL_TAGS: ({ state, commit }) => {
+    return new Promise((resolve,reject) => {
+      if(state.isTagInitialized)
+       resolve()
+
+      Vue.http.post('/fetchAllTags').then((res,err) => {
+       if(!err){
+        commit('INITIALIZE_TAG',{data : res.body.allTags})
+        resolve()
+       }else{
+        reject(err)
+       }
+      })
+    })
+   },
+
+   SAVE_NEW_TAGS: ({ state, commit }, newTags) => {
+    return new Promise((resolve,reject) => {
+     newTags = newTags.filter(tag => {return state.allTags.indexOf(tag)==-1})
+     let data = new FormData()
+     data.append('tagsToSave',newTags)
+     Vue.http.post('/saveNewTags',data).then((res,err) => {
+      if(!err){
+       commit('SAVE_NEW_TAGS', newTags)
+       resolve(res.body.tags)
+      }else{
+       reject(err)
+      }
+     })
+    })
    }
+
   },
-
-
 
   mutations: {
    SET_ITEM: ({ state },{ product }) => {
@@ -138,18 +177,41 @@ const store = new Vuex.Store({
    ADD_WISH: (state,{ index,wishStatus }) => {
     state.itemList[index].wished = wishStatus
     wishStatus?state.nbWishes++:state.nbWishes--
+   },
+
+  //所有加入这里的标签表示下次强制刷新，从数据库里提取。一旦提取以后，就从这个集合里删除
+   UPDATE_TAG: (state, tagInfo) => {
+    let isTagExist = state.updatedTags.indexOf(tagInfo.tagName)>-1
+
+    if(tagInfo.isAdd && !isTagExist)
+      state.updatedTags.push(tagInfo.tagName)
+    else if(!tagInfo.isAdd && isTagExist)
+      state.updatedTags.splice(state.updatedTags.indexOf(tagInfo.tagName),1)  
+   },
+
+  //一个flag，如果是true，表示所有标签已经提取过了。否则需要提取
+   INITIALIZE_TAG: (state, allTags) => {
+    state.allTags = new Array()
+    allTags.data.forEach( tag => {
+     state.allTags.push(tag.tagName)
+    })
+    state.isTagInitialized = true
+   },
+
+   //每次上传产品的时候，需要加入新的标签
+   SAVE_NEW_TAGS: (state, newTags) => {
+    state.allTags = state.allTags.concat(newTags)
    }
   },
 
   getters: {
    itemById: (state) => (id) => {
     /*let product = state.itemList.filter((item) => { return item.id == id})*/
-    //return product.length>0?product[0]:'undefined'
     return state.items[id]?state.items[id]:undefined
    },
 
    isTagNeedFetch: (state) => (tag) => {
-    return state.fetchedTags[tag] == undefined
+    return state.fetchedTags[tag] == undefined || state.updatedTags.indexOf(tag) > -1
    },
 
    itemsByTag: (state) => (tag) => {
@@ -175,9 +237,7 @@ export default store;
 /*
    FETCH_PRODUCT: ({ state }, { id }) => {
     //to do
-  //  console.log(Vue.http)
     Vue.http.post('getProductById',{ id }).then(res => {
-     console.log(res.body)
     })
    },
 

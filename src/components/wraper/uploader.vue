@@ -198,12 +198,18 @@ export default {
       addedOptions        : [],
       optionEditIdentifier: {isEdit:false,reference:-1},
       selectedTags        : [],
-      availableTags       :[{value:'化妆品',isSelected:false},
-      {value:'母婴用品',isSelected:false},{value:'奶粉',isSelected:false},{value:'口红',isSelected:false},{value:'奢侈品',isSelected:false},{value:'快消品',isSelected:false},{value:'其他类',isSelected:false},{value:'暂不分类',isSelected:false}]
+      availableTags       : [],
+      newTmpTags          : []
     }
   },
 
   mounted() {
+   if(this.$store.state.isTagInitialized == false){
+    this.$store.dispatch('FETCH_ALL_TAGS').then(() => {
+     this.initTags()
+    })}else
+     this.initTags()
+
     $.fn.form.settings.rules.greaterThan = (input) => {
       return input.trim().length>0 && !isNaN(input) && input > 0
     }
@@ -252,6 +258,20 @@ export default {
   },
 
   methods: {
+   initTags() {
+    let allTags = this.$store.state.allTags.slice(0)
+    allTags.forEach( tag => {
+     this.availableTags.push({
+                         value      : tag,
+                         isSelected : false
+                           })
+    })
+
+    if(allTags.indexOf('未分类')==-1)
+      this.newTmpTags.push('未分类')
+    
+   },
+
    setValue(field) {
     this.$set(this.fieldFocusFactory,field,event.type=='focus'?true:false)
    },
@@ -271,7 +291,6 @@ export default {
 
    removeCurrentOption(index) {
     this.editingAddedOptions.splice(index,1)
-  // delete this.editingAddedOptions[0]
    },
 
    cancelOptionEdition() {
@@ -369,6 +388,9 @@ export default {
    },
 
    addTag(index) {
+    this.manualTagValue = this.manualTagValue.replace(/^\s+|\s+$/g,'')
+
+    //在系统推荐标签中选择
     if(index != '-1' && typeof existingTag(this.selectedTags,this.matchedTags[index].value) == 'undefined'){
      let indexInAvail = this.availableTags.indexOf(this.matchedTags[index])
      this.availableTags[indexInAvail].isSelected = true
@@ -376,23 +398,23 @@ export default {
 
      this.manualTagValue = ''
      this.matchedTags = []
-    }else{
+    }else{//自己手打新标签
      if(this.manualTagValue.trim().length==0)return
 
      let isExistInSelectedTags = typeof existingTag(this.selectedTags,this.manualTagValue) != 'undefined'
      if(!isExistInSelectedTags){
       let existingAvailTag = existingTag(this.availableTags,this.manualTagValue)  
-      let newTag = typeof existingAvailTag == 'undefined'? {value:this.manualTagValue.trim(),isSelected:true}
+      let newTag = typeof existingAvailTag == 'undefined'? {value:this.manualTagValue,isSelected:true}
                                                   : existingAvailTag
-
       newTag.isSelected = true
       this.selectedTags.push(newTag)
-      
-      if(typeof existingAvailTag == 'undefined')
-        this.availableTags.push(newTag)
-
       this.manualTagValue = ''
       this.matchedTags = []
+      
+      if(typeof existingAvailTag == 'undefined'){
+       this.availableTags.push(newTag)
+       this.newTmpTags.push(newTag.value)
+      }
      }
     } 
    },
@@ -409,8 +431,7 @@ export default {
 
 
    uploadPictures(imgCheckRes) {
-  //  if($('.ui.form.upload').form('is valid')==false)
-  //try to submit for validation
+   //try to submit for validation
      $('.ui.form.upload').submit()
     
     this.submitStatus = ($('.ui.form.upload').form('is valid') && imgCheckRes)?
@@ -419,27 +440,43 @@ export default {
    },
 
    resumeUpload(filePaths) {   
+    //默认标签:未分类
+    if(this.selectedTags.length==0)
+      this.selectedTags.push({value:'未分类',isSelected:true})
+
     let formData = new FormData()
     
     formData.append('title',this.productName)
     formData.append('price',this.price)
     formData.append('deliveryFee',this.deliveryFee)
     formData.append('description',this.description)
-
     if(this.addedOptions.length>0){
      formData.append('addedOptions',this.addedOptions.map(option => {
       return option.key+'&'+option.values.join('-')
      }))
-    }
-    
-    formData.append('selectedTags',this.selectedTags.length>0?
-                                   this.selectedTags.map(tag => {return tag.value}):['未分类'])                                  
+    }    
+    formData.append('selectedTags',this.selectedTags.map(tag => {return tag.value}))                                  
     formData.append('filePaths',filePaths)
 
     this.$http.post('/uploadProduct',formData).then((res) => {
-     if(res.status == 200)
-      this.$router.replace('/')
+     if(res.status == 200){
+      this.selectedTags.forEach(selectedTag => {
+       this.$store.commit('UPDATE_TAG',{
+                                        tagName:selectedTag.value,
+                                        isAdd  : true
+                                       })
+      })
+      
+      if(this.newTmpTags.length>0) {
+         this.$store.dispatch('SAVE_NEW_TAGS',this.newTmpTags).then(()=>{
+          this.$router.replace('/')
+         })
+      }else{
+          this.$router.replace('/')
+      }    
+     }
     })
+
    }
    
   }
