@@ -11,11 +11,11 @@
       </div>
       <div class="right-container">
         <router-link to="/foo">
-           <icon name="heart-o"  aria-hidden="true" :class="wishStatus" scale="1.2"/>
+           <icon name="heart-o"  aria-hidden="true" :class="wishStatus" scale="1"/>
            <span v-if="nbWishes>0" :class="wishStatus">({{nbWishes}})</span>
         </router-link>
         <div>
-           <icon name="search" aria-hidden="true" class="icon" scale="1.2"/></span>
+           <icon name="search" aria-hidden="true" class="icon" scale="1"/></span>
         </div>
         
         <!--
@@ -169,44 +169,46 @@ export default {
       only screen and (min-width: 500px)
      /* only screen and (min-device-width:320px) */
      {
-       width: 85%;
+       width: 100%;
        position: relative;
+       height: 50px;
      /*  margin: 0 auto;*/
        display: flex;
        justify-content: space-between;
        flex-wrap: nowrap;
        flex-direction: row;
        border-bottom:1px solid #eee;
-
-
-        & > * {
-         margin: 0 5em;
-         display: flex;
-         justify-content: flex-start;
-         flex-direction: row;
-         flex-wrap: no;
-        }
+       padding:0 10%;
 
         & .left-container{
-         & > * {
-          margin:1.5em; 
+          width: 40%;
+          display: flex;
+          justify-content: space-around;
+          align-items:center;
+
+         & .text-nav{
+         font-size: 13px;
          }
         }
 
         & .right-container {
+          width:10%;
+          display: flex;
+          justify-content: space-around;
+          align-items:center;
+
 
          & > * {
-          height: 100%;
-          padding-left: 2em;
-          padding-right: 2em;
-          padding-top:1.3em;
+          padding-left:15px;
           border-left:1px solid #eee;
          }
+
 
          & .icon{
           vertical-align: text-bottom;
           margin-right: .4em;
          }
+         
         }
 
         &  a:hover {

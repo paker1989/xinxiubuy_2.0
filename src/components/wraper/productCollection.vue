@@ -195,7 +195,7 @@
   }
   & .category {
    position:relative;
-   width: 60%;
+   width: 20%;
    height: 80px;
    margin: 40px auto 10px auto;
    border-top: 1px solid #eee;
@@ -204,6 +204,7 @@
    & > .category-info {
     display: block;
     position: absolute;
+    width: 100%;
     top:50%;
     left:50%;
     transform: scaleY(.9) translate3d(-50%,-50%,0);
