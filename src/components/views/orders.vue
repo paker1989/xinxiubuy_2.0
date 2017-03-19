@@ -19,8 +19,12 @@
                   v-on:modelEmited="searchOrder"/>
      </div>
    </div>
+   <div class="layoutContainer">
+     <div class="inline-block" @click="isDisplayAsList=false"><icon name="th" class="icon" scale="1.1"/></div>
+     <div class="inline-block" @click="isDisplayAsList=true"><icon name="list" class="icon" scale="1.1"/></div>
+   </div>
    <div class="orderContainer">
-     <table class="ui celled table">
+     <table class="ui celled table" v-show="isDisplayAsList">
       <thead>
          <tr>
            <td class="header-class">用户</td>
@@ -30,7 +34,6 @@
            <td class="header-class">操作</td>
          </tr>
       </thead>
-      
        <transition-group name="matchedItems" tag="tbody">
         <tr v-for="item in userMatchedItems" v-bind:key="item" mode="outer-in">
           <td>{{item.userName}}</td>
@@ -64,7 +67,8 @@ export default {
     inSearch         : false,
     orders           : [],
     userItems        : [],
-    userMatchedItems : []
+    userMatchedItems : [],
+    isDisplayAsList  : true
    }
   },
 
@@ -196,11 +200,19 @@ export default {
    color:#6ba045;
   }
 
-  & .newOrderContainer,& .orderSearchContainer, & .orderContainer{
+  & .newOrderContainer,& .orderSearchContainer, & .orderContainer, & .layoutContainer{
    position:relative;
-   margin: 0 auto 30px auto;
+   margin: 0 auto 25px auto;
    width: 60%;
    text-align: left;
+  }
+
+  & .layoutContainer{
+   text-align: right;
+  }
+
+  & .orderSearchContainer{
+   margin-bottom: 0px;
   }
 
   & .orderContainer{
