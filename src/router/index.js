@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import generalView from 'components/views/generalView'
 import productDetailWraper from 'components/views/productDetailWraper'
 import productUploader from 'components/wraper/uploader'
-import wishItemList from 'components/views/wishItemList'
+import orders from 'components/views/orders'
+import orderWraper from 'components/views/orderWraper'
 import xinxiuRecCats from 'components/views/xinxiuRecCats'
 
 Vue.use(Router)
@@ -12,7 +13,8 @@ const routes = [
  {path: '/', name: 'generalView',component: generalView},
  {path: '/upload', name: 'productUploader',component: productUploader},
  {path: '/product/:id',name: 'productDetailWraper', component: productDetailWraper},
- {path: '/itemList',name: 'itemList', component: wishItemList},
+ {path: '/order/:id',name: 'orderWraper', component: orderWraper},
+ {path: '/orders',name: 'orders', component: orders},
  {path: '/xinxiuRecCats',name: 'xinxiuRecCats', component: xinxiuRecCats},
  {path: '/foo', redirect:'/'}
 ]

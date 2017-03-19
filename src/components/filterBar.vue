@@ -140,17 +140,25 @@ export default {
         width: 1.1em; height: 1.1em;
         border: 2px solid #ccc;
         background: #fff;
-        border-radius: 4px;
         box-shadow: inset 0 1px 3px rgba(0,0,0,.1);
        }
 
       &:after{
-        content: '✔';
+        box-sizing: border-box;
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
         position: absolute;
-        top: .1em; left: .1em;
-        font-size: 1em;
-        line-height: 0.8;
-        color: white;
+        left: 5px;
+        top: 1.22222px;
+        display: table;
+        width: 4.66667px;
+        height: 10.33333px;
+        border-width: 2px;
+        border-style: solid;
+        border-top: 0;
+        border-left: 0;
+        content: '';
+        color:white;
         transition: all .2s;
        }    
 

@@ -6,7 +6,7 @@
         <router-link to="/foo" class="text-nav">About me</router-link>
         <router-link to="/upload" class="text-nav">上传产品</router-link>
         <!--<router-link to="/foo" class="text-nav">文章</router-link> -->
-        <router-link to="/itemList" class="text-nav">库存</router-link>
+        <router-link to="/orders" class="text-nav">订单</router-link>
         <router-link to="/xinxiuRecCats" class="text-nav">店长推荐</router-link>
       </div>
       <div class="right-container">

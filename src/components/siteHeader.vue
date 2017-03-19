@@ -15,8 +15,10 @@
     <div class="right-container">
        <label>登录</label>
        <router-link to="/foo">
-         <icon name="heart-o"  aria-hidden="true" :class="wishStatus" scale="1"/>
+         <icon name="heart-o"  aria-hidden="true" scale="1"/>
+         <!--
          <span v-if="nbWishes>0" :class="wishStatus">({{nbWishes}})</span>
+         -->
        </router-link>
        <div>
          <icon name="search" aria-hidden="true" class="icon" scale="1"/></span>
