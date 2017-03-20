@@ -34,6 +34,10 @@
   font-size:15px;
 }
 
+.bold{
+ font-weight: 600;  
+}
+
 .action-btn{
   display:inline;
   text-align:center;
