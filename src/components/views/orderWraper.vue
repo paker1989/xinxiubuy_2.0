@@ -17,7 +17,7 @@
      <userProfile/>
     </div><!--end userProfile read-only-->
     <div class="orderContainer">
-     <orderCollapse/>
+     <orderCollapse :collapse="true" v-for="i in 2"/>
     </div><!--end orderContainer-->
    </div><!--content-->
    </div>
@@ -47,7 +47,7 @@ export default {
 <style lang="scss" scoped>
  .orderWraper{
   position:relative;
-  width: 70%;
+  width: 80%;
   margin:10px auto;
   padding:30px 0;
   border-radius:5px;
@@ -118,6 +118,7 @@ export default {
    & .orderContainer{
     position:relative;
     width: 70%;
+    padding:20px 50px 0 50px;
    }
   }
  }

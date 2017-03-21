@@ -53,9 +53,11 @@
 
 
 .text-icon {
-  color: #cccccc;
-  text-align: baseline;
+   vertical-align: text-bottom;
+   margin:0 5px;
+   cursor: pointer;
 }
+
 
 .inline {
   display: inline;

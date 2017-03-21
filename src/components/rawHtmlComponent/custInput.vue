@@ -1,7 +1,6 @@
 <template>
   <div :class="{'custInput':true,'keyWord-filled':keyWordFilled,'hidden-by-icon':hideByIcon}" 
-       :style="width"
-       :data-name="placeholder">
+       :data-name="placeholder" :style="width">
     <input v-if="type!='textarea'" type="text" class="input"
            v-model="model" 
            @focus="inputFocus=true" 
@@ -12,7 +11,6 @@
     </div>
     <textarea v-if="type=='textarea'" class="inputArea"
            v-model="model" 
-           :style="textareaHeight"
            @focus="inputFocus=true" 
            @blur="inputFocus=false"
            @keyup="emitInput">
@@ -24,7 +22,7 @@
 export default {
   name: 'custInput',
 
-  props:['type','placeholder','cusWidth','cusHeight','icon','modelValue'],
+  props:['type','placeholder','cusHeight','icon','modelValue'],
 
   data() {
    return {
@@ -39,15 +37,18 @@ export default {
    width() {
     return {
             'width' : this.hideByIcon?
-                      '0px':this.cusWidth?this.cusWidth+'px':'200px'                
+                      '0px':'100%'                
            }
    },
+   
 
+   /*
    textareaHeight() {
      return {
          'height' : this.cusHeight?this.cusHeight+'px':'150px'            
      }
    },
+   */
 
    keyWordFilled() {
     return this.model.trim().length>0 || this.inputFocus

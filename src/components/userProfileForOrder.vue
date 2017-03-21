@@ -27,11 +27,11 @@
    </transition>
    <transition name="switch" mode="out-in">
      <div class="edit-userProfile" v-if="edit">
-      <custInput :placeholder="'姓名'" :cusWidth="'300'" :modelValue="'喵喵'"/>
-      <custInput :placeholder="'电话'" :cusWidth="'300'" :modelValue="'138170211157'"/>
-      <custInput :placeholder="'邮寄地址'" :type="'textarea'" :cusWidth="'300'" :cusHeight="'120'"
+      <custInput :placeholder="'姓名'" :modelValue="'喵喵'"/>
+      <custInput :placeholder="'电话'" :modelValue="'138170211157'"/>
+      <custInput :placeholder="'邮寄地址'" :type="'textarea'" class="addressArea"
                  :modelValue="'辽宁省葫芦市龙湾区玉皇街道新区  凌云书苑小区物业办公室 石正 收'"/>
-      <custInput :placeholder="'备注'" :type="'textarea'" :cusWidth="'300'" :cusHeight="'90'"
+      <custInput :placeholder="'备注'" :type="'textarea'" class="commentArea"
                  :modelValue="'这个人比较难搞'"/>
      </div><!--end editing userProfile-->
    </transition>
@@ -85,6 +85,16 @@ export default {
      padding: 0 20px;    
    }
 
+   & .edit-userProfile{
+    & .addressArea{
+     min-height: 120px;
+    }
+
+    & .commentArea{
+     min-height: 90px;
+    }
+   }
+
    & .userProfile-details{
     & .userProfile-details-table{
      width: 100%;
@@ -121,7 +131,6 @@ export default {
 
     & .clickable:hover{
       cursor: pointer;
-      font-weight: 600;
     }
 
     & .edit, & .cancel{
