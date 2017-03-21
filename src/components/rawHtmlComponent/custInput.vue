@@ -1,16 +1,22 @@
 <template>
   <div :class="{'custInput':true,'keyWord-filled':keyWordFilled,'hidden-by-icon':hideByIcon}" 
-       :style="size"
+       :style="width"
        :data-name="placeholder">
     <input v-if="type!='textarea'" type="text" class="input"
            v-model="model" 
            @focus="inputFocus=true" 
            @blur="inputFocus=false"
            @keyup="emitInput">
-    <div @click="toggle=!toggle">
+    <div @click="toggle=!toggle" v-if="icon">
       <icon :name="icon" class="icon" v-show="icon" scale=".9"/>
     </div>
-    <textarea v-if="type=='textarea'" class="inputArea"></textarea>
+    <textarea v-if="type=='textarea'" class="inputArea"
+           v-model="model" 
+           :style="textareaHeight"
+           @focus="inputFocus=true" 
+           @blur="inputFocus=false"
+           @keyup="emitInput">
+    </textarea>
   </div>
 </template>
 
@@ -18,11 +24,11 @@
 export default {
   name: 'custInput',
 
-  props:['type','placeholder','cusWidth','icon'],
+  props:['type','placeholder','cusWidth','cusHeight','icon','modelValue'],
 
   data() {
    return {
-    model      : '',
+    model      : this.modelValue?this.modelValue:'',
     toggle     : true,
     inputFocus : false,
     timer      : null
@@ -30,11 +36,17 @@ export default {
   },
 
   computed: {
-   size() {
+   width() {
     return {
             'width' : this.hideByIcon?
-                      '0px':this.cusWidth?this.cusWidth+'px':'200px'
+                      '0px':this.cusWidth?this.cusWidth+'px':'200px'                
            }
+   },
+
+   textareaHeight() {
+     return {
+         'height' : this.cusHeight?this.cusHeight+'px':'150px'            
+     }
    },
 
    keyWordFilled() {
@@ -64,8 +76,9 @@ export default {
   border-bottom:1px solid #eee;
   position: relative;
   padding: 4px 10px;
-  margin-bottom: 18px;
+  margin-bottom: 25px;
   transition: width .3s linear;
+  color: lighten(black,30%);
   /*  border-radius:3px;*/
   /*box-shadow: -2px 3px 6px -3px rgba(122,120,122,0.75);*/
 
@@ -75,14 +88,15 @@ export default {
    left:10px;
    top:7px;
    color:#ccc;
-   font-size: 11px;
+   font-size: 12px;
    letter-spacing: .1em;
    transition:all .2s linear;  
    pointer-events: none; 
   }
   
   &.keyWord-filled{
-    border-bottom:1px solid darken(blue,4%);
+    /*border-bottom:1px solid darken(blue,4%);*/
+    border-bottom:2px solid #ff5722;
 
     &:after{
      top:-20px;
@@ -102,7 +116,7 @@ export default {
   }
 
   & .inputArea{
-   height: 180px;
+   padding-top:20px;
    resize: vertical;
   }
 

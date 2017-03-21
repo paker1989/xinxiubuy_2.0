@@ -15,8 +15,10 @@
    <div class="content">
     <div class="userProfile">
      <userProfile/>
-    </div>
-    <div class="orderContainer"></div>
+    </div><!--end userProfile read-only-->
+    <div class="orderContainer">
+     <orderCollapse/>
+    </div><!--end orderContainer-->
    </div><!--content-->
    </div>
   </div>
@@ -24,12 +26,13 @@
 
 <script>
 import UserProfile from 'components/userProfileForOrder'
+import OrderCollapse from 'components/orderCollapse'
 
 export default {
   name: 'orderWraper',
 
   components: {
-   UserProfile
+   UserProfile,OrderCollapse
   },
 
   data () {
@@ -46,11 +49,10 @@ export default {
   position:relative;
   width: 70%;
   margin:10px auto;
-  padding:30px 15px;
+  padding:30px 0;
   border-radius:5px;
   border:1px solid #eee;
   box-shadow: 0 0 10px rgba(0,0,0,.3);
-  
 
   & .icon{
    vertical-align: text-bottom;
@@ -70,6 +72,7 @@ export default {
     height: 40px;
     display: flex;
     border-bottom:1px solid #eee;
+    padding:0 10px;
 
    & .backToOrdersContainer,& .orderStatusContainer{
      position:relative;
