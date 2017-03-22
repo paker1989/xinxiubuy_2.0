@@ -1,8 +1,8 @@
 <template>
   <div class="orderCollapse">
-    <div :class="{'metaDataContainer':true,'expanded':!collapse}"  @click="collapse=!collapse">
-      <icon name="plus" class="text-icon" v-if="collapse"/>
-      <icon name="minus" class="text-icon" v-if="collapse==false"/>
+    <div :class="{'metaDataContainer':true,'expanded':!isCollapse}"  @click="isCollapse=!isCollapse">
+      <icon name="plus" class="text-icon" v-if="isCollapse"/>
+      <icon name="minus" class="text-icon" v-if="isCollapse==false"/>
       <span>
         <label class="key bold">订单号:</label>
         <label class="value text-content">u2d2s5s2z5s201121442552</label>
@@ -21,14 +21,15 @@
       </span>
     </div><!--end metaDataContainer-->
     <transition name="fade">
-     <div class="orderDetailContainer" v-if="collapse==false">
+     <div class="orderDetailContainer" v-if="isCollapse==false">
       <table class="orderDetails-table">
        <thead>
         <tr>
          <td class="text-nav">产品名</td>
          <td class="text-nav">图片</td>
          <td class="text-nav">数量</td>
-         <td class="text-nav">价格</td>
+         <td class="text-nav">单价</td>
+         <td class="text-nav">总价</td>
          <td class="text-nav">操作</td>
         </tr>
        </thead>
@@ -37,6 +38,7 @@
          <td class="text-content">兰蔻粉水</td>
          <td class="text-content">无</td>
          <td class="text-content">2</td>
+         <td class="text-content">100</td>
          <td class="text-content">200</td>
          <td class="clickable edit">编辑</td>
         </tr>
@@ -45,6 +47,7 @@
          <td class="text-content">无</td>
          <td class="text-content">1</td>
          <td class="text-content">40</td>
+         <td class="text-content">40</td>
          <td class="clickable edit">编辑</td>
         </tr>
         <tr>
@@ -52,16 +55,31 @@
          <td class="text-content">无</td>
          <td class="text-content">1</td>
          <td class="text-content">0</td>
+         <td class="text-content">0</td>
          <td class="clickable edit">编辑</td>
         </tr>
+  <!--
         <tr>
-         <td colspan="3" class="text-nav">运费</td>
-         <td class="text-content" colspan="2">10</td>
+          <td colspan="6">
+            <custInput :placeholder="'new product'">
+          </td>
+        </tr>
+    -->
+        <tr>
+          <td colspan="5"></td>
+          <td class="addNew">
+            <icon name="plus" class="text-icon" scale="1"/>
+            <span class="clickable">添加</span>
+          </td>
+        </tr>
+        <tr>
+         <td colspan="4" class="text-nav">运费</td>
+         <td class="text-content" colspan="3">10</td>
 
         </tr>
         <tr>
          <td colspan="2" class="text-nav">总额</td>
-         <td class="text-content">4</td>
+         <td class="text-content" colspan="2">4</td>
          <td class="text-content" colspan="2">250</td>
         </tr>
        </tbody>
@@ -72,9 +90,9 @@
          <span class="text-content">上次忘寄的化妆棉寄过去</span>
        </div>
        <div class="actionWraper">
-	    <span class="text-nav clickable edit">编辑</span>
-	    <span class="text-nav clickable edit">保存</span>
-	    <span class="text-nav clickable cancel">取消</span>        
+	    <span class="text-nav clickable edit" v-if="!isEdit">编辑</span>
+	    <span class="text-nav clickable edit" v-if="isEdit">保存</span>
+	    <span class="text-nav clickable cancel" v-if="isEdit">取消</span>        
        </div>
       </div>
      </div><!--orderDetailContainer-->
@@ -83,6 +101,8 @@
 </template>
 
 <script>
+import CustInput from 'components/rawHtmlComponent/custInput'
+
 export default {
   name: 'orderCollapse',
  
@@ -90,8 +110,13 @@ export default {
 
   data () {
     return {
-
+      isEdit:false,
+      isCollapse:this.collapse
     }
+  },
+
+  components: {
+    CustInput
   }
 
 }
@@ -144,17 +169,23 @@ export default {
     & .orderDetails-table{
      width: 100%;
 
-	 & tr td{
-	  line-height: 1.4em;
-	  text-align: left;
-	  padding: 0 10px;
+     & .addNew{
+     /* text-align: right;*/
+      color:#6ba045;
+     }
 
-	  &:nth-child(1){width:40%;}
-	  &:nth-child(2){width:20%;}
-	  &:nth-child(3){width:10%;}
-	  &:nth-child(4){width:10%;}  
-	  &:nth-child(5){width:20%;}     
-	 }
+  	 & tr td{
+  	  line-height: 1.4em;
+  	  text-align: left;
+  	  padding: 0 10px;
+
+  	  &:nth-child(1){width:30%;}
+  	  &:nth-child(2){width:20%;}
+  	  &:nth-child(3){width:14%;}
+  	  &:nth-child(4){width:13%;}  
+  	  &:nth-child(5){width:13%;}
+      &:nth-child(6){width:10%; text-align:center;}      
+  	 }
 
      & thead{
       & tr td{

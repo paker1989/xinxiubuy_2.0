@@ -14,7 +14,7 @@ const routes = [
  {path: '/upload', name: 'productUploader',component: productUploader},
  {path: '/product/:id',name: 'productDetailWraper', component: productDetailWraper},
  {path: '/order/:id',name: 'orderWraper', component: orderWraper},
- {path: '/orders',name: 'orders', component: orders},
+ {path: '/orders',name: 'orders', component: orders,meta: {keepAlive:true}},
  {path: '/xinxiuRecCats',name: 'xinxiuRecCats', component: xinxiuRecCats},
  {path: '/foo', redirect:'/'}
 ]

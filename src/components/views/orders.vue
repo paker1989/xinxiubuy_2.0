@@ -46,9 +46,14 @@
           </td>
         </tr>
        </transition-group>
-   
-     </table>
-   </div>
+     </table><!--end table-->
+     <div class="orderGridWraper" v-show="!isDisplayAsList">
+       <div class="userOrderCard" v-for="(item,index) in userMatchedItems" @click="checkOutOrder(index)">
+         <p class="text-title bold">{{item.userName}}</p>
+         <p>{{item.phone}}</p>
+       </div>
+     </div><!--end orderGridWraper-->
+   </div><!-- end order Container -->
   </div>
 </template>
 
@@ -77,6 +82,7 @@ export default {
   },
 
   created() {
+    console.log('created')
     //wrap all in orders
     staticOrderJson.forEach( order => {
      let orderObj = {}
@@ -135,6 +141,11 @@ export default {
   methods: {
    toggleSearch() {
     this.inSearch = !this.inSearch
+   },
+
+   checkOutOrder(index) {
+    console.log(index)
+    this.$router.replace('/order/'+this.userMatchedItems[index].userId)
    },
 
    searchOrder(keyWord) {
@@ -237,7 +248,31 @@ export default {
     font-size:16px;
     cursor: pointer;
    }
-  }
+
+   & .orderGridWraper{
+    position:relative;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    & .userOrderCard{
+      border:1px solid #dddddd;
+      border-radius: 3px;
+      padding:50px 20px;
+      text-align:center;
+      background:lighten(#dddddd,4%);
+      margin:0 2em;
+
+
+      &:hover{
+       cursor: pointer;
+       background:#dddddd;
+       box-shadow:0px 13px 21px -5px rgba(0, 0, 0, 0.3);
+      }
+    }
+   }
+  }/* end order container*/
   
   & .matchedItems-enter-active, .matchedItems-leave-active{
       transition : all .4s ease;

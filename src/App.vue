@@ -11,6 +11,16 @@
      <transition name="fade" mode="out-in">
       <router-view></router-view>
      </transition>
+     <!--
+     <keep-alive>
+       <transition name="fade" mode="out-in">
+        <router-view v-if="$route.meta.keepAlive"></router-view>
+       </transition>
+     </keep-alive>
+     <transition name="fade" mode="out-in">
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
+     </transition>
+     -->
     </div>
   </div>
 </template>

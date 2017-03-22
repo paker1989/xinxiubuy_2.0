@@ -84,6 +84,7 @@
     },
 
     mounted() {
+     console.log('generalView mounted')
      this.fetchCategories()
      /* only fire the displayNavHelper function when scroll stops*/
      let timer
@@ -96,6 +97,7 @@
     },
 
     created() {
+      console.log('generalView created')
       this.fetchCategories()
       this.displayNavHelper()
     }
