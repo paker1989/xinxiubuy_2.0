@@ -14,15 +14,15 @@
    </div><!--header-->
    <div class="content">
     <div class="userProfile">
-     <userProfile :editing="isCreateUser" />
+     <userProfile :currentUser="currentUser"/>
     </div><!--end userProfile read-only-->
-    <div class="remindWraper" v-if="currentUser">
+    <div class="remindWraper" v-if="!currentUser">
       <span class="remindMessage edit">
        <icon name="hand-o-left" class="text-icon" scale="2"/>
        先建用户哦~~
       </span>
     </div>
-    <div class="orderContainer" v-if="!currentUser">
+    <div class="orderContainer" v-if="currentUser">
      <div class="newOrderWraper" >
      	<span class="text-nav bold edit clickable" v-show="!isCreateNewOrder" @click="isCreateNewOrder = true">新建订单</span>
       <span class="text-nav bold edit clickable" v-show="isCreateNewOrder" @click="saveNewOrder">保存订单</span>
@@ -51,14 +51,17 @@ export default {
 
   data () {
     return {
-      selectedOrderStatus : 1,// 1 for 当前订单 2 for 已归档
-      isCreateNewOrder : false,
-      isCreateUser : this.$route.params.id?false:true
+      selectedOrderStatus     : 1,// 1 for 当前订单 2 for 已归档
+      isCreateNewOrder        : false,
+      currentUserId           : this.$route.params.id || -1,
+      currentUser             : undefined,
+    //  isCreateUser            : this.$route.params.id?false:true
     }
   },
 
   created() {
-
+   this.currentUser = this.currentUserId == -1?undefined
+                    : this.$store.getters.selectedManualUser(this.currentUserId)
   },
 
   methods: {

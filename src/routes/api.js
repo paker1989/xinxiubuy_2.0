@@ -8,9 +8,11 @@ const util = require('./util')
 const db = require('../../db')
 const Product = require('../model/product')
 const Tag = require('../model/tag')
+const manualEnrolUsers = require('../model/manualEnrolUser')
 
 let productCollection = db.collection('products')
 let tagCollection = db.collection('tags')
+let manualUserCollection = db.collection('manualEnrolUsers')
 
 let rootPicPath = path.join(config.dev.assetsSubDirectory,'productResource')
 
@@ -140,8 +142,21 @@ let saveNewTags = (req, res, next) => {
   res.status(200).send({
    msg    : 'success'
   })
-   
+}
 
+let fetchManualUsers = (req, res, next) => {
+   console.log('fetchManualUsers')  
+   manualUserCollection.find({}).toArray((err,data) => {
+    console.log('data')
+    console.log(data)
+
+    if(!err){
+       res.send({
+         msg:'success',
+         users:data
+       })
+    }
+   })  
 }
 
 
@@ -153,6 +168,7 @@ router.post('/getProductById',getProductById)
 router.post('/getProductByTag',getProductByTag)
 router.post('/fetchAllTags',fetchAllTags)
 router.post('/saveNewTags',saveNewTags)
+router.post('/fetchManualUsers',fetchManualUsers)
 
 module.exports = router
 

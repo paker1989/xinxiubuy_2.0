@@ -45,6 +45,7 @@
            <span class="text-nav text-remove">移除</span>
           </td>
         </tr>
+        <tr v-bind:key="'defaultMessage'"><td class="defaultMessage" colspan="5">建立你的第一个客户吧~~</td></tr>
        </transition-group>
      </table><!--end table-->
      <div class="orderGridWraper" v-show="!isDisplayAsList">
@@ -60,6 +61,7 @@
 <script>
 import CustInput from 'components/rawHtmlComponent/custInput'
 import CustCheckbox from 'components/rawHtmlComponent/CustCheckbox'
+import store from '../../store'
 
 import staticOrderJson from 'assets/orders'
 
@@ -77,13 +79,23 @@ export default {
    }
   },
 
+  beforeRouteEnter(to,from,next) {
+   store.dispatch('FETCH_MANUAL_USERS').then(() =>{
+    next()
+   }) 
+  },
+
   components: {
    CustInput, CustCheckbox
   },
 
   created() {
     console.log('created')
+    console.log(this.$store.state.manualEnrolUsers)
+    this.userItems = this.$store.state.manualEnrolUsers?this.$store.state.manualEnrolUsers:[]
+
     //wrap all in orders
+    /*
     staticOrderJson.forEach( order => {
      let orderObj = {}
      orderObj.userId = order.userId
@@ -133,6 +145,7 @@ export default {
 
    })
    this.userMatchedItems = this.userItems.slice(0)
+   */
   },
 
   computed() {
@@ -232,6 +245,10 @@ export default {
     color:lighten(black,40%);
     letter-spacing: 2px;
     font-weight: 600;
+   }
+   
+   & .defaultMessage{
+    text-align: center;
    }
 
    & .text-edit{

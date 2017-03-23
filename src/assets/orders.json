@@ -4,6 +4,7 @@
 	"userName": "喵喵",
 	"phoneNumber": "13514741221",
 	"coordonnee": "辽宁省葫芦市龙湾区玉皇街道新区凌云书苑小区物业办公室 石正收",
+	"comment"  : "这个人比较难搞",
 	"orders": [{
 		"orderNumber": "abcd",
 		"orderDate": "2017/12/02",
@@ -20,7 +21,8 @@
 			"picturePath": "",
 			"orderedNumber": "1",
 			"price": "40"
-		}]
+		}],
+		"comment" : "上次两个化妆棉记得寄过去"
 	}]
 },
 {

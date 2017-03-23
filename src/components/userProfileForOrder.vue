@@ -5,34 +5,36 @@
    </div><!--end userProfile title-->
    <transition name="switch" mode="out-in">
      <div class="userProfile-details" v-if="edit==false">
-      <tbody class="userProfile-details-table">
-       <tr>
-        <td class="bold">姓名</td>
-        <td class="text-content">喵喵</td>
-       </tr>
-       <tr>
-        <td class="bold">电话</td>
-        <td class="text-content">138170211157</td>
-       </tr>
-       <tr>
-        <td class="bold">邮寄地址</td>
-        <td class="text-content">辽宁省葫芦市龙湾区玉皇街道新区  凌云书苑小区物业办公室 石正 收</td>
-       </tr>
-       <tr>
-        <td class="bold">备注</td>
-        <td class="text-content">这个人比较难搞</td>
-       </tr>
-      </tbody>
+       <table class="userProfile-details-table">
+        <tbody >
+         <tr>
+          <td class="bold">姓名</td>
+          <td class="text-content">{{user.username}}</td>
+         </tr>
+         <tr>
+          <td class="bold">电话</td>
+          <td class="text-content">{{user.phoneNumber}}</td>
+         </tr>
+         <tr>
+          <td class="bold">邮寄地址</td>
+          <td class="text-content">{{user.coordonnee}}</td>
+         </tr>
+         <tr>
+          <td class="bold">备注</td>
+          <td class="text-content">{{user.comment}}</td>
+         </tr>
+        </tbody>
+       </table>
      </div><!--end userProfile-details-->
    </transition>
    <transition name="switch" mode="out-in">
      <div class="edit-userProfile" v-if="edit">
-      <custInput :placeholder="'姓名'" :modelValue="'喵喵'"/>
-      <custInput :placeholder="'电话'" :modelValue="'138170211157'"/>
+      <custInput :placeholder="'姓名'" :modelValue="newUsername"/>
+      <custInput :placeholder="'电话'" :modelValue="newPhoneNumber"/>
       <custInput :placeholder="'邮寄地址'" :type="'textarea'" class="addressArea"
-                 :modelValue="'辽宁省葫芦市龙湾区玉皇街道新区  凌云书苑小区物业办公室 石正 收'"/>
+                 :modelValue="newCoordonnee"/>
       <custInput :placeholder="'备注'" :type="'textarea'" class="commentArea"
-                 :modelValue="'这个人比较难搞'"/>
+                 :modelValue="newComment"/>
      </div><!--end editing userProfile-->
    </transition>
    <div class="action">
@@ -49,11 +51,22 @@ import CustInput from 'components/rawHtmlComponent/custInput'
 export default {
   name: 'userProfileForOrder',
  
-  props: ['editing'],
+  props: ['currentUser'],
 
   data () {
     return {
-      edit    :  this.editing
+      edit           :  this.currentUser? false:true,
+      user           :  {
+                          userId      : this.currentUser? this.currentUser.userId : '',
+                          username    : this.currentUser? this.currentUser.userName : '',
+                          phoneNumber : this.currentUser? this.currentUser.phoneNumber : '',
+                          coordonnee  : this.currentUser? this.currentUser.coordonnee : '',
+                          comment     : this.currentUser? this.currentUser.comment : ''
+                        },
+      newUsername    : '',
+      newPhoneNumber : '',
+      newCoordonnee  : '',
+      newComment     : ''
     }
   },
 
@@ -87,27 +100,30 @@ export default {
 
    & .edit-userProfile{
     & .addressArea{
-     min-height: 120px;
+   //  min-height: 120px;
     }
 
     & .commentArea{
-     min-height: 90px;
+  //   min-height: 90px;
     }
    }
 
    & .userProfile-details{
+    position:relative;
+
     & .userProfile-details-table{
+     position:relative;
      width: 100%;
      margin-bottom: 20px;
 
      & tr td{
-      height: 45px;
+      height: 50px;
       border-bottom:2px solid #F6F7FA;
       line-height: 1.4em;
      }
 
      &  tr td:first-child{
-      width:60px;
+      width:20%;
       text-align: left;
      }
 

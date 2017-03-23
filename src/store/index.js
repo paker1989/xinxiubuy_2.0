@@ -23,7 +23,7 @@ const store = new Vuex.Store({
    updatedTags: [], //if tag exist in this array, meaning tag is updated, so need to fetch again
    fetchedTags: {/*[tagName:string]:lastFetchedTime*/},  
 
-   users: {/*[id:string]: User*/},
+   manualEnrolUsers: {/*[id:string]: User*/},
    items: {/*[id:string]: Product*/},
 
    /*temp data, should be replaced. it should not be handled in store*/
@@ -35,6 +35,8 @@ const store = new Vuex.Store({
     isAuth         : true,
     wishedList     : []
    },
+
+
 
    commentList: [ 
     {
@@ -156,6 +158,20 @@ const store = new Vuex.Store({
       }
      })
     })
+   },
+
+   FETCH_MANUAL_USERS: ({ commit }) => {
+    console.log('FETCH_MANUAL_USERS')
+    return new Promise( (resolve,reject) => {
+     Vue.http.post('/fetchManualUsers').then( (res,err) => {
+      if(!err){
+       commit('SET_ALL_MANUAL_USERS',res.body.users)
+       resolve()
+      }else{
+       reject(err)
+      }
+     })
+    })
    }
 
   },
@@ -201,6 +217,11 @@ const store = new Vuex.Store({
    //每次上传产品的时候，需要加入新的标签
    SAVE_NEW_TAGS: (state, newTags) => {
     state.allTags = state.allTags.concat(newTags)
+   },
+
+   SET_ALL_MANUAL_USERS: (state, manualEnrolUsers) => {
+     console.log('SET_ALL_MANUAL_USERS')
+     state.manualEnrolUsers = manualEnrolUsers
    }
   },
 
@@ -228,6 +249,10 @@ const store = new Vuex.Store({
 
    fetchReply: (state) => (id) => {
     return  state.commentList.filter((item) => {return item.id == id})[0].commentUser.pseudo
+   },
+
+   selectedManualUser: (state) => (id) => {
+    return state.manualEnrolUsers.find( user => {return user.userId == id})
    }
   }
 });
