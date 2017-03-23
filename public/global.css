@@ -107,6 +107,10 @@
   color:#ff3333;
   }
 
+ .clickable:hover{
+   cursor: pointer;
+  }
+
 /*
 .text-hover:hover {
   color:black;

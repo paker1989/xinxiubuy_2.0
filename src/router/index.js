@@ -13,7 +13,7 @@ const routes = [
  {path: '/', name: 'generalView',component: generalView},
  {path: '/upload', name: 'productUploader',component: productUploader},
  {path: '/product/:id',name: 'productDetailWraper', component: productDetailWraper},
- {path: '/order/:id',name: 'orderWraper', component: orderWraper},
+ {path: '/order/:id?',name: 'orderWraper', component: orderWraper},
  {path: '/orders',name: 'orders', component: orders,meta: {keepAlive:true}},
  {path: '/xinxiuRecCats',name: 'xinxiuRecCats', component: xinxiuRecCats},
  {path: '/foo', redirect:'/'}

@@ -8,7 +8,7 @@
   -->
    <div class="newOrderContainer">
      <icon name="plus" class="icon icon-green"  aria-hidden="true"/>
-     <label class="text-nav">新建客户</label>
+     <router-link class="text-nav clickable" :to="'/order/'">新建客户</router-link>
    </div>
    <div class="orderSearchContainer">
      <label class="text-nav">你的客户</label>

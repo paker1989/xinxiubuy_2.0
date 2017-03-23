@@ -14,7 +14,7 @@
    </div><!--header-->
    <div class="content">
     <div class="userProfile">
-     <userProfile/>
+     <userProfile :editing="isCreateUser" />
     </div><!--end userProfile read-only-->
     <div class="orderContainer">
      <div class="newOrderWraper" >
@@ -22,7 +22,9 @@
       <span class="text-nav bold edit clickable" v-show="isCreateNewOrder" @click="saveNewOrder">保存订单</span>
       <span class="text-nav bold cancel clickable" v-show="isCreateNewOrder" @click="cancelNewOrder">取消操作</span>
      </div>
-     <orderCollapse :collapse="false" :isNewOrder="true" v-show="isCreateNewOrder"/>
+     <transition name="fade">
+      <orderCollapse :collapse="false" :isNewOrder="true" v-show="isCreateNewOrder"/>
+     </transition>
      <orderCollapse :collapse="true" v-for="i in 2"/>
     </div><!--end orderContainer-->
    </div><!--content-->
@@ -44,8 +46,13 @@ export default {
   data () {
     return {
       selectedOrderStatus : 1,// 1 for 当前订单 2 for 已归档
-      isCreateNewOrder : false
+      isCreateNewOrder : false,
+      isCreateUser : this.$route.params.id?false:true
     }
+  },
+
+  created() {
+    
   },
 
   methods: {
@@ -76,11 +83,6 @@ export default {
    color: lighten(black,40%);
    margin:0 5px;
    cursor: pointer;
-  }
-
-  & .clickable:hover{
-   cursor: pointer;
-   font-weight:600;
   }
 
   & .header{
@@ -141,8 +143,20 @@ export default {
       width: 93%;
       text-align: left;
       margin:0 auto 30px auto;
-    }
-   }
+      & > * {
+        margin-right: 10px;
+      }
+    }/* end new order wraper*/
+   }/* end orderContainer*/
+  }/* end content*/
+
+  & .fade-enter{
+    opacity: 0;
+    transform: translatey(-10px);
+  }
+
+  & .fade-enter-active{
+    transition:all .4s linear;
   }
  }
 </style>

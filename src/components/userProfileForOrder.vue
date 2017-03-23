@@ -49,11 +49,11 @@ import CustInput from 'components/rawHtmlComponent/custInput'
 export default {
   name: 'userProfileForOrder',
  
-  props: [],
+  props: ['editing'],
 
   data () {
     return {
-      edit    :  false
+      edit    :  this.editing
     }
   },
 
