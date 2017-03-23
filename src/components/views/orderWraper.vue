@@ -16,7 +16,13 @@
     <div class="userProfile">
      <userProfile :editing="isCreateUser" />
     </div><!--end userProfile read-only-->
-    <div class="orderContainer">
+    <div class="remindWraper" v-if="currentUser">
+      <span class="remindMessage edit">
+       <icon name="hand-o-left" class="text-icon" scale="2"/>
+       先建用户哦~~
+      </span>
+    </div>
+    <div class="orderContainer" v-if="!currentUser">
      <div class="newOrderWraper" >
      	<span class="text-nav bold edit clickable" v-show="!isCreateNewOrder" @click="isCreateNewOrder = true">新建订单</span>
       <span class="text-nav bold edit clickable" v-show="isCreateNewOrder" @click="saveNewOrder">保存订单</span>
@@ -52,7 +58,7 @@ export default {
   },
 
   created() {
-    
+
   },
 
   methods: {
@@ -128,6 +134,22 @@ export default {
   & .content{
    position:relative;
    display: flex;
+
+   & .remindWraper{
+    position:relative;
+    width: 70%;
+    height: 40vh;
+    
+   & .remindMessage{
+    position:absolute;
+    top:50%;
+    left:50%;
+    font-size:30px;
+    letter-spacing: .3em;
+    font-weight:100;
+    transform: translate3d(-50%,-50%,0);
+   }
+   }
 
    & .userProfile{
     position:relative;
