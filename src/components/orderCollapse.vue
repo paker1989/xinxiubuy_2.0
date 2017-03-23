@@ -1,6 +1,9 @@
 <template>
   <div class="orderCollapse">
-    <div :class="{'metaDataContainer':true,'expanded':!isCollapse}"  @click="isCollapse=!isCollapse">
+    <div class="metaDataContainer expanded" v-if="isNewOrder">
+      <span class="key bold">新建订单</span>
+    </div><!--header for new order-->
+    <div :class="{'metaDataContainer':true,'expanded':!isCollapse}"  @click="isCollapse=!isCollapse" v-if="!isNewOrder">
       <icon name="plus" class="text-icon" v-if="isCollapse"/>
       <icon name="minus" class="text-icon" v-if="isCollapse==false"/>
       <span>
@@ -111,7 +114,7 @@
         <span class="text-nav clickable edit" @click="editOrder" v-if="!isEditOrder">编辑</span>
 	    <span class="text-nav clickable edit" @click="saveEditOrder" v-if="isEditOrder">保存</span>
 	    <span class="text-nav clickable cancel" @click="cancelEditOrder" v-if="isEditOrder">取消</span> 
-	    <span class="text-nav clickable cancel" v-if="!isEdit">结束订单</span>       
+	    <span class="text-nav clickable cancel" v-if="!isEdit && !isNewOrder">结束订单</span>       
        </div>
       </div>
      </div><!--orderDetailContainer-->
@@ -125,14 +128,14 @@ import CustInput from 'components/rawHtmlComponent/custInput'
 export default {
   name: 'orderCollapse',
  
-  props: ['collapse'],
+  props: ['collapse','isNewOrder'],
 
   data () {
     return {
       isEdit:false,
       isCollapse:this.collapse,
-      addingProduct:false,
-      isEditOrder: false
+      addingProduct:this.isNewOrder?true:false,
+      isEditOrder: this.isNewOrder?true:false
     }
   },
 
@@ -343,14 +346,6 @@ export default {
 
   & .clickable:hover{
 	cursor: pointer;
-  }
-
-  & .edit{
-    color:#6ba045;
-  }
-
-  & .cancel{
-	color:lighten(red,10%);
   }
 
   & .fade-enter{

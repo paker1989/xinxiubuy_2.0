@@ -98,6 +98,15 @@
  .block{
   display: block;
  }
+
+ .edit{
+    color:#6ba045;
+  }
+
+ .cancel{
+  color:#ff3333;
+  }
+
 /*
 .text-hover:hover {
   color:black;

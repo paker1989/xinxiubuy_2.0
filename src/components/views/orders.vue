@@ -8,10 +8,10 @@
   -->
    <div class="newOrderContainer">
      <icon name="plus" class="icon icon-green"  aria-hidden="true"/>
-     <label class="text-nav">新建订单</label>
+     <label class="text-nav">新建客户</label>
    </div>
    <div class="orderSearchContainer">
-     <label class="text-nav">你的订单</label>
+     <label class="text-nav">你的客户</label>
      <div class="inline-block">
       <CustInput  :placeholder="'搜索订单号，用户名，产品名'" 
                   :cusWidth="'250'" 

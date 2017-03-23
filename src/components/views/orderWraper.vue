@@ -17,6 +17,12 @@
      <userProfile/>
     </div><!--end userProfile read-only-->
     <div class="orderContainer">
+     <div class="newOrderWraper" >
+     	<span class="text-nav bold edit clickable" v-show="!isCreateNewOrder" @click="isCreateNewOrder = true">新建订单</span>
+      <span class="text-nav bold edit clickable" v-show="isCreateNewOrder" @click="saveNewOrder">保存订单</span>
+      <span class="text-nav bold cancel clickable" v-show="isCreateNewOrder" @click="cancelNewOrder">取消操作</span>
+     </div>
+     <orderCollapse :collapse="false" :isNewOrder="true" v-show="isCreateNewOrder"/>
      <orderCollapse :collapse="true" v-for="i in 2"/>
     </div><!--end orderContainer-->
    </div><!--content-->
@@ -37,7 +43,18 @@ export default {
 
   data () {
     return {
-      selectedOrderStatus : 1// 1 for 当前订单 2 for 已归档
+      selectedOrderStatus : 1,// 1 for 当前订单 2 for 已归档
+      isCreateNewOrder : false
+    }
+  },
+
+  methods: {
+    saveNewOrder() {
+      this.isCreateNewOrder = false
+    },
+
+    cancelNewOrder() {
+      this.isCreateNewOrder = false
     }
   }
 }
@@ -119,6 +136,12 @@ export default {
     position:relative;
     width: 70%;
     padding:20px 50px 0 50px;
+
+    & .newOrderWraper{
+      width: 93%;
+      text-align: left;
+      margin:0 auto 30px auto;
+    }
    }
   }
  }
