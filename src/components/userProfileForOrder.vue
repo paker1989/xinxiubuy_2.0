@@ -29,17 +29,26 @@
    </transition>
    <transition name="switch" mode="out-in">
      <div class="edit-userProfile" v-if="edit">
-      <custInput :placeholder="'姓名'" :modelValue="newUsername"/>
-      <custInput :placeholder="'电话'" :modelValue="newPhoneNumber"/>
+      <custInput :placeholder="'姓名'" :modelValue="newUsername"  v-on:modelEmited="setNewUserName"
+                 :class="{'invalid':errorMessage['newUsername']}" />
+      <custInput :placeholder="'电话'" :modelValue="newPhoneNumber" v-on:modelEmited="setNewPhoneNumber"
+                 :class="{'invalid':errorMessage['newPhoneNumber']}"/>
       <custInput :placeholder="'邮寄地址'" :type="'textarea'" class="addressArea"
-                 :modelValue="newCoordonnee"/>
+                 :modelValue="newCoordonnee" v-on:modelEmited="setNewCoordonnee"
+                 :class="{'invalid':errorMessage['newCoordonnee']}"/>
       <custInput :placeholder="'备注'" :type="'textarea'" class="commentArea"
-                 :modelValue="newComment"/>
+                 :modelValue="newComment" v-on:modelEmited="setNewComment"
+                 :class="{'invalid':errorMessage['newComment']}"/>
      </div><!--end editing userProfile-->
    </transition>
+   <div class="errorMessageWraper" v-show="edit">
+     <ul>
+       <li v-for="key in Object.keys(errorMessage)">{{errorMessage[key]}}</li>
+     </ul>
+   </div><!--errorMessageWraper-->
    <div class="action">
     <span class="text-nav clickable edit" v-show="edit==false" @click="edit=true">编辑</span>
-    <span class="text-nav clickable edit" v-show="edit" @click="edit=false">保存</span>
+    <span class="text-nav clickable edit" v-show="edit" @click="saveOrder">保存</span>
     <span class="text-nav clickable cancel" v-show="edit" @click="edit=false">取消</span>
    </div><!--end action-->
   </div>
@@ -47,6 +56,10 @@
 
 <script>
 import CustInput from 'components/rawHtmlComponent/custInput'
+
+function isFieldEmpty(field){
+ return !field || field.replace(/^\s+|\s+$/g,'').trim().length == 0
+}
 
 export default {
   name: 'userProfileForOrder',
@@ -66,12 +79,49 @@ export default {
       newUsername    : '',
       newPhoneNumber : '',
       newCoordonnee  : '',
-      newComment     : ''
+      newComment     : '',
+      errorMessage   : {}
     }
   },
 
   components: {
     CustInput
+  },
+
+  methods: {
+   saveOrder() {
+     //valid fields first
+     this.errorMessage = {}
+     if(isFieldEmpty(this.newUsername)){
+       this.$set(this.errorMessage,'newUsername','姓名不能为空哦')}
+     if(isFieldEmpty(this.newPhoneNumber)){
+       this.$set(this.errorMessage,'newPhoneNumber','电话号码不能为空哦')}
+     else{
+      if(isNaN(new Number(this.newPhoneNumber)))
+       {this.$set(this.errorMessage,'newPhoneNumber','电话号码必须是数字哦')}
+     }
+     if(isFieldEmpty(this.newCoordonnee)){
+       this.$set(this.errorMessage,'newCoordonnee','邮寄地址不能为空哦')}
+
+     if(this.errorMessage.length > 0) return 
+  },
+
+  setNewUserName(newVal) {
+    this.newUsername = newVal
+  },
+
+  setNewPhoneNumber(newVal) {
+    this.newPhoneNumber = newVal
+  },
+
+  setNewCoordonnee(newVal) {
+    this.newCoordonnee = newVal
+  },
+
+  setNewComment(newVal) {
+    this.newComment = newVal
+  }
+
   }
 
 }
@@ -93,9 +143,19 @@ export default {
     padding-left:20px;
    }
 
-   & .userProfile-details, & .edit-userProfile{
+   & .userProfile-details, & .edit-userProfile, & .errorMessageWraper{
      width: 100%;
      padding: 0 20px;    
+   }
+
+   & .errorMessageWraper{
+    text-align: left;
+    color:darken(#E0B4B4,20%);
+
+    & li{
+      margin-left:10%;
+      margin-bottom: .5em;
+    }
    }
 
    & .edit-userProfile{
@@ -105,6 +165,10 @@ export default {
 
     & .commentArea{
   //   min-height: 90px;
+    }
+
+    & .invalid{
+      border:2px solid #E0B4B4;
     }
    }
 

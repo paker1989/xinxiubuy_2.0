@@ -22,7 +22,7 @@
 export default {
   name: 'custInput',
 
-  props:['type','placeholder','cusHeight','icon','modelValue'],
+  props:['type','placeholder','cusHeight','icon','modelValue','changeStatus'],
 
   data() {
    return {
