@@ -11,7 +11,7 @@
      <custInput class="field" :placeholder="'用户名'"/>
      <custInput class="field" :placeholder="'密码'"/>
      <button class="ui button cust">登录</button>
-     <a class="forgetPW text-tag" href="#">忘记密码?</a>
+     <a class="forgetPW" href="#">忘记密码?</a>
    </div><!-- sign in end -->
    <div class="signupContainer" v-if="currentStat=='注册'">
      <div>
@@ -62,8 +62,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
  .authentication{
-  width: 320px;
-  border:1px solid #ccc;
+  width: 310px;
+  box-shadow:0 4px 9px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
 
   & .headerWraper{
    width: 100%;
@@ -103,7 +103,7 @@ export default {
   & .signinContainer, & .signupContainer{
     position:relative;
     width: 100%;
-    padding: 40px 30px;
+    padding: 50px 40px;
 
     & .field{
       margin-bottom: 50px;
@@ -130,7 +130,9 @@ export default {
    & .forgetPW{
     padding-top:20px;
     padding-bottom:5px;
-    border-bottom:1px solid #ccc;
+    border-bottom:1px dashed #ccc;
+    font-size:12px;
+    color:lighten(black,50%);
    }
   }/*end signinContainer*/
  }
