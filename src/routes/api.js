@@ -8,11 +8,11 @@ const util = require('./util')
 const db = require('../../db')
 const Product = require('../model/product')
 const Tag = require('../model/tag')
-const manualEnrolUsers = require('../model/manualEnrolUser')
+const ManualEnrolUser = require('../model/manualEnrolUser')
 
 let productCollection = db.collection('products')
 let tagCollection = db.collection('tags')
-let manualUserCollection = db.collection('manualEnrolUsers')
+let manualUserCollection = db.collection('manualenrolusers')
 
 let rootPicPath = path.join(config.dev.assetsSubDirectory,'productResource')
 
@@ -144,20 +144,72 @@ let saveNewTags = (req, res, next) => {
   })
 }
 
-let fetchManualUsers = (req, res, next) => {
-   console.log('fetchManualUsers')  
+let fetchManualUsers = (req, res, next) => { 
    manualUserCollection.find({}).toArray((err,data) => {
-    console.log('data')
-    console.log(data)
-
     if(!err){
+       let wrapedUsers = new Array()
+       data.forEach( user => {
+        wrapedUsers.push(util.wrapManualUser(user))
+       })
+
        res.send({
          msg:'success',
-         users:data
+         users:wrapedUsers
        })
     }
    })  
 }
+
+let saveNewUser = (req, res, next) => {
+  //new user
+  if(req.body.userId == ''){
+     let newManualUser = new ManualEnrolUser({
+                             userName   : req.body.userName,
+                             address    : req.body.address,
+                             phoneNumber: req.body.phoneNumber,
+                             createdDate: new Date(),
+                             comment    : req.body.comment,
+                             orders     : []
+                            })
+
+    newManualUser.save((err,data) => {
+     if(!err){
+      res.status(200).send({
+       msg    : 'success',
+       user   :  util.wrapManualUser(data)
+      })
+     }
+    }) 
+  }
+  else{
+    //update user
+    ManualEnrolUser.update({_id:req.body.userId},{
+                        $set:{
+                           userName   : req.body.userName,
+                           address    : req.body.address,
+                           phoneNumber: req.body.phoneNumber,
+                           comment    : req.body.comment}
+                         },
+      (err,data) => {
+       res.status(200).send({
+       msg    : 'success'
+      })    
+    
+   })    
+  }                       
+}
+
+
+let saveNewOrder = (req,res,next) => {
+   ManualEnrolUser.update({_id:req.body.userId},{
+    $push: {orders : JSON.parse(req.body.order)}
+   },(
+   err,data) => {
+    res.status(200).send({
+     msg  : 'success'
+    })
+   })
+  }
 
 
 
@@ -169,6 +221,8 @@ router.post('/getProductByTag',getProductByTag)
 router.post('/fetchAllTags',fetchAllTags)
 router.post('/saveNewTags',saveNewTags)
 router.post('/fetchManualUsers',fetchManualUsers)
+router.post('/saveNewUser',saveNewUser)
+router.post('/saveNewOrder',saveNewOrder)
 
 module.exports = router
 

@@ -9,7 +9,7 @@
         <tbody >
          <tr>
           <td class="bold">姓名</td>
-          <td class="text-content">{{user.username}}</td>
+          <td class="text-content">{{user.userName}}</td>
          </tr>
          <tr>
           <td class="bold">电话</td>
@@ -17,7 +17,7 @@
          </tr>
          <tr>
           <td class="bold">邮寄地址</td>
-          <td class="text-content">{{user.coordonnee}}</td>
+          <td class="text-content">{{user.address}}</td>
          </tr>
          <tr>
           <td class="bold">备注</td>
@@ -34,8 +34,8 @@
       <custInput :placeholder="'电话'" :modelValue="newPhoneNumber" v-on:modelEmited="setNewPhoneNumber"
                  :class="{'invalid':errorMessage['newPhoneNumber']}"/>
       <custInput :placeholder="'邮寄地址'" :type="'textarea'" class="addressArea"
-                 :modelValue="newCoordonnee" v-on:modelEmited="setNewCoordonnee"
-                 :class="{'invalid':errorMessage['newCoordonnee']}"/>
+                 :modelValue="newAddress" v-on:modelEmited="setNewAddress"
+                 :class="{'invalid':errorMessage['newAddress']}"/>
       <custInput :placeholder="'备注'" :type="'textarea'" class="commentArea"
                  :modelValue="newComment" v-on:modelEmited="setNewComment"
                  :class="{'invalid':errorMessage['newComment']}"/>
@@ -64,21 +64,21 @@ function isFieldEmpty(field){
 export default {
   name: 'userProfileForOrder',
  
-  props: ['currentUser'],
+  props: ['delegateUser'],
 
   data () {
     return {
-      edit           :  this.currentUser? false:true,
+      edit           :  this.delegateUser? false:true,
       user           :  {
-                          userId      : this.currentUser? this.currentUser.userId : '',
-                          username    : this.currentUser? this.currentUser.userName : '',
-                          phoneNumber : this.currentUser? this.currentUser.phoneNumber : '',
-                          coordonnee  : this.currentUser? this.currentUser.coordonnee : '',
-                          comment     : this.currentUser? this.currentUser.comment : ''
+                          userId      : this.delegateUser? this.delegateUser.userId : '',
+                          userName    : this.delegateUser? this.delegateUser.userName : '',
+                          phoneNumber : this.delegateUser? this.delegateUser.phoneNumber : '',
+                          address     : this.delegateUser? this.delegateUser.address : '',
+                          comment     : this.delegateUser? this.delegateUser.comment : ''
                         },
       newUsername    : '',
       newPhoneNumber : '',
-      newCoordonnee  : '',
+      newAddress     : '',
       newComment     : '',
       errorMessage   : {}
     }
@@ -88,38 +88,62 @@ export default {
     CustInput
   },
 
+  created() {
+   this.newUsername    = this.user.userName,
+   this.newPhoneNumber = this.user.phoneNumber,
+   this.newAddress     = this.user.address,
+   this.newComment     = this.user.comment
+  },
+
   methods: {
    saveOrder() {
      //valid fields first
+     let errCount = 0
      this.errorMessage = {}
+
      if(isFieldEmpty(this.newUsername)){
-       this.$set(this.errorMessage,'newUsername','姓名不能为空哦')}
+       this.$set(this.errorMessage,'newUsername','姓名不能为空哦'),errCount++}
      if(isFieldEmpty(this.newPhoneNumber)){
-       this.$set(this.errorMessage,'newPhoneNumber','电话号码不能为空哦')}
+       this.$set(this.errorMessage,'newPhoneNumber','电话号码不能为空哦'),errCount++}
      else{
       if(isNaN(new Number(this.newPhoneNumber)))
-       {this.$set(this.errorMessage,'newPhoneNumber','电话号码必须是数字哦')}
+       {this.$set(this.errorMessage,'newPhoneNumber','电话号码必须是数字哦'),errCount++}
      }
-     if(isFieldEmpty(this.newCoordonnee)){
-       this.$set(this.errorMessage,'newCoordonnee','邮寄地址不能为空哦')}
+     if(isFieldEmpty(this.newAddress)){
+       this.$set(this.errorMessage,'newAddress','邮寄地址不能为空哦'),errCount++}
 
-     if(this.errorMessage.length > 0) return 
+     if(errCount> 0) return       
+
+     //resume save if fields are valid
+     let user = {
+                userId      : this.user.userId,
+                userName    : this.newUsername,
+                phoneNumber : this.newPhoneNumber,
+                address     : this.newAddress,
+                comment     : this.newComment
+     }
+
+     this.$store.dispatch('SAVE_USER',user).then((data) => {
+      this.user = data
+      this.edit = false
+      this.$emit('userUpdatedOrCreated',data)
+     })
   },
 
   setNewUserName(newVal) {
-    this.newUsername = newVal
+    this.newUsername = newVal.replace(/^\s+|\s+$/g,'')
   },
 
   setNewPhoneNumber(newVal) {
-    this.newPhoneNumber = newVal
+    this.newPhoneNumber = newVal.replace(/^\s+|\s+$/g,'')
   },
 
-  setNewCoordonnee(newVal) {
-    this.newCoordonnee = newVal
+  setNewAddress(newVal) {
+    this.newAddress = newVal.replace(/^\s+|\s+$/g,'')
   },
 
   setNewComment(newVal) {
-    this.newComment = newVal
+    this.newComment = newVal.replace(/^\s+|\s+$/g,'')
   }
 
   }

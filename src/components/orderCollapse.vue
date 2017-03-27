@@ -37,6 +37,19 @@
         </tr>
        </thead>
        <tbody>
+        <tr class="orderedProductWraper" v-for="(product,index) in delegateOrder.orderedProducts">
+         <td class="text-content">{{product.productName}}</td>
+         <td class="text-content">无</td>
+         <td class="text-content">{{product.orderedNumber}}</td>
+         <td class="text-content">{{product.price}}</td>
+         <td class="text-content">{{product.orderedNumber * product.price}}</td>
+         <td class="clickable edit">
+            <span class="clickable edit" v-if="isEditingProduct" @click="saveEditProduct">保存</span>
+            <span class="clickable cancel" v-if="isEditingProduct" @click="isEditingProduct=false">取消</span>
+            <span class="clickable edit" v-if="!isEditingProduct" @click="editProduct(index)">编辑</span>
+         </td>
+        </tr>
+      <!--
         <tr>
          <td class="text-content">兰蔻粉水</td>
          <td class="text-content">无</td>
@@ -45,75 +58,70 @@
          <td class="text-content">200</td>
          <td class="clickable edit">编辑</td>
         </tr>
-        <tr>
-         <td class="text-content">雀巢蜂蜜燕麦</td>
-         <td class="text-content">无</td>
-         <td class="text-content">1</td>
-         <td class="text-content">40</td>
-         <td class="text-content">40</td>
-         <td class="clickable edit">编辑</td>
-        </tr>
-        <tr>
-         <td class="text-content">唇膏(赠送)</td>
-         <td class="text-content">无</td>
-         <td class="text-content">1</td>
-         <td class="text-content">0</td>
-         <td class="text-content">0</td>
-         <td class="clickable edit">编辑</td>
-        </tr>
-        <tr v-if="addingProduct" class="newItemWraper">
-          <td colspan="2">
-            <custInput class="newItem" :placeholder="'产品名'">
+      -->
+        <tr v-if="isAddingProduct" class="newItemWraper">
+          <td class="editable" colspan="2">
+            <custInput class="newItem" :placeholder="'产品名'" v-on:modelEmited="setNewProductName">
           </td>
-          <td>
-           <select class="comp-dropdown">
+          <td class="editable">
+           <select class="comp-dropdown" v-model="newNbProduct">
             <option class="text-nav" v-for="i in 9">{{i}}</option>
            </select>
           </td>
-          <td>
-           <custInput class="newItem" :placeholder="'单价'">
+          <td class="editable">
+           <custInput class="newItem" :placeholder="'单价'" v-on:modelEmited="setPrice">
           </td>
-          <td>
+          <td class="text-nav totalPrice">
+           {{newTotalPrice}}
           </td>
-          <td >
-            <span class="clickable edit" @click="saveNew">保存</span>
-            <span class="clickable cancel" @click="cancelNew">取消</span>
+          <td style="text-align:center;">
+            <span class="clickable edit" @click="saveNewProduct">保存</span>
+            <span class="clickable cancel" @click="isAddingProduct=false">取消</span>
           </td>
         </tr>
-        <tr v-if="!addingProduct">
+        <tr v-if="!isAddingProduct">
           <td colspan="5"></td>
-          <td class="addNew" @click="addNew">
-            <!--<icon name="plus" class="text-icon" scale="1.3"/>-->
+          <td class="addNew" @click="isAddingProduct=true">
             <button class="plus"></button>
           </td>
         </tr>
         <tr>
-         <td colspan="4" class="text-nav">运费</td>
-         <td class="text-content" colspan="3" style="text-align:left;">10</td>
-
+         <td colspan="2" class="text-nav">运费(每样10元)</td>
+         <td colspan="2" class="text-nav">{{totalProduct}}</td>
+         <td v-if="!isEditingDeliveryFee">{{delegateOrder.deliveryFee}}</td>
+         <td class="editable" v-if="isEditingDeliveryFee">
+          <custInput class="newItem" :placeholder="'运费'" :modelValue="delegateOrder.deliveryFee" v-on:modelEmited="setDeliveryFee"/>
+         </td>
+         <td style="text-align:center;">
+            <span class="clickable edit" v-if="isEditingDeliveryFee" @click="saveDeliveryFee">保存</span>
+            <span class="clickable cancel" v-if="isEditingDeliveryFee" @click="isEditingDeliveryFee=false">取消</span>
+            <span class="clickable edit" v-if="!isEditingDeliveryFee" @click="isEditingDeliveryFee=true">编辑</span>
+         </td>
         </tr>
         <tr>
          <td colspan="2" class="text-nav">总额</td>
-         <td class="text-content" colspan="2">4</td>
-         <td class="text-content" colspan="2">250</td>
+         <td colspan="2">{{totalProduct}}</td>
+         <td colspan="2">{{totalAmount}}</td>
         </tr>
        </tbody>
       </table>
       <div class="commentActionContainer">
        <div class="commentWraper">
          <span v-if="!isEditOrder" class="bold comment-label">备注:</span>
-         <span v-if="!isEditOrder" class="text-content">上次忘寄的化妆棉寄过去</span>
-         <custInput v-if="isEditOrder" :type="'textarea'" class="commentInput" :placeholder="'备注'">
+         <span v-if="!isEditOrder" class="text-content">{{delegateOrder.comment}}</span>
+         <custInput v-if="isEditOrder" :type="'textarea'" :modelValue="delegateOrder.comment"
+           class="commentInput" :placeholder="'备注'" v-on:modelEmited="setNewComment">
        </div>
        <div class="payWraper">
         <span class="edit" v-if="!isEditOrder">付款方式:</span>
-        <span class="text-content" v-if="!isEditOrder">微信支付</span>
-        <span v-if="isEditOrder"><custInput class="payInput" :placeholder="'付款方式/状态'"></span>
+        <span class="text-content" v-if="!isEditOrder">{{delegateOrder.payType}}</span>
+        <span v-if="isEditOrder"><custInput class="payInput" :modelValue="delegateOrder.payType"
+        v-on:modelEmited="setNewPayType" :placeholder="'付款方式/状态'"></span>
        </div>
        <div class="actionWraper">
         <span class="text-nav clickable edit" @click="editOrder" v-if="!isEditOrder">编辑</span>
 	    <span class="text-nav clickable edit" @click="saveEditOrder" v-if="isEditOrder">保存</span>
-	    <span class="text-nav clickable cancel" @click="cancelEditOrder" v-if="isEditOrder">取消</span> 
+	    <span class="text-nav clickable cancel" @click="isEditOrder=false" v-if="isEditOrder">取消</span> 
 	    <span class="text-nav clickable cancel" v-if="!isEdit && !isNewOrder">结束订单</span>       
        </div>
       </div>
@@ -124,18 +132,45 @@
 
 <script>
 import CustInput from 'components/rawHtmlComponent/custInput'
+function calculateTotalNb(orderedProducts){
+    let val = 0
+    orderedProducts.forEach(product => {
+    val+= new Number(product.orderedNumber)})
+    return val  
+}
+
+function calculateTotalAmount(orderedProducts,deliveryFee){
+    let val = 0
+    orderedProducts.forEach(product => {val+= product.orderedNumber * product.price || 0})
+    return val+ new Number(deliveryFee)
+}
 
 export default {
   name: 'orderCollapse',
  
-  props: ['collapse','isNewOrder'],
+  props: ['collapse','order','validStat'],
 
   data () {
     return {
-      isEdit:false,
-      isCollapse:this.collapse,
-      addingProduct:this.isNewOrder?true:false,
-      isEditOrder: this.isNewOrder?true:false
+      delegateOrder        : this.order || undefined,
+      isNewOrder           : this.order?false:true,
+      isEdit               : this.order?false:true,
+      isCollapse           : this.collapse,
+      isAddingProduct      : this.order?false:true,
+      isEditOrder          : false,     
+      isEditingDeliveryFee : false,
+      isEditingProduct     : false,
+
+      newProductName       : '',
+      newPrice             : '',
+      newNbProduct         : 1,
+      newDeliveryFee       : '0',
+      newComment           : '无',
+      newPayType           : '未支付',
+  
+
+      totalProduct         : 0,
+      totalAmount          : 0
     }
   },
 
@@ -143,32 +178,121 @@ export default {
     CustInput
   },
 
+  created() {
+   if(this.delegateOrder){
+    /*TO DO*/
+   }
+   else{
+    this.delegateOrder = {
+                          deliveryFee :'0',
+                          comment     :'无',
+                          payType     :'未支付',
+                          payStatus   :'2',
+                          orderedProducts : []
+                          }
+    this.updateTotals()
+   }
+  },
+
   methods: {
-   addNew() {
-    this.addingProduct = true
+   updateTotals() {
+    this.totalProduct = calculateTotalNb(this.delegateOrder.orderedProducts)
+    this.totalAmount = calculateTotalAmount(this.delegateOrder.orderedProducts,this.delegateOrder.deliveryFee)
+   },
+   //setters
+   setNewProductName(val){
+    this.newProductName = val.replace(/^\s+|\s+$/g,'')
    },
 
-   saveNew() {
-    this.addingProduct = false
+   setPrice(val){
+    this.newPrice = val.replace(/^\s+|\s+$/g,'')
    },
 
-   cancelNew() {
-    this.addingProduct = false
+   setDeliveryFee(val){
+    this.newDeliveryFee = val.replace(/^\s+|\s+$/g,'','')
+   },
+
+   setNewComment(val){
+    this.newComment = val.replace(/^\s+|\s+$/g,'')
+   },
+
+   setNewPayType(val){
+    this.newPayType = val.replace(/^\s+|\s+$/g,'','')
+   },
+   
+   //saves
+   saveNewProduct() {
+    this.delegateOrder.orderedProducts.push({
+      id             : this.delegateOrder.orderedProducts.length+1,
+      productName    :this.newProductName,
+      picturePath    :'无',
+      orderedNumber  :this.newNbProduct,
+      price          :this.newPrice 
+    })
+
+    this.delegateOrder.deliveryFee = calculateTotalNb(this.delegateOrder.orderedProducts) * 10
+    //this.delegateOrder.deliveryFee = '50'
+
+    this.updateTotals()
+    this.isAddingProduct = false
+   },
+
+   saveEditProduct() {
+    this.isEditingProduct = false
+   },
+
+   editProduct(index) {
+    this.isEditingProduct = true
+   },
+
+   saveDeliveryFee() {
+   //valid deliveryFee first
+    this.delegateOrder.deliveryFee = this.newDeliveryFee
+
+    this.updateTotals()
+    this.isEditingDeliveryFee = false
    },
 
    editOrder() {
+    this.newPayType = this.delegateOrder.payType
+    this.newComment = this.delegateOrder.comment
+
     this.isEditOrder = true
    },
 
-   cancelEditOrder() {
-    this.isEditOrder = false
-   },
-
    saveEditOrder() {
+    this.delegateOrder.payType = this.newPayType
+    this.delegateOrder.comment = this.newComment
     this.isEditOrder = false
    }
-  }
+  },
 
+  watch: {
+   //IR fix: total price not rerendered upon adding product
+   isAddingProduct(val) {
+    if(val) this.newPrice = 0
+   },
+
+   //if validStat = true, then validate stats
+   validStat(val) {
+    if(val){
+     //TO DO: run validation
+      
+     if(true){
+      //set payStatus
+      this.delegateOrder.payType = /未|没/g.test(this.delegateOrder.payType)?2:1
+      this.$emit('validRes',this.delegateOrder)
+     }
+    }
+   }
+  },
+
+  computed: {
+   newTotalPrice() {
+    return isNaN(new Number(this.newPrice))?0:this.newPrice * this.newNbProduct
+   }
+  }
+  
 }
 </script>
 
@@ -251,101 +375,103 @@ export default {
      }/*end thead*/
 
      & tbody{
-      & tr:nth-child(even){
-        background:#F6F7FA;
-      }
-
-	  & tr td{
-	    height: 45px;
-	    padding-left:20px;
-	    border-top:2px solid #F6F7FA;
-
-  	   &:nth-child(6){text-align:center;}
-	  }
-
-	  & tr:last-child td{
-	    border-top:2px solid lighten(black,60%); 
-	  }
-
-	  & tr.newItemWraper{
-       
-       & td{
-         background:white;
-         height: 55px;      
-       }
-
-       & td:not(:last-child){
-        vertical-align: bottom;
-        padding-bottom:5px;
-       }
-
-       & .newItem{
-        margin-bottom: 0;
-       }
-
-       & .dropdown .text-nav{
-           color:lighten(black,40%);
-           font-size: 14px;
-           font-weight: 400;
-       }
-	  }
-     }/*end tbody*/
-    }/*end table*/
-
-    & .commentActionContainer{
-     position:relative;
-     display: flex;
-     justify-content: space-between;
-     align-items:flex-end;
-     padding:20px 40px;
-
-       & .commentWraper{
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-        width: 35%;
-
-        & .commentInput{
-         margin-bottom: 0;
+        & tr.orderedProductWraper:nth-child(even){
+          background:#F6F7FA;
         }
 
-        & .comment-label{
-         margin-bottom: 10px;
+        & .editable{
+          height: 60px; 
+          vertical-align: bottom;
+          padding-bottom:5px;
+         }
+
+        & .newItem{
+          margin-bottom: 0;
+         }
+
+    	  & tr td{
+    	    height: 45px;
+    	    border-top:2px solid #F6F7FA;
+
+          &:nth-child(6){text-align:center;}
+    	  }
+
+    	  & tr:last-child td{
+    	    border-top:2px solid lighten(black,60%); 
+    	  }
+
+    	  & tr.newItemWraper{      
+           & td{
+             background:white;     
+           }
+
+           & .totalPrice{
+            vertical-align: center;
+           }
+
+           & .dropdown .text-nav{
+               color:lighten(black,40%);
+               font-size: 14px;
+               font-weight: 400;
+           }
+    	  }
+         }/*end tbody*/
+        }/*end table*/
+
+        & .commentActionContainer{
+         position:relative;
+         display: flex;
+         justify-content: space-between;
+         align-items:flex-end;
+         padding:20px 40px;
+
+           & .commentWraper{
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            width: 35%;
+
+            & .commentInput{
+             margin-bottom: 0;
+            }
+
+            & .comment-label{
+             margin-bottom: 10px;
+            }
+           }
+
+           & .payWraper{
+            display: flex;
+            width:25%;
+            justify-content: center;
+            align-items:flex-end;
+            flex-wrap: wrap;
+
+            & > * {
+             margin: 0 .5em;
+            }
+
+            & .payInput{
+             width:130px;
+             margin-bottom: 0px;
+            }
+           }
+
+    	   & .actionWraper{
+    	    width: 40%;
+    	    display: flex;
+    	    justify-content: flex-end;
+    	    align-items:center;
+
+    	    & > * {
+    	     margin:0 1em;
+    	    }
+    	   }/*end action*/
         }
-       }
+      }/* end orderDetailContainer*/
 
-       & .payWraper{
-        display: flex;
-        width:25%;
-        justify-content: center;
-        align-items:flex-end;
-        flex-wrap: wrap;
-
-        & > * {
-         margin: 0 .5em;
-        }
-
-        & .payInput{
-         width:130px;
-         margin-bottom: 0px;
-        }
-       }
-
-	   & .actionWraper{
-	    width: 40%;
-	    display: flex;
-	    justify-content: flex-end;
-	    align-items:center;
-
-	    & > * {
-	     margin:0 1em;
-	    }
-	   }/*end action*/
-    }
-  }/* end orderDetailContainer*/
-
-  & .clickable:hover{
-	cursor: pointer;
+      & .clickable:hover{
+    	cursor: pointer;
   }
 
   & .fade-enter{

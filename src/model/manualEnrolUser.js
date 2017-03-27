@@ -14,10 +14,9 @@ var manualEnrolUserSchema = new Schema({
 */
 
 var manualEnrolUserSchema = new Schema({
-	userId        : String,
 	userName      : String,
 	address       : String,
-	phoneNumer    : Number,
+	phoneNumber    : String,
 	createdDate   : Date,
 	comment       : String,
 	orders        : [Schema.Types.Mixed]

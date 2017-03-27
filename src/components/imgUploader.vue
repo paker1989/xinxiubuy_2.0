@@ -43,6 +43,7 @@ export default {
       this.errorMessage = ''
     },delay)
    },
+
    submitStatus(val) {
     /* 1 : check if can submit */
     if(val == 1){
@@ -67,6 +68,7 @@ export default {
     }
    }
   },
+
   mounted() {
    $('.dropFileWraper')
      .bind('dragover',(e) => {
@@ -92,12 +94,14 @@ export default {
      $('.drag-drop-draw .drag-drop-text').text('')
    })
   },
+  
   computed: {
     previewPicture() {
       if(this.currentUploadPicUrls.length==0)return
       return {backgroundImage : 'url(\''+this.currentUploadPicUrls[this.defaultPrvPicIndex]+'\')'}      
     }
   },
+
   methods: {
    triggerFileInput() {
     $('.file-input').trigger('click')

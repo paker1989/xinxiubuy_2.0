@@ -161,12 +161,53 @@ const store = new Vuex.Store({
    },
 
    FETCH_MANUAL_USERS: ({ commit }) => {
-    console.log('FETCH_MANUAL_USERS')
     return new Promise( (resolve,reject) => {
      Vue.http.post('/fetchManualUsers').then( (res,err) => {
       if(!err){
        commit('SET_ALL_MANUAL_USERS',res.body.users)
        resolve()
+      }else{
+       reject(err)
+      }
+     })
+    })
+   },
+
+   SAVE_USER: ({ commit }, newUser) => {
+    return new Promise( (resolve,reject) => {
+     let data = new FormData()
+     data.append('userId',newUser.userId)
+     data.append('userName',newUser.userName)
+     data.append('address',newUser.address)
+     data.append('phoneNumber',newUser.phoneNumber)
+     data.append('comment',newUser.comment)
+
+     Vue.http.post('/saveNewUser',data).then( (res,err) => {
+      if(!err){
+       if(res.body.user){
+        newUser.userId = res.body.user.userId
+       }
+
+       commit('ADD_OR_UPDATE_USERS',{value :newUser})
+       resolve(newUser)
+      }else{
+       reject(err)
+      }
+     })
+    })
+   },
+
+   SAVE_NEW_ORDER: ({ commit }, newOrderDetail) => {
+    return new Promise( (resolve, reject) => {
+     let data = new FormData()
+     
+     data.append('order',JSON.stringify(newOrderDetail.order))
+     data.append('userId',newOrderDetail.user.userId)
+
+     Vue.http.post('/saveNewOrder',data).then( (res,err) => {
+      if(!err){
+       commit('ADD_OR_UPDATE_USERS',{value : newOrderDetail.user})
+       resolve(newOrderDetail.user)
       }else{
        reject(err)
       }
@@ -220,8 +261,22 @@ const store = new Vuex.Store({
    },
 
    SET_ALL_MANUAL_USERS: (state, manualEnrolUsers) => {
-     console.log('SET_ALL_MANUAL_USERS')
-     state.manualEnrolUsers = manualEnrolUsers
+    manualEnrolUsers.forEach( user => {
+     Vue.set(state.manualEnrolUsers,user.userId,user)
+    })
+   },
+
+   ADD_OR_UPDATE_USERS: (state, user) => {
+    if(state.manualEnrolUsers[user.value.userId]){
+      state.manualEnrolUsers[user.value.userId].userName = user.value.userName
+      state.manualEnrolUsers[user.value.userId].phoneNumber = user.value.phoneNumber
+      state.manualEnrolUsers[user.value.userId].address = user.value.address
+      state.manualEnrolUsers[user.value.userId].comment = user.value.comment
+    }
+    else{
+     Vue.set(state.manualEnrolUsers,user.value.userId,user.value)
+    }
+     
    }
   },
 
@@ -252,7 +307,11 @@ const store = new Vuex.Store({
    },
 
    selectedManualUser: (state) => (id) => {
-    return state.manualEnrolUsers.find( user => {return user.userId == id})
+    return state.manualEnrolUsers[id]
+   },
+
+   allManualUsers: (state) => {
+    return Object.keys(state.manualEnrolUsers).map( userId => {return state.manualEnrolUsers[userId]})
    }
   }
 });

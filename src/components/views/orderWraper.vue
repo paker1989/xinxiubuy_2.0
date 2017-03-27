@@ -14,7 +14,7 @@
    </div><!--header-->
    <div class="content">
     <div class="userProfile">
-     <userProfile :currentUser="currentUser"/>
+     <userProfile :delegateUser="currentUser" v-on:userUpdatedOrCreated="setCurrentUser"/>
     </div><!--end userProfile read-only-->
     <div class="remindWraper" v-if="!currentUser">
       <span class="remindMessage edit">
@@ -25,13 +25,15 @@
     <div class="orderContainer" v-if="currentUser">
      <div class="newOrderWraper" >
      	<span class="text-nav bold edit clickable" v-show="!isCreateNewOrder" @click="isCreateNewOrder = true">新建订单</span>
-      <span class="text-nav bold edit clickable" v-show="isCreateNewOrder" @click="saveNewOrder">保存订单</span>
+      <span class="text-nav bold edit clickable" v-show="isCreateNewOrder" @click="validStat = true">保存订单</span>
       <span class="text-nav bold cancel clickable" v-show="isCreateNewOrder" @click="cancelNewOrder">取消操作</span>
      </div>
      <transition name="fade">
-      <orderCollapse :collapse="false" :isNewOrder="true" v-show="isCreateNewOrder"/>
+      <orderCollapse :collapse="false" v-show="isCreateNewOrder" 
+                     :validStat="validStat"
+                     v-on:validRes="resumeSave"/>
      </transition>
-     <orderCollapse :collapse="true" v-for="i in 2"/>
+     <orderCollapse :collapse="true" :order="order" v-show="currentUser" v-for="(order,index) in currentUser.orders"/>
     </div><!--end orderContainer-->
    </div><!--content-->
    </div>
@@ -55,7 +57,7 @@ export default {
       isCreateNewOrder        : false,
       currentUserId           : this.$route.params.id || -1,
       currentUser             : undefined,
-    //  isCreateUser            : this.$route.params.id?false:true
+      validStat               : false//set as true to trigger validation
     }
   },
 
@@ -65,12 +67,22 @@ export default {
   },
 
   methods: {
-    saveNewOrder() {
-      this.isCreateNewOrder = false
+    resumeSave(newOrder) {
+     this.currentUser.orders.push(newOrder)
+     this.$store.dispatch('SAVE_NEW_ORDER',{user:this.currentUser,order:newOrder}).then((err,data) => {
+      if(!err){
+         this.validStat = false
+         this.isCreateNewOrder = false
+      }
+     })
     },
 
     cancelNewOrder() {
       this.isCreateNewOrder = false
+    },
+
+    setCurrentUser(newOrUpdateUser) {
+     this.currentUser = newOrUpdateUser
     }
   }
 }

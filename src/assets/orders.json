@@ -22,6 +22,7 @@
 			"orderedNumber": "1",
 			"price": "40"
 		}],
+		"deliveryFee" : "10",
 		"comment" : "上次两个化妆棉记得寄过去"
 	}]
 },
@@ -46,7 +47,8 @@
 			"picturePath": "",
 			"orderedNumber": "1",
 			"price": "40"
-		}]
+		}],
+		"deliveryFee" : "10"
 	}]
 }
 ]

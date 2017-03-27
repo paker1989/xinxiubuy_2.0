@@ -31,6 +31,18 @@ module.exports = {
      wrapItem.nbPics = product.picPaths.length
 
     return wrapItem
+  },
+
+  wrapManualUser: function(rawManualUser){
+   return  {
+        userId       : rawManualUser._id,
+        userName     :rawManualUser.userName || '数据出错',
+        phoneNumber  :rawManualUser.phoneNumber || '',
+        comment      :rawManualUser.comment || '无',
+        createdDate  :rawManualUser.createdDate,
+        address      :rawManualUser.address || '数据出错',
+        orders       :rawManualUser.orders || []
+   }
   }
 	
 }

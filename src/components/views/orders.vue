@@ -37,7 +37,7 @@
        <transition-group name="matchedItems" tag="tbody">
         <tr v-for="item in userMatchedItems" v-bind:key="item" mode="outer-in">
           <td>{{item.userName}}</td>
-          <td>{{item.phone}}</td>
+          <td>{{item.phoneNumber}}</td>
           <td><router-link class="clickable" :to="'/order/'+item.userId">{{item.nbCurrentOrders}}</router-link></td>
           <td><router-link class="clickable" :to="'/order/'+item.userId">{{item.nbArchiveOrders}}</router-link></td>
           <td>
@@ -45,7 +45,7 @@
            <span class="text-nav text-remove">移除</span>
           </td>
         </tr>
-        <tr v-bind:key="'defaultMessage'"><td class="defaultMessage" colspan="5">建立你的第一个客户吧~~</td></tr>
+        <tr v-bind:key="'defaultMessage'" v-if="userItems.length==0"><td class="defaultMessage" colspan="5">建立你的第一个客户吧~~</td></tr>
        </transition-group>
      </table><!--end table-->
      <div class="orderGridWraper" v-show="!isDisplayAsList">
@@ -90,9 +90,14 @@ export default {
   },
 
   created() {
-    console.log('created')
-    console.log(this.$store.state.manualEnrolUsers)
-    this.userItems = this.$store.state.manualEnrolUsers?this.$store.state.manualEnrolUsers:[]
+    this.userItems = this.$store.getters.allManualUsers.map( user => {
+     user.nbCurrentOrders = user.orders.filter(order => {return order.payStatus == 1}).length
+     user.nbArchiveOrders = user.orders.length - user.nbCurrentOrders
+     return user
+    })
+
+    this.userMatchedItems = this.userItems.slice(0)
+    //this.userItems = this.$store.state.manualEnrolUsers?this.$store.state.manualEnrolUsers:[]
 
     //wrap all in orders
     /*
@@ -157,7 +162,6 @@ export default {
    },
 
    checkOutOrder(index) {
-    console.log(index)
     this.$router.replace('/order/'+this.userMatchedItems[index].userId)
    },
 

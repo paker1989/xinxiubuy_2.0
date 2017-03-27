@@ -51,7 +51,7 @@ export default {
    */
 
    keyWordFilled() {
-    return this.model.trim().length>0 || this.inputFocus
+    return new String(this.model).trim().length>0 || this.inputFocus
    },
    
    hideByIcon() {
@@ -65,7 +65,7 @@ export default {
 
      this.timer = setTimeout( () => {
       this.$emit('modelEmited', this.model)
-     },500)
+     },100)
    }
   }
 }
