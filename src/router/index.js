@@ -6,6 +6,8 @@ import productUploader from 'components/wraper/uploader'
 import orders from 'components/views/orders'
 import orderWraper from 'components/views/orderWraper'
 import xinxiuRecCats from 'components/views/xinxiuRecCats'
+//temp
+import authentication from 'components/authentication'
 
 Vue.use(Router)
 
@@ -16,6 +18,7 @@ const routes = [
  {path: '/order/:id?',name: 'orderWraper', component: orderWraper},
  {path: '/orders',name: 'orders', component: orders,meta: {keepAlive:true}},
  {path: '/xinxiuRecCats',name: 'xinxiuRecCats', component: xinxiuRecCats},
+ {path: '/authentication',name: 'authentication', component: authentication},
  {path: '/foo', redirect:'/'}
 ]
 
