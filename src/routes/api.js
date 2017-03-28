@@ -206,7 +206,8 @@ let saveNewOrder = (req,res,next) => {
    },(
    err,data) => {
     res.status(200).send({
-     msg  : 'success'
+     msg  : 'success',
+     data :  data
     })
    })
   }

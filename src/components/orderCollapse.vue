@@ -8,19 +8,19 @@
       <icon name="minus" class="text-icon" v-if="isCollapse==false"/>
       <span>
         <label class="key bold">订单号:</label>
-        <label class="value text-content">u2d2s5s2z5s201121442552</label>
+        <label class="value text-content">{{delegateOrder.uuid}}</label>
       </span>
       <span>
         <label class="key bold">订单日期:</label>
-        <label class="value text-content">2017年2月2号</label>
+        <label class="value text-content">{{delegateOrder.createdDate}}</label>
       </span>
       <span>
         <label class="key bold">产品数量:</label>
-        <label class="value text-content">4</label>
+        <label class="value text-content">{{totalProduct}}</label>
       </span>
       <span>
         <label class="key bold">付款方式:</label>
-        <label class="value text-content">微信支付</label>
+        <label class="value text-content">{{delegateOrder.payType}}</label>
       </span>
     </div><!--end metaDataContainer-->
     <transition name="fade">
@@ -122,7 +122,7 @@
         <span class="text-nav clickable edit" @click="editOrder" v-if="!isEditOrder">编辑</span>
 	    <span class="text-nav clickable edit" @click="saveEditOrder" v-if="isEditOrder">保存</span>
 	    <span class="text-nav clickable cancel" @click="isEditOrder=false" v-if="isEditOrder">取消</span> 
-	    <span class="text-nav clickable cancel" v-if="!isEdit && !isNewOrder">结束订单</span>       
+	    <span class="text-nav clickable cancel" v-if="!isNewOrder">结束订单</span>       
        </div>
       </div>
      </div><!--orderDetailContainer-->
@@ -132,6 +132,8 @@
 
 <script>
 import CustInput from 'components/rawHtmlComponent/custInput'
+import {uuid,formatDate } from '../util'
+
 function calculateTotalNb(orderedProducts){
     let val = 0
     orderedProducts.forEach(product => {
@@ -154,7 +156,6 @@ export default {
     return {
       delegateOrder        : this.order || undefined,
       isNewOrder           : this.order?false:true,
-      isEdit               : this.order?false:true,
       isCollapse           : this.collapse,
       isAddingProduct      : this.order?false:true,
       isEditOrder          : false,     
@@ -180,17 +181,12 @@ export default {
 
   created() {
    if(this.delegateOrder){
+    console.log(this.delegateOrder.uuid)
     /*TO DO*/
+    this.updateTotals()
    }
    else{
-    this.delegateOrder = {
-                          deliveryFee :'0',
-                          comment     :'无',
-                          payType     :'未支付',
-                          payStatus   :'2',
-                          orderedProducts : []
-                          }
-    this.updateTotals()
+    this.initForNewOrder()
    }
   },
 
@@ -209,6 +205,7 @@ export default {
    },
 
    setDeliveryFee(val){
+    //IR to fix here
     this.newDeliveryFee = val.replace(/^\s+|\s+$/g,'','')
    },
 
@@ -231,8 +228,6 @@ export default {
     })
 
     this.delegateOrder.deliveryFee = calculateTotalNb(this.delegateOrder.orderedProducts) * 10
-    //this.delegateOrder.deliveryFee = '50'
-
     this.updateTotals()
     this.isAddingProduct = false
    },
@@ -264,6 +259,19 @@ export default {
     this.delegateOrder.payType = this.newPayType
     this.delegateOrder.comment = this.newComment
     this.isEditOrder = false
+   },
+
+   initForNewOrder() {
+      this.delegateOrder = {
+                          deliveryFee :'0',
+                          comment     :'无',
+                          payType     :'未支付',
+                          payStatus   :'2',
+                          orderedProducts : []
+                          }
+
+      this.isAddingProduct = true
+      this.updateTotals()
    }
   },
 
@@ -275,14 +283,24 @@ export default {
 
    //if validStat = true, then validate stats
    validStat(val) {
-    if(val){
+    if(val == 2){
      //TO DO: run validation
       
      if(true){
       //set payStatus
-      this.delegateOrder.payType = /未|没/g.test(this.delegateOrder.payType)?2:1
+      //this.delegateOrder.payStatus = /未|没/g.test(this.delegateOrder.payType)?2:1
+      this.delegateOrder.payStatus = 1
+      this.delegateOrder.uuid = uuid()
+      this.delegateOrder.createdDate = formatDate(new Date())
+
       this.$emit('validRes',this.delegateOrder)
+
+      this.initForNewOrder()
      }
+    }
+    else if(val == 3){
+      this.initForNewOrder()
+      this.$emit('resumeCancel')
     }
    }
   },
@@ -290,6 +308,10 @@ export default {
   computed: {
    newTotalPrice() {
     return isNaN(new Number(this.newPrice))?0:this.newPrice * this.newNbProduct
+   },
+
+   formattedCreatedDate() {
+    return this.delegateOrder?formatDate(this.delegateOrder.createdDate): '数据错误'
    }
   }
   
