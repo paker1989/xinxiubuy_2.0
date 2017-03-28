@@ -44,9 +44,9 @@
          <td class="text-content">{{product.price}}</td>
          <td class="text-content">{{product.orderedNumber * product.price}}</td>
          <td class="clickable edit">
-            <span class="clickable edit" v-if="isEditingProduct" @click="saveEditProduct">保存</span>
-            <span class="clickable cancel" v-if="isEditingProduct" @click="isEditingProduct=false">取消</span>
-            <span class="clickable edit" v-if="!isEditingProduct" @click="editProduct(index)">编辑</span>
+            <span class="clickable edit" v-if="isEditingProduct && delegateOrder.payStatus==1" @click="saveEditProduct">保存</span>
+            <span class="clickable cancel" v-if="isEditingProduct && delegateOrder.payStatus==1" @click="isEditingProduct=false">取消</span>
+            <span class="clickable edit" v-if="!isEditingProduct && delegateOrder.payStatus==1" @click="editProduct(index)">编辑</span>
          </td>
         </tr>
       <!--
@@ -75,11 +75,11 @@
            {{newTotalPrice}}
           </td>
           <td style="text-align:center;">
-            <span class="clickable edit" @click="saveNewProduct">保存</span>
-            <span class="clickable cancel" @click="isAddingProduct=false">取消</span>
+            <span class="clickable edit" v-if="delegateOrder.payStatus==1" @click="saveNewProduct">保存</span>
+            <span class="clickable cancel" v-if="delegateOrder.payStatus==1" @click="isAddingProduct=false">取消</span>
           </td>
         </tr>
-        <tr v-if="!isAddingProduct">
+        <tr v-if="!isAddingProduct && delegateOrder.payStatus==1">
           <td colspan="5"></td>
           <td class="addNew" @click="isAddingProduct=true">
             <button class="plus"></button>
@@ -93,9 +93,9 @@
           <custInput class="newItem" :placeholder="'运费'" :modelValue="delegateOrder.deliveryFee" v-on:modelEmited="setDeliveryFee"/>
          </td>
          <td style="text-align:center;">
-            <span class="clickable edit" v-if="isEditingDeliveryFee" @click="saveDeliveryFee">保存</span>
-            <span class="clickable cancel" v-if="isEditingDeliveryFee" @click="isEditingDeliveryFee=false">取消</span>
-            <span class="clickable edit" v-if="!isEditingDeliveryFee" @click="isEditingDeliveryFee=true">编辑</span>
+            <span class="clickable edit" v-if="isEditingDeliveryFee && delegateOrder.payStatus==1" @click="saveDeliveryFee">保存</span>
+            <span class="clickable cancel" v-if="isEditingDeliveryFee && delegateOrder.payStatus==1" @click="isEditingDeliveryFee=false">取消</span>
+            <span class="clickable edit" v-if="!isEditingDeliveryFee && delegateOrder.payStatus==1" @click="isEditingDeliveryFee=true">编辑</span>
          </td>
         </tr>
         <tr>
@@ -119,10 +119,11 @@
         v-on:modelEmited="setNewPayType" :placeholder="'付款方式/状态'"></span>
        </div>
        <div class="actionWraper">
-        <span class="text-nav clickable edit" @click="editOrder" v-if="!isEditOrder">编辑</span>
-	    <span class="text-nav clickable edit" @click="saveEditOrder" v-if="isEditOrder">保存</span>
-	    <span class="text-nav clickable cancel" @click="isEditOrder=false" v-if="isEditOrder">取消</span> 
-	    <span class="text-nav clickable cancel" v-if="!isNewOrder">结束订单</span>       
+        <span class="text-nav clickable edit" @click="editOrder" v-if="!isEditOrder && delegateOrder.payStatus==1">编辑</span>
+	    <span class="text-nav clickable edit" @click="saveEditOrder" v-if="isEditOrder && delegateOrder.payStatus==1">保存</span>
+	    <span class="text-nav clickable cancel" @click="isEditOrder=false" v-if="isEditOrder && delegateOrder.payStatus==1">取消</span> 
+	    <span class="text-nav clickable cancel" @click="finalizeOrder" v-if="!isNewOrder && delegateOrder.payStatus==1">结束订单</span>    
+      <span class="text-nav clickable cancel" @click="activeOrder" v-if="!isNewOrder && delegateOrder.payStatus==2">激活</span>   
        </div>
       </div>
      </div><!--orderDetailContainer-->
@@ -258,6 +259,12 @@ export default {
    saveEditOrder() {
     this.delegateOrder.payType = this.newPayType
     this.delegateOrder.comment = this.newComment
+
+    if(!this.isNewOrder){
+     //this.$store.dispatch('UPDATE_ORDER',this.delegateOrder)
+     this.$emit('updateOrder',this.delegateOrder)
+    }
+
     this.isEditOrder = false
    },
 
@@ -272,6 +279,17 @@ export default {
 
       this.isAddingProduct = true
       this.updateTotals()
+   },
+  
+   //结束订单:只有编辑状态下才可能
+   finalizeOrder() {
+    this.delegateOrder.payStatus = 2
+    this.$emit('updateOrder',this.delegateOrder)
+   },
+
+   activeOrder() {
+     this.delegateOrder.payStatus = 1
+     this.$emit('updateOrder',this.delegateOrder)  
    }
   },
 

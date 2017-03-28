@@ -34,7 +34,12 @@
                      v-on:validRes="resumeSave"
                      v-on:resumeCancel="cancelNewOrder"/>
      </transition>
-     <orderCollapse :collapse="true" :order="order" v-show="currentUser" :key="order.uuid" v-for="(order,index) in currentUser.orders"/>
+     <orderCollapse :collapse="true" :order="order" v-show="currentUser && selectedOrderStatus==1" 
+                    :key="order.uuid" v-for="(order,index) in inProcessOrders"
+                    v-on:updateOrder="updateOrder"/>
+     <orderCollapse :collapse="true" :order="order" v-show="currentUser && selectedOrderStatus==2" 
+                    :key="order.uuid" v-for="(order,index) in endedOrders"
+                    v-on:updateOrder="updateOrder"/>
     </div><!--end orderContainer-->
    </div><!--content-->
    </div>
@@ -44,6 +49,7 @@
 <script>
 import UserProfile from 'components/userProfileForOrder'
 import OrderCollapse from 'components/orderCollapse'
+
 
 export default {
   name: 'orderWraper',
@@ -58,7 +64,7 @@ export default {
       isCreateNewOrder        : false,
       currentUserId           : this.$route.params.id || -1,
       currentUser             : undefined,
-      validStat               : 1//set as 2 to trigger validation, set as 3 to cancel
+      validStat               : 1,//set as 2 to trigger validation, set as 3 to cancel
     }
   },
 
@@ -72,20 +78,54 @@ export default {
      if(!this.currentUser.orders) this.currentUser.orders = []
      this.currentUser.orders.unshift(newOrder)
    
-     this.$store.dispatch('SAVE_NEW_ORDER',{user:this.currentUser,order:newOrder}).then((data) => {
+     this.$store.dispatch('SAVE_OR_UPDATE_ORDER',{user:this.currentUser,order:newOrder}).then((data) => {
       this.validStat = 1
       this.isCreateNewOrder = false
      })
+    },
+
+    updateOrder(updatedOrder) {
+     let findedOrder = this.currentUser.orders.find(order => {return order.uuid == updatedOrder.uuid})
+     if(findedOrder){
+      findedOrder = updatedOrder
+      this.$store.dispatch('SAVE_OR_UPDATE_ORDER',{user  : this.currentUser,
+                                                   order : findedOrder,
+                                                   update: true})
+     }
     },
 
     cancelNewOrder() {
       this.validStat = 1
       this.isCreateNewOrder = false
     },
-
+/*
+    finalizeOrder(updatedOrder) {
+     let findedOrder = this.currentUser.orders.find(order => {return order.uuid == updatedOrder.uuid})
+     this.$store.dispatch('SAVE_OR_UPDATE_ORDER', {user  : this.currentUser,
+                                                   order : findedOrder,
+                                                   update: true
+                                                  })
+    },
+*/
     setCurrentUser(newOrUpdateUser) {
      this.currentUser = newOrUpdateUser
     }
+  },
+
+  computed: {
+   inProcessOrders() {
+    if(this.currentUser.orders){
+     console.log(this.currentUser.orders.filter(order => {order.payStatus == 1}))
+     return this.currentUser.orders.filter(order => {return order.payStatus == 1})
+    }
+   },
+
+   endedOrders() {
+    if(this.currentUser.orders){
+     console.log(this.currentUser.orders.filter(order => {order.payStatus == 2}))
+     return this.currentUser.orders.filter(order => {return order.payStatus == 2})
+    }
+   }   
   }
 }
 </script>

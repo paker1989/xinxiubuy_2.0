@@ -200,17 +200,31 @@ let saveNewUser = (req, res, next) => {
 }
 
 
-let saveNewOrder = (req,res,next) => {
+let saveOrUpdateOrder = (req,res,next) => {
+  let order = JSON.parse(req.body.order)
+  if(req.body.isUpdate){
+   ManualEnrolUser.update({_id:req.body.userId,
+                          'orders.uuid':order.uuid},
+                          {$set: {"orders.$":order} },(data) => {
+                           res.status(200).send({
+                            msg   : 'success',
+                            data  : data
+                           })
+                          })
+                         
+  }
+  else{
    ManualEnrolUser.update({_id:req.body.userId},{
-    $push: {orders : JSON.parse(req.body.order)}
+    $push: {orders : order}
    },(
    err,data) => {
     res.status(200).send({
      msg  : 'success',
      data :  data
     })
-   })
-  }
+   })  
+   }
+ }
 
 
 
@@ -223,7 +237,7 @@ router.post('/fetchAllTags',fetchAllTags)
 router.post('/saveNewTags',saveNewTags)
 router.post('/fetchManualUsers',fetchManualUsers)
 router.post('/saveNewUser',saveNewUser)
-router.post('/saveNewOrder',saveNewOrder)
+router.post('/saveOrUpdateOrder',saveOrUpdateOrder)
 
 module.exports = router
 
