@@ -273,7 +273,7 @@ export default {
                           deliveryFee :'0',
                           comment     :'无',
                           payType     :'未支付',
-                          payStatus   :'2',
+                          payStatus   : 1,
                           orderedProducts : []
                           }
 
@@ -307,7 +307,7 @@ export default {
      if(true){
       //set payStatus
       //this.delegateOrder.payStatus = /未|没/g.test(this.delegateOrder.payType)?2:1
-      this.delegateOrder.payStatus = 1
+      //this.delegateOrder.payStatus = 1
       this.delegateOrder.uuid = uuid()
       this.delegateOrder.createdDate = formatDate(new Date())
 
