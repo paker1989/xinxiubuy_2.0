@@ -36,29 +36,41 @@
          <td class="text-nav">操作</td>
         </tr>
        </thead>
-       <tbody>
-        <tr class="orderedProductWraper" v-for="(product,index) in delegateOrder.orderedProducts">
-         <td class="text-content">{{product.productName}}</td>
-         <td class="text-content">无</td>
-         <td class="text-content">{{product.orderedNumber}}</td>
-         <td class="text-content">{{product.price}}</td>
-         <td class="text-content">{{product.orderedNumber * product.price}}</td>
-         <td class="clickable edit">
-            <span class="clickable edit" v-if="isEditingProduct && delegateOrder.payStatus==1" @click="saveEditProduct">保存</span>
-            <span class="clickable cancel" v-if="isEditingProduct && delegateOrder.payStatus==1" @click="isEditingProduct=false">取消</span>
-            <span class="clickable edit" v-if="!isEditingProduct && delegateOrder.payStatus==1" @click="editProduct(index)">编辑</span>
+       <tbody><!--已有产品-->
+        <tr class="orderedProductWraper" v-for="(product,index) in delegateOrder.orderedProducts" :key="index">
+          <td class="text-content" v-if="editingIndex != index">{{product.productName}}</td>
+          <td class="text-content" v-if="editingIndex != index">无</td>
+          <td class="text-content" v-if="editingIndex != index">{{product.orderedNumber}}</td>
+          <td class="text-content" v-if="editingIndex != index">{{product.price}}</td>
+          <td class="text-content" v-if="editingIndex != index">{{product.orderedNumber * product.price}}</td>
+          <td class="editable" colspan="2" v-if="editingIndex == index">
+            <custInput class="newItem" :placeholder="'产品名'" :modelValue="editedProductName" 
+                       v-on:modelEmited="setEditedProductName">
+          </td>
+          <td class="editable" v-if="editingIndex == index">
+           <select class="comp-dropdown" v-model="editedNbProduct">
+            <option class="text-nav" v-for="i in 9">{{i}}</option>
+           </select>
+          </td>
+          <td class="editable" v-if="editingIndex == index">
+           <custInput class="newItem" :placeholder="'单价'" v-on:modelEmited="setEditedPrice"
+                      :modelValue="editedPrice">
+          </td>
+          <td class="text-nav totalPrice" v-if="editingIndex == index">
+           {{editedTotalPrice}}
+          </td>
+         <td class="clickable edit center">
+            <span class="clickable edit" v-if="editingIndex == index && delegateOrder.payStatus==1"
+             @click="saveEditProduct">保存</span>
+            <span class="clickable cancel" v-if="editingIndex == index && delegateOrder.payStatus==1"
+             @click="editingIndex = -1">取消</span>
+            <span class="clickable edit" v-if="editingIndex == -1 && delegateOrder.payStatus==1"
+             @click="editProduct(index)">编辑</span>
+            <span class="clickable cancel" v-if="editingIndex == -1 && delegateOrder.payStatus==1"
+             @click="deleteProduct(index)">删除</span>
          </td>
         </tr>
-      <!--
-        <tr>
-         <td class="text-content">兰蔻粉水</td>
-         <td class="text-content">无</td>
-         <td class="text-content">2</td>
-         <td class="text-content">100</td>
-         <td class="text-content">200</td>
-         <td class="clickable edit">编辑</td>
-        </tr>
-      -->
+        <!--新建产品-->
         <tr v-if="isAddingProduct" class="newItemWraper">
           <td class="editable" colspan="2">
             <custInput class="newItem" :placeholder="'产品名'" v-on:modelEmited="setNewProductName">
@@ -74,17 +86,19 @@
           <td class="text-nav totalPrice">
            {{newTotalPrice}}
           </td>
-          <td style="text-align:center;">
+          <td class="center">
             <span class="clickable edit" v-if="delegateOrder.payStatus==1" @click="saveNewProduct">保存</span>
             <span class="clickable cancel" v-if="delegateOrder.payStatus==1" @click="isAddingProduct=false">取消</span>
           </td>
         </tr>
+        <!--增加 按钮-->
         <tr v-if="!isAddingProduct && delegateOrder.payStatus==1">
           <td colspan="5"></td>
           <td class="addNew" @click="isAddingProduct=true">
             <button class="plus"></button>
           </td>
         </tr>
+        <!--运费-->
         <tr>
          <td colspan="2" class="text-nav">运费(每样10元)</td>
          <td colspan="2" class="text-nav">{{totalProduct}}</td>
@@ -92,7 +106,7 @@
          <td class="editable" v-if="isEditingDeliveryFee">
           <custInput class="newItem" :placeholder="'运费'" :modelValue="delegateOrder.deliveryFee" v-on:modelEmited="setDeliveryFee"/>
          </td>
-         <td style="text-align:center;">
+         <td class="center">
             <span class="clickable edit" v-if="isEditingDeliveryFee && delegateOrder.payStatus==1" @click="saveDeliveryFee">保存</span>
             <span class="clickable cancel" v-if="isEditingDeliveryFee && delegateOrder.payStatus==1" @click="isEditingDeliveryFee=false">取消</span>
             <span class="clickable edit" v-if="!isEditingDeliveryFee && delegateOrder.payStatus==1" @click="isEditingDeliveryFee=true">编辑</span>
@@ -105,7 +119,7 @@
         </tr>
        </tbody>
       </table>
-      <div class="commentActionContainer">
+      <div class="metadataEditContainer">
        <div class="commentWraper">
          <span v-if="!isEditOrder" class="bold comment-label">备注:</span>
          <span v-if="!isEditOrder" class="text-content">{{delegateOrder.comment}}</span>
@@ -161,7 +175,6 @@ export default {
       isAddingProduct      : this.order?false:true,
       isEditOrder          : false,     
       isEditingDeliveryFee : false,
-      isEditingProduct     : false,
 
       newProductName       : '',
       newPrice             : '',
@@ -169,10 +182,15 @@ export default {
       newDeliveryFee       : '0',
       newComment           : '无',
       newPayType           : '未支付',
-  
 
       totalProduct         : 0,
-      totalAmount          : 0
+      totalAmount          : 0,
+
+      editedProductName    : '',
+      editedPrice          : '',
+      editedNbProduct      : 1,
+
+      editingIndex         : -1 //editing product's index
     }
   },
 
@@ -182,7 +200,6 @@ export default {
 
   created() {
    if(this.delegateOrder){
-    console.log(this.delegateOrder.uuid)
     /*TO DO*/
     this.updateTotals()
    }
@@ -210,6 +227,14 @@ export default {
     this.newDeliveryFee = val.replace(/^\s+|\s+$/g,'','')
    },
 
+   setEditedProductName(val){
+    this.editedProductName = val.replace(/^\s+|\s+$/g,'')
+   },
+
+   setEditedPrice(val){
+    this.editedPrice = val.replace(/^\s+|\s+$/g,'')
+   },
+
    setNewComment(val){
     this.newComment = val.replace(/^\s+|\s+$/g,'')
    },
@@ -234,11 +259,29 @@ export default {
    },
 
    saveEditProduct() {
-    this.isEditingProduct = false
+    this.delegateOrder.orderedProducts[this.editingIndex].productName   = this.editedProductName
+    this.delegateOrder.orderedProducts[this.editingIndex].price         = this.editedPrice
+    this.delegateOrder.orderedProducts[this.editingIndex].orderedNumber = this.editedNbProduct
+    this.updateTotals()
+
+    this.$emit('updateOrder',this.delegateOrder)
+
+    this.editingIndex = -1
    },
 
    editProduct(index) {
-    this.isEditingProduct = true
+     this.editingIndex = index
+     this.editedProductName = this.delegateOrder.orderedProducts[index].newProductName
+     this.editedPrice       = this.delegateOrder.orderedProducts[index].price
+     this.editedNbProduct   = this.delegateOrder.orderedProducts[index].orderedNumber
+   },
+
+   deleteProduct(index) {
+    this.delegateOrder.orderedProducts.splice(index,1)
+    this.delegateOrder.deliveryFee = calculateTotalNb(this.delegateOrder.orderedProducts) * 10
+    this.updateTotals()
+
+    this.$emit('updateOrder',this.delegateOrder)
    },
 
    saveDeliveryFee() {
@@ -261,7 +304,6 @@ export default {
     this.delegateOrder.comment = this.newComment
 
     if(!this.isNewOrder){
-     //this.$store.dispatch('UPDATE_ORDER',this.delegateOrder)
      this.$emit('updateOrder',this.delegateOrder)
     }
 
@@ -305,9 +347,6 @@ export default {
      //TO DO: run validation
       
      if(true){
-      //set payStatus
-      //this.delegateOrder.payStatus = /未|没/g.test(this.delegateOrder.payType)?2:1
-      //this.delegateOrder.payStatus = 1
       this.delegateOrder.uuid = uuid()
       this.delegateOrder.createdDate = formatDate(new Date())
 
@@ -326,6 +365,10 @@ export default {
   computed: {
    newTotalPrice() {
     return isNaN(new Number(this.newPrice))?0:this.newPrice * this.newNbProduct
+   },
+
+   editedTotalPrice() {
+    return isNaN(new Number(this.editedPrice))?0:this.editedPrice * this.editedNbProduct
    },
 
    formattedCreatedDate() {
@@ -382,6 +425,10 @@ export default {
 
     & .orderDetails-table{
      width: 100%;
+
+     & .center{
+      text-align: center;
+     }
 
      & .addNew{
      /* text-align: right;*/
@@ -458,7 +505,7 @@ export default {
          }/*end tbody*/
         }/*end table*/
 
-        & .commentActionContainer{
+        & .metadataEditContainer{
          position:relative;
          display: flex;
          justify-content: space-between;
