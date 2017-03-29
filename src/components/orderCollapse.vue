@@ -242,8 +242,9 @@ export default {
    setNewPayType(val){
     this.newPayType = val.replace(/^\s+|\s+$/g,'','')
    },
+   //setters end
    
-   //saves
+   //save new product in cache
    saveNewProduct() {
     this.delegateOrder.orderedProducts.push({
       id             : this.delegateOrder.orderedProducts.length+1,
@@ -258,6 +259,7 @@ export default {
     this.isAddingProduct = false
    },
 
+  //save edition in db 
    saveEditProduct() {
     this.delegateOrder.orderedProducts[this.editingIndex].productName   = this.editedProductName
     this.delegateOrder.orderedProducts[this.editingIndex].price         = this.editedPrice
@@ -268,7 +270,7 @@ export default {
 
     this.editingIndex = -1
    },
-
+  
    editProduct(index) {
      this.editingIndex = index
      this.editedProductName = this.delegateOrder.orderedProducts[index].newProductName
@@ -276,6 +278,7 @@ export default {
      this.editedNbProduct   = this.delegateOrder.orderedProducts[index].orderedNumber
    },
 
+   //delete exsting product and update db
    deleteProduct(index) {
     this.delegateOrder.orderedProducts.splice(index,1)
     this.delegateOrder.deliveryFee = calculateTotalNb(this.delegateOrder.orderedProducts) * 10
@@ -298,7 +301,8 @@ export default {
 
     this.isEditOrder = true
    },
-
+ 
+   //save comment and pay type detail in db
    saveEditOrder() {
     this.delegateOrder.payType = this.newPayType
     this.delegateOrder.comment = this.newComment
@@ -309,7 +313,8 @@ export default {
 
     this.isEditOrder = false
    },
-
+   
+   //init new order status
    initForNewOrder() {
       this.delegateOrder = {
                           deliveryFee :'0',
