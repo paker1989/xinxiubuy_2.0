@@ -44,7 +44,7 @@
           <td class="text-content" v-if="editingIndex != index">{{product.price}}</td>
           <td class="text-content" v-if="editingIndex != index">{{product.orderedNumber * product.price}}</td>
           <td class="editable" colspan="2" v-if="editingIndex == index">
-            <custInput class="newItem" :placeholder="'产品名'" :modelValue="editedProductName" 
+            <custInput :class="{'newItem':true,'invalid':errorMessages['editedProductName']}" :placeholder="'产品名'" :modelValue="editedProductName" 
                        v-on:modelEmited="setEditedProductName">
           </td>
           <td class="editable" v-if="editingIndex == index">
@@ -53,7 +53,7 @@
            </select>
           </td>
           <td class="editable" v-if="editingIndex == index">
-           <custInput class="newItem" :placeholder="'单价'" v-on:modelEmited="setEditedPrice"
+           <custInput :class="{'newItem':true,'invalid':errorMessages['editedPrice']}" :placeholder="'单价'" v-on:modelEmited="setEditedPrice"
                       :modelValue="editedPrice">
           </td>
           <td class="text-nav totalPrice" v-if="editingIndex == index">
@@ -63,7 +63,7 @@
             <span class="clickable edit" v-if="editingIndex == index && delegateOrder.payStatus==1"
              @click="saveEditProduct">保存</span>
             <span class="clickable cancel" v-if="editingIndex == index && delegateOrder.payStatus==1"
-             @click="editingIndex = -1">取消</span>
+             @click="cancelEditProduct(index)">取消</span>
             <span class="clickable edit" v-if="editingIndex == -1 && delegateOrder.payStatus==1"
              @click="editProduct(index)">编辑</span>
             <span class="clickable cancel" v-if="editingIndex == -1 && delegateOrder.payStatus==1"
@@ -73,7 +73,8 @@
         <!--新建产品-->
         <tr v-if="isAddingProduct" class="newItemWraper">
           <td class="editable" colspan="2">
-            <custInput class="newItem" :placeholder="'产品名'" v-on:modelEmited="setNewProductName">
+            <custInput :class="{'newItem':true,'invalid':errorMessages['newProductName']}" :placeholder="'产品名'"
+                       v-on:modelEmited="setNewProductName">
           </td>
           <td class="editable">
            <select class="comp-dropdown" v-model="newNbProduct">
@@ -81,7 +82,8 @@
            </select>
           </td>
           <td class="editable">
-           <custInput class="newItem" :placeholder="'单价'" v-on:modelEmited="setPrice">
+           <custInput :class="{'newItem':true,'invalid':errorMessages['newPrice']}"
+                      :placeholder="'单价'" v-on:modelEmited="setPrice">
           </td>
           <td class="text-nav totalPrice">
            {{newTotalPrice}}
@@ -104,11 +106,12 @@
          <td colspan="2" class="text-nav">{{totalProduct}}</td>
          <td v-if="!isEditingDeliveryFee">{{delegateOrder.deliveryFee}}</td>
          <td class="editable" v-if="isEditingDeliveryFee">
-          <custInput class="newItem" :placeholder="'运费'" :modelValue="delegateOrder.deliveryFee" v-on:modelEmited="setDeliveryFee"/>
+          <custInput :class="{'newItem':true,'invalid':errorMessages['newDeliveryFee']}" :placeholder="'运费'"
+                     :modelValue="delegateOrder.deliveryFee" v-on:modelEmited="setDeliveryFee"/>
          </td>
          <td class="center">
             <span class="clickable edit" v-if="isEditingDeliveryFee && delegateOrder.payStatus==1" @click="saveDeliveryFee">保存</span>
-            <span class="clickable cancel" v-if="isEditingDeliveryFee && delegateOrder.payStatus==1" @click="isEditingDeliveryFee=false">取消</span>
+            <span class="clickable cancel" v-if="isEditingDeliveryFee && delegateOrder.payStatus==1" @click="cancelDeliveryFee">取消</span>
             <span class="clickable edit" v-if="!isEditingDeliveryFee && delegateOrder.payStatus==1" @click="isEditingDeliveryFee=true">编辑</span>
          </td>
         </tr>
@@ -134,14 +137,19 @@
        </div>
        <div class="actionWraper">
         <span class="text-nav clickable edit" @click="editOrder" v-if="!isEditOrder && delegateOrder.payStatus==1">编辑</span>
-	    <span class="text-nav clickable edit" @click="saveEditOrder" v-if="isEditOrder && delegateOrder.payStatus==1">保存</span>
-	    <span class="text-nav clickable cancel" @click="isEditOrder=false" v-if="isEditOrder && delegateOrder.payStatus==1">取消</span> 
-	    <span class="text-nav clickable cancel" @click="finalizeOrder" v-if="!isNewOrder && delegateOrder.payStatus==1">结束订单</span>    
-      <span class="text-nav clickable cancel" @click="activeOrder" v-if="!isNewOrder && delegateOrder.payStatus==2">激活</span>   
+	      <span class="text-nav clickable edit" @click="saveEditOrder" v-if="isEditOrder && delegateOrder.payStatus==1">保存</span>
+	      <span class="text-nav clickable cancel" @click="isEditOrder=false" v-if="isEditOrder && delegateOrder.payStatus==1">取消</span> 
+	      <span class="text-nav clickable cancel" @click="finalizeOrder" v-if="!isNewOrder && delegateOrder.payStatus==1">结束订单</span>    
+        <span class="text-nav clickable cancel" @click="activeOrder" v-if="!isNewOrder && delegateOrder.payStatus==2">激活</span>   
        </div>
       </div>
      </div><!--orderDetailContainer-->
     </transition>
+    <div class="errorMessageWraper">
+      <ul>
+        <li v-for="item in Object.keys(errorMessages)">{{errorMessages[item]}}</li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -190,7 +198,9 @@ export default {
       editedPrice          : '',
       editedNbProduct      : 1,
 
-      editingIndex         : -1 //editing product's index
+      editingIndex         : -1, //editing product's index
+
+      errorMessages        : {}
     }
   },
 
@@ -213,26 +223,63 @@ export default {
     this.totalProduct = calculateTotalNb(this.delegateOrder.orderedProducts)
     this.totalAmount = calculateTotalAmount(this.delegateOrder.orderedProducts,this.delegateOrder.deliveryFee)
    },
+
+   validateNewProduct() {
+    if(this.newProductName.length==0)
+       this.$set(this.errorMessages,'newProductName','新添加产品名称不能为空')
+    else
+       this.$delete(this.errorMessages,'newProductName')
+
+    if(isNaN(new Number(this.newPrice)))
+       this.$set(this.errorMessages,'newPrice','新添加产品单价必须为数字')
+    else
+       this.$delete(this.errorMessages,'newPrice')
+   },
+
+   validateEditProduct() {
+    if(this.editedProductName.length==0)
+       this.$set(this.errorMessages,'editedProductName','编辑产品名称不能为空')
+    else
+       this.$delete(this.errorMessages,'editedProductName')
+
+    if(isNaN(new Number(this.editedPrice)))
+       this.$set(this.errorMessages,'editedPrice','编辑产品单价必须为数字')
+    else
+       this.$delete(this.errorMessages,'editedPrice')
+   },
+
+   validateDeliveryFee() {
+    if(isNaN(new Number(this.newDeliveryFee)))
+       this.$set(this.errorMessages,'newDeliveryFee','运费必须为数字')
+    else
+       this.$delete(this.errorMessages,'newDeliveryFee')
+   },
+
    //setters
    setNewProductName(val){
     this.newProductName = val.replace(/^\s+|\s+$/g,'')
+    this.validateNewProduct()
    },
 
    setPrice(val){
     this.newPrice = val.replace(/^\s+|\s+$/g,'')
+    this.validateNewProduct()
    },
 
    setDeliveryFee(val){
     //IR to fix here
     this.newDeliveryFee = val.replace(/^\s+|\s+$/g,'','')
+    this.validateDeliveryFee()
    },
 
    setEditedProductName(val){
     this.editedProductName = val.replace(/^\s+|\s+$/g,'')
+    this.validateEditProduct()
    },
 
    setEditedPrice(val){
     this.editedPrice = val.replace(/^\s+|\s+$/g,'')
+    this.validateEditProduct()
    },
 
    setNewComment(val){
@@ -246,6 +293,10 @@ export default {
    
    //save new product in cache
    saveNewProduct() {
+   this.validateNewProduct()
+   if(this.errorMessages['newProductName'] || this.errorMessages['newPrice'])
+       return 
+   
     this.delegateOrder.orderedProducts.push({
       id             : this.delegateOrder.orderedProducts.length+1,
       productName    :this.newProductName,
@@ -261,6 +312,10 @@ export default {
 
   //save edition in db 
    saveEditProduct() {
+    this.validateEditProduct()
+    if(this.errorMessages['editedProductName'] || this.errorMessages['editedPrice'])
+       return 
+
     this.delegateOrder.orderedProducts[this.editingIndex].productName   = this.editedProductName
     this.delegateOrder.orderedProducts[this.editingIndex].price         = this.editedPrice
     this.delegateOrder.orderedProducts[this.editingIndex].orderedNumber = this.editedNbProduct
@@ -273,9 +328,18 @@ export default {
   
    editProduct(index) {
      this.editingIndex = index
-     this.editedProductName = this.delegateOrder.orderedProducts[index].newProductName
+     this.editedProductName = this.delegateOrder.orderedProducts[index].productName
      this.editedPrice       = this.delegateOrder.orderedProducts[index].price
      this.editedNbProduct   = this.delegateOrder.orderedProducts[index].orderedNumber
+   },
+
+   cancelEditProduct(index) {
+    this.editingIndex = -1
+    this.editedProductName = this.delegateOrder.orderedProducts[index].productName
+    this.editedPrice       = this.delegateOrder.orderedProducts[index].price
+    this.editedNbProduct   = this.delegateOrder.orderedProducts[index].orderedNumber 
+
+    this.validateEditProduct()
    },
 
    //delete exsting product and update db
@@ -289,10 +353,18 @@ export default {
 
    saveDeliveryFee() {
    //valid deliveryFee first
-    this.delegateOrder.deliveryFee = this.newDeliveryFee
+   this.validateDeliveryFee()
+   if(this.errorMessages['newDeliveryFee'])return 
 
+    this.delegateOrder.deliveryFee = this.newDeliveryFee
     this.updateTotals()
     this.isEditingDeliveryFee = false
+   },
+
+   cancelDeliveryFee() {
+    this.newDeliveryFee = this.delegateOrder.deliveryFee
+    this.validateDeliveryFee()
+    this.isEditingDeliveryFee=false
    },
 
    editOrder() {
@@ -343,7 +415,10 @@ export default {
   watch: {
    //IR fix: total price not rerendered upon adding product
    isAddingProduct(val) {
-    if(val) this.newPrice = 0
+      this.newProductName = ''
+      this.newPrice = 0
+      this.$delete(this.errorMessages,'newProductName')
+      this.$delete(this.errorMessages,'newPrice')
    },
 
    //if validStat = true, then validate stats
@@ -562,8 +637,23 @@ export default {
         }
       }/* end orderDetailContainer*/
 
+      & .errorMessageWraper{
+       width: 100%;
+       text-align: left;
+       color:darken(#E0B4B4,20%);
+
+        & li{
+          margin-left:2%;
+          margin-bottom: .5em;
+        }
+      }
+
       & .clickable:hover{
     	cursor: pointer;
+  }
+
+  & .invalid{
+    border:2px solid #E0B4B4;
   }
 
   & .fade-enter{
