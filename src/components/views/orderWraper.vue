@@ -16,15 +16,22 @@
     <div class="userProfile">
      <userProfile :delegateUser="currentUser" v-on:userUpdatedOrCreated="setCurrentUser"/>
     </div><!--end userProfile read-only-->
-    <div class="remindWraper" v-if="!currentUser">
-      <span class="remindMessage edit">
+    <div class="remindWraper" v-if="isDisplayRemind">
+      <span class="remindMessage edit" v-if="!currentUser">
        <icon name="hand-o-left" class="text-icon" scale="2"/>
        先建用户哦~~
+      </span>
+      <span class="remindMessage edit" v-if="currentUser && selectedOrderStatus == 2 && endedOrders.length == 0">
+        没有已结束订单哦~~
+      </span>
+      <span class="remindMessage edit clickable" v-if="!isCreateNewOrder && currentUser && selectedOrderStatus == 1 && inProcessOrders.length == 0"
+            @click="isCreateNewOrder = true">
+        戳我建立你的第一个订单吧~~
       </span>
     </div>
     <div class="orderContainer" v-if="currentUser">
      <div class="newOrderWraper" >
-     	<span class="text-nav bold edit clickable" v-show="!isCreateNewOrder" @click="isCreateNewOrder = true">新建订单</span>
+     	<span class="text-nav bold edit clickable" v-show="!isCreateNewOrder && selectedOrderStatus == 1 && inProcessOrders.length > 0" @click="isCreateNewOrder = true">新建订单</span>
       <span class="text-nav bold edit clickable" v-show="isCreateNewOrder" @click="validStat = 2">保存订单</span>
       <span class="text-nav bold cancel clickable" v-show="isCreateNewOrder" @click="validStat = 3">取消操作</span>
      </div>
@@ -62,7 +69,7 @@ export default {
 
   data () {
     return {
-      selectedOrderStatus     : 1,// 1 for 当前订单 2 for 已归档
+      selectedOrderStatus     : this.$route.params.status? this.$route.params.status:1,// 1 for 当前订单 2 for 已归档
       isCreateNewOrder        : false,
       currentUserId           : this.$route.params.id || -1,
       currentUser             : undefined,
@@ -119,6 +126,15 @@ export default {
      this.inProcessOrders = this.currentUser.orders.filter(order => {return order.payStatus == 1}) || []
      this.endedOrders = this.currentUser.orders.filter(order => {return order.payStatus == 2}) || []
     } 
+  },
+
+  computed: {
+    isDisplayRemind() {
+      return  ! this.currentUser
+             || (this.currentUser && this.selectedOrderStatus == 2 && this.endedOrders.length == 0)
+             || (this.currentUser && this.selectedOrderStatus == 1 && this.inProcessOrders.length == 0 && !this.isCreateNewOrder)
+
+    }
   }
 }
 </script>
@@ -184,6 +200,7 @@ export default {
   & .content{
    position:relative;
    display: flex;
+   flex-wrap: wrap;
 
    & .remindWraper{
     position:relative;
@@ -194,8 +211,8 @@ export default {
     position:absolute;
     top:50%;
     left:50%;
-    font-size:30px;
-    letter-spacing: .3em;
+    font-size:27px;
+    letter-spacing: .1em;
     font-weight:100;
     transform: translate3d(-50%,-50%,0);
    }

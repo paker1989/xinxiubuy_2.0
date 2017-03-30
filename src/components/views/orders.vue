@@ -8,7 +8,7 @@
   -->
    <div class="newOrderContainer">
      <icon name="plus" class="icon icon-green"  aria-hidden="true"/>
-     <router-link class="text-nav clickable" :to="'/order/'">新建客户</router-link>
+     <router-link class="text-nav clickable" :to="'/order/orderstatus/1'">新建客户</router-link>
    </div>
    <div class="orderSearchContainer">
      <label class="text-nav">你的客户</label>
@@ -20,6 +20,7 @@
      </div>
    </div>
    <div class="layoutContainer">
+     <!-- 以后再做 -->
      <div class="inline-block" @click="isDisplayAsList=false"><icon name="th" class="icon" scale="1.1"/></div>
      <div class="inline-block" @click="isDisplayAsList=true"><icon name="list" class="icon" scale="1.1"/></div>
    </div>
@@ -35,14 +36,14 @@
          </tr>
       </thead>
        <transition-group name="matchedItems" tag="tbody">
-        <tr v-for="item in userMatchedItems" v-bind:key="item" mode="outer-in">
+        <tr v-for="(item,index) in userMatchedItems" v-bind:key="index" mode="outer-in">
           <td>{{item.userName}}</td>
           <td>{{item.phoneNumber}}</td>
-          <td><router-link class="clickable" :to="'/order/'+item.userId">{{item.nbCurrentOrders}}</router-link></td>
-          <td><router-link class="clickable" :to="'/order/'+item.userId">{{item.nbArchiveOrders}}</router-link></td>
+          <td><router-link class="order-clickable" :to="'/order/'+item.userId+'/orderstatus/1'">{{item.nbCurrentOrders}}</router-link></td>
+          <td><router-link class="order-clickable" :to="'/order/'+item.userId+'/orderstatus/2'">{{item.nbArchiveOrders}}</router-link></td>
           <td>
-           <span class="text-nav text-edit">编辑</span>
-           <span class="text-nav text-remove">移除</span>
+           <router-link class="text-nav text-edit clickable" :to="'/order/'+item.userId+'/orderstatus/1'">编辑</router-link>
+           <span class="text-nav text-remove clickable" @click="removeUser(index)">移除</span>
           </td>
         </tr>
         <tr v-bind:key="'defaultMessage'" v-if="userItems.length==0"><td class="defaultMessage" colspan="5">建立你的第一个客户吧~~</td></tr>
@@ -72,7 +73,7 @@ export default {
    return {
     tag              : {tagName : '示例标签'},
     inSearch         : false,
-    orders           : [],
+  //orders           : [],
     userItems        : [],
     userMatchedItems : [],
     isDisplayAsList  : true
@@ -97,60 +98,6 @@ export default {
     })
 
     this.userMatchedItems = this.userItems.slice(0)
-    //this.userItems = this.$store.state.manualEnrolUsers?this.$store.state.manualEnrolUsers:[]
-
-    //wrap all in orders
-    /*
-    staticOrderJson.forEach( order => {
-     let orderObj = {}
-     orderObj.userId = order.userId
-     orderObj.userName = order.userName
-     orderObj.phoneNumber = order.phoneNumber
-     orderObj.coordonnee = order.coordonnee   
-
-     if(order.orders){
-      orderObj.orders = new Array()
-      order.orders.forEach( perOrder => {
- 	     let orderDetail = {}
-	     orderDetail.orderNumber = perOrder.orderNumber
-	     orderDetail.orderDate = perOrder.orderDate
-	     orderDetail.payStatus = perOrder.payStatus
-	     
-	     if(order.payStatus == 1){
-	      orderDetail.payType = perOrder.payType
-	     }
-
-	     if(perOrder.orderedProducts){
-	      orderDetail.orderedProducts = new Array()
-	      perOrder.orderedProducts.forEach( product => {
-	       let orderedItem = {}
-           orderedItem.productName = product.productName
-           orderedItem.picturePath = product.picturePath?product.picturePath:''
-           orderedItem.orderedNumber = product.orderedNumber
-           orderedItem.price = product.price
-
-           orderDetail.orderedProducts.push(orderedItem)
-	      })
-	     }
-	     orderObj.orders.push(orderDetail)
-      })
-     }
-     this.orders.push(orderObj)
-
-    //wrap user items
-    if(this.userItems.find( user => {return user.userName == order.userName}) == undefined){
-      this.userItems.push({
-       userId          : order.userId,
-       userName        : order.userName,
-       phone           : order.phoneNumber,
-       nbCurrentOrders : order.orders?order.orders.filter( order => { return order.payStatus == 1}).length:0,
-       nbArchiveOrders : order.orders?order.orders.filter( order => { return order.payStatus == 2}).length:0
-      })
-    }
-
-   })
-   this.userMatchedItems = this.userItems.slice(0)
-   */
   },
 
   computed() {
@@ -171,12 +118,11 @@ export default {
      return
     }
     keyWord = keyWord.replace(/^\s+|\s+$/g,'')
-    
-    let matchedOrder = this.orders.filter( order => { 
+    let matchedOrder = this.userItems.filter( order => { 
       let matchedFlag = false
       if(order.userName.includes(keyWord)) matchedFlag = true
-      if(order.orders){
-        order.orders.forEach( item => {
+      if(order.userItems){
+        order.userItems.forEach( item => {
          if(item.orderNumber.includes(keyWord)) matchedFlag = true
          if(item.orderedProducts){
           item.orderedProducts.forEach( product => {
@@ -201,6 +147,11 @@ export default {
       })
       return isMatch
      })
+   },
+
+   removeUser(index) {
+    /* TO DO */
+    console.log('to do : '+index)
    }
   }
 }
@@ -263,12 +214,14 @@ export default {
     color: lighten(red,10%);
    }
 
-   & .clickable{
+   
+   & .order-clickable{
     color:black;
     text-decoration:underline;
     font-size:16px;
     cursor: pointer;
    }
+   
 
    & .orderGridWraper{
     position:relative;
