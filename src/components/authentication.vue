@@ -20,7 +20,7 @@
       <custInput class="field" :placeholder="'输入密码'"/> 
       <custInput class="field" :placeholder="'确认密码'"/>   
      </div>
-     <button class="ui button cust">确认</button>
+     <button class="ui button cust" @click="signup">确认</button>
      <button class="ui button cust">取消</button>
    </div><!--sign up end -->
   </div>
@@ -45,6 +45,17 @@ export default {
   methods: {
     setCurrentStat(stat){
       this.currentStat = stat
+    },
+
+    signup() {
+     let newUser = {
+      username:'xubin',
+      password:'paker1989',
+      phoneNumber:'0659657708',
+      photoPath:'无'
+     }
+
+     this.$store.dispatch('SIGN_UP',{value:newUser})
     }
   },
 

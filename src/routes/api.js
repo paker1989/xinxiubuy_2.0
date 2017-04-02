@@ -5,6 +5,7 @@ const path = require('path')
 const config = require('../../config')
 
 const util = require('./util')
+
 const db = require('../../db')
 const Product = require('../model/product')
 const Tag = require('../model/tag')
@@ -129,7 +130,7 @@ let saveNewTags = (req, res, next) => {
                       tagName     : tag,
                       createdDate : new Date()
                     })
-//should refactor here
+    //should refactor here
     tagToSave.save(function(err,data){
       if(err){
        errs.push(err)
@@ -226,8 +227,6 @@ let saveOrUpdateOrder = (req,res,next) => {
    }
  }
 
-
-
 router.post('/uploadPics',uploadPics)
 router.post('/uploadProduct',uploadProduct)
 router.get('/getProducts',getProducts)
@@ -239,7 +238,16 @@ router.post('/fetchManualUsers',fetchManualUsers)
 router.post('/saveNewUser',saveNewUser)
 router.post('/saveOrUpdateOrder',saveOrUpdateOrder)
 
-module.exports = router
+module.exports = (passport) =>{
+  router.post('/signup',passport.authenticate('signup',{
+   successRedirect:'/',
+   failureFlash : true
+  }))
+
+
+  return router
+}
+
 
 /*
 let upload = (req, res, next) => {
@@ -252,4 +260,8 @@ let upload = (req, res, next) => {
      res.send('File uploaded!')
   })
 }
+
+  router.post('signup',(req,res,next) => {
+   console.log('received signup request' + req.username)
+  })
 */

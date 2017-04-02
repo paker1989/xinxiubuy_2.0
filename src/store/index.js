@@ -215,20 +215,21 @@ const store = new Vuex.Store({
      })
     })
    },
-/*
-   UPDATE_ORDER: ({ commit },updatedOrderDetail) => {
-    return new Promise((resolve,reject) => {
-     data.append('order',JSON.stringify(updatedOrderDetail.order))
-     data.append('userId',newOrderDetail.user.userId)
 
-     Vue.http.post('/updateOrder',data).then( (res,err) => {
-      if(!err){
-       commit('ADD_OR_UPDATE_USERS',{value : updatedOrder.user})
-      }
+   SIGN_UP: ({commit},newUser) => {
+    return new Promise( ( resolve, reject ) => {
+     let data = new FormData()
+     
+     data.append('username',newUser.value.username)
+     data.append('password',newUser.value.password)
+     data.append('phoneNumber',newUser.value.phoneNumber)
+
+     Vue.http.post('/signup',data).then( (res,err) => {
+      /* TO DO */
      })
     })
    }
-*/
+
   },
 
   mutations: {

@@ -12,6 +12,7 @@ var express = require('express')
 var webpack = require('webpack')
 //bxu1
 var bodyParser = require('body-parser')
+var cookieParser = require('cookie-parser')
 var fileUpload = require('express-fileupload')
 
 var proxyMiddleware = require('http-proxy-middleware')
@@ -25,14 +26,13 @@ var autoOpenBrowser = !!config.dev.autoOpenBrowser
 // https://github.com/chimurai/http-proxy-middleware
 var proxyTable = config.dev.proxyTable
 
-//bxu1
-var routes = require('../src/routes/api')
-
 var app = express()
 
 //bxu1
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extend: false}))
+app.use(cookieParser())
+
 //bxu1
 app.use(fileUpload())
 
@@ -75,6 +75,19 @@ app.use(devMiddleware)
 app.use(hotMiddleware)
 
 //bxu1
+var passport = require('passport')
+var expressSession = require('express-session')
+app.use(expressSession({secret:'xinxiu'}))
+app.use(passport.initialize())
+app.use(passport.session())
+
+var flash = require('connect-flash')
+app.use(flash())
+
+var initPassport = require('../src/passport/init')
+initPassport(passport)
+
+var routes = require('../src/routes/api')(passport)
 app.use('/',routes)
 
 
