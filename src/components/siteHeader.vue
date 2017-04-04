@@ -2,7 +2,9 @@
   <div class="header">
    <div :class="{'defaultHeader':true,'leaveTop':isLeaveTop}">
     <label class="logo">秀秀巴黎购</label>
-    <label class="login"><icon name="user" class="icon"></icon><span>登录</span></bael>  
+    <label class="login"><icon name="user" class="icon"></icon>
+     <router-link to="/authentication" class="text-nav">登录</router-link>
+    </label>  
    </div>
    <div :class="{'newHeader':true, 'initialHidden':true,'leaveTop':isLeaveTop}">
     <div class="left-container">
@@ -13,7 +15,7 @@
       <router-link to="/xinxiuRecCats" class="text-nav">店长推荐</router-link>
     </div>
     <div class="right-container">
-       <label>登录</label>
+       <router-link to="/authentication" class="text-nav">登录</router-link>
        <router-link to="/foo">
          <icon name="heart-o"  aria-hidden="true" scale="1"/>
          <!--
@@ -108,6 +110,10 @@ export default {
       vertical-align: text-bottom;
       margin-right: 8px;
       }
+
+     & .text-nav{
+      color: white;
+     }
     }
 
     & .logo{

@@ -9,7 +9,9 @@
         <router-link to="/orders" class="text-nav">订单</router-link>
         <router-link to="/xinxiuRecCats" class="text-nav">店长推荐</router-link>
         <!--temp menu -->
+        <!--
         <router-link to="/authentication" class="text-nav">登录</router-link>
+        -->
       </div>
       <div class="right-container">
         <router-link to="/foo">

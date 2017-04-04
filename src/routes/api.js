@@ -239,10 +239,24 @@ router.post('/saveNewUser',saveNewUser)
 router.post('/saveOrUpdateOrder',saveOrUpdateOrder)
 
 module.exports = (passport) =>{
-  router.post('/signup',passport.authenticate('signup',{
-   successRedirect:'/',
-   failureFlash : true
-  }))
+  router.post('/signup',passport.authenticate('signup'), (req,res) => {
+   /*
+   console.log('callback')
+   console.log(req.user)
+   console.log(req.isAuthenticated())
+   req.logout()
+   console.log(req.user)
+   console.log(req.isAuthenticated())
+   res.redirect('/')
+   */
+   if(req.user){
+    res.send({
+     msg  : 'success',
+     user : req.user
+    })
+   }
+  }
+  )
 
 
   return router

@@ -226,6 +226,7 @@ const store = new Vuex.Store({
 
      Vue.http.post('/signup',data).then( (res,err) => {
       /* TO DO */
+      resolve(res.body.user)
      })
     })
    }

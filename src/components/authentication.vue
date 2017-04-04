@@ -55,7 +55,9 @@ export default {
       photoPath:'无'
      }
 
-     this.$store.dispatch('SIGN_UP',{value:newUser})
+     this.$store.dispatch('SIGN_UP',{value:newUser}).then((res) => {
+      this.$router.replace('/')
+     })
     }
   },
 
