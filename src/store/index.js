@@ -216,6 +216,7 @@ const store = new Vuex.Store({
     })
    },
 
+  /*
    SIGN_UP: ({commit},newUser) => {
     return new Promise( ( resolve, reject ) => {
      let data = new FormData()
@@ -225,11 +226,11 @@ const store = new Vuex.Store({
      data.append('phoneNumber',newUser.value.phoneNumber)
 
      Vue.http.post('/signup',data).then( (res,err) => {
-      /* TO DO */
       resolve(res.body.user)
      })
     })
    }
+   */
 
   },
 

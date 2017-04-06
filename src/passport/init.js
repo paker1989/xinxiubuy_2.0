@@ -1,4 +1,5 @@
 var signup = require('./signup');
+var logIn = require('./logIn');
 var User = require('../model/selfEnrolUser');
 
 module.exports = function(passport){
@@ -18,5 +19,5 @@ module.exports = function(passport){
 
     // Setting up Passport Strategies for Login and SignUp/Registration
     signup(passport);
-
+    logIn(passport);
 }

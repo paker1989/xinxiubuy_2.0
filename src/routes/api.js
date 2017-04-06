@@ -240,15 +240,6 @@ router.post('/saveOrUpdateOrder',saveOrUpdateOrder)
 
 module.exports = (passport) =>{
   router.post('/signup',passport.authenticate('signup'), (req,res) => {
-   /*
-   console.log('callback')
-   console.log(req.user)
-   console.log(req.isAuthenticated())
-   req.logout()
-   console.log(req.user)
-   console.log(req.isAuthenticated())
-   res.redirect('/')
-   */
    if(req.user){
     res.send({
      msg  : 'success',
@@ -256,26 +247,57 @@ module.exports = (passport) =>{
     })
    }
   }
-  )
+ )
 
+/*
+ router.post('/login', (req,res,next) => {
+  passport.authenticate('login',(err,user,info) => {
+   if(err) return next(err)
+
+   if(!user) return next()
+
+   req.logIn(user,(err) => {
+    if(err) return next(err)
+    return next()
+   })
+  })
+ },
+ (req,res,next) => {
+  console.log('??')
+  if(req.user){
+   res.send({
+    msg  : 'success',
+    user :  req.user
+   })
+  }
+  else{
+   res.send({
+    msg : req.flsh('message')
+   })
+  }
+ })
+ */
+ 
+ router.post('/login',(req, res, next) => {
+   passport.authenticate('login', (err, user, info) => {
+    if(err) {
+      return next(err)
+     }
+    if(!user){
+     return res.send({
+      msg: req.flash('message')
+     })
+    }
+    req.logIn(user,(err) => {
+     if(err) {return next(err)}
+     return res.send({
+      msg  : 'success',
+      user : req.user
+     })
+    })
+   })(req, res, next)
+  })
+  
 
   return router
 }
-
-
-/*
-let upload = (req, res, next) => {
-  var file = req.files.thumbnail
-
-  fs.writeFile('./public/sdsds.jpg',file.data, err => {
-    if(err)
-     return res.status(500).send(err)
-
-     res.send('File uploaded!')
-  })
-}
-
-  router.post('signup',(req,res,next) => {
-   console.log('received signup request' + req.username)
-  })
-*/

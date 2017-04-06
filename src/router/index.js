@@ -6,6 +6,7 @@ import productUploader from 'components/wraper/uploader'
 import orders from 'components/views/orders'
 import orderWraper from 'components/views/orderWraper'
 import xinxiuRecCats from 'components/views/xinxiuRecCats'
+import myspace from 'components/views/myspace'
 //temp
 import authentication from 'components/authentication'
 
@@ -19,6 +20,7 @@ const routes = [
  {path: '/orders',name: 'orders', component: orders,meta: {keepAlive:true}},
  {path: '/xinxiuRecCats',name: 'xinxiuRecCats', component: xinxiuRecCats},
  {path: '/authentication',name: 'authentication', component: authentication},
+ {path: '/myspace',name: 'myspace', component: myspace},
  {path: '/foo', redirect:'/'}
 ]
 

@@ -10,7 +10,7 @@
    <div class="signinContainer" v-if="currentStat=='登录'">
      <custInput class="field" :placeholder="'用户名'"/>
      <custInput class="field" :placeholder="'密码'"/>
-     <button class="ui button cust">登录</button>
+     <button class="ui button cust" @click="logIn">登录</button>
      <a class="forgetPW" href="#">忘记密码?</a>
    </div><!-- sign in end -->
    <div class="signupContainer" v-if="currentStat=='注册'">
@@ -48,15 +48,42 @@ export default {
     },
 
     signup() {
+    /*
      let newUser = {
       username:'xubin',
       password:'paker1989',
       phoneNumber:'0659657708',
       photoPath:'无'
      }
-
+     */
+     
+     /*
      this.$store.dispatch('SIGN_UP',{value:newUser}).then((res) => {
       this.$router.replace('/')
+     })
+     */
+     let data = new FormData()
+     
+     data.append('username','xubin')
+     data.append('password','paker1989')
+     data.append('phoneNumber','0659657708')
+
+     this.$http.post('signup',data).then( (res) => {
+      this.$router.replace('/')
+     })
+    },
+
+    logIn() {
+     let data = new FormData()
+     
+     data.append('username','xubin')
+     data.append('password','paker1989')
+
+     this.$http.post('/login',data).then( (res) => {
+      if(res.body.user)
+        this.$router.replace('/myspace')
+      else
+        alert(res.body.msg)
      })
     }
   },
