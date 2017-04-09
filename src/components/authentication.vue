@@ -81,7 +81,7 @@ export default {
 
      this.$http.post('/login',data).then( (res) => {
       if(res.body.user)
-        this.$router.replace('/myspace')
+        this.$router.replace('/myspace/wishes')
       else
         alert(res.body.msg)
      })

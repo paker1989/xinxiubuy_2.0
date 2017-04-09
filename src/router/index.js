@@ -7,6 +7,11 @@ import orders from 'components/views/orders'
 import orderWraper from 'components/views/orderWraper'
 import xinxiuRecCats from 'components/views/xinxiuRecCats'
 import myspace from 'components/views/myspace'
+import userWishes from 'components/userWishes'
+import userOrders from 'components/userOrders'
+import userProfile from 'components/userProfile'
+
+
 //temp
 import authentication from 'components/authentication'
 
@@ -20,7 +25,15 @@ const routes = [
  {path: '/orders',name: 'orders', component: orders,meta: {keepAlive:true}},
  {path: '/xinxiuRecCats',name: 'xinxiuRecCats', component: xinxiuRecCats},
  {path: '/authentication',name: 'authentication', component: authentication},
- {path: '/myspace',name: 'myspace', component: myspace},
+ {path: '/myspace',
+  name: 'myspace', 
+  component: myspace,
+  children: [
+   {path:'wishes',component:userWishes},
+   {path:'orders',component:userOrders},
+   {path:'profile',component:userProfile}
+  ]
+   },
  {path: '/foo', redirect:'/'}
 ]
 
