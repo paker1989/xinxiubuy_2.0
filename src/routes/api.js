@@ -249,18 +249,24 @@ module.exports = (passport) =>{
   }
  )
 
+
 /*
  router.post('/login', (req,res,next) => {
   passport.authenticate('login',(err,user,info) => {
    if(err) return next(err)
 
-   if(!user) return next()
+   if(!user) {
+    res.send({
+      msg : req.flash('message')
+    })
+    return
+   }
 
    req.logIn(user,(err) => {
     if(err) return next(err)
     return next()
    })
-  })
+  })(req,res,next)
  },
  (req,res,next) => {
   console.log('??')
@@ -297,7 +303,6 @@ module.exports = (passport) =>{
     })
    })(req, res, next)
   })
-  
-
+ 
   return router
 }

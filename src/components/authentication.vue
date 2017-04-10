@@ -65,7 +65,7 @@ export default {
      let data = new FormData()
      
      data.append('username','xubin')
-     data.append('password','paker1989')
+     data.append('password','paker19189')
      data.append('phoneNumber','0659657708')
 
      this.$http.post('signup',data).then( (res) => {
