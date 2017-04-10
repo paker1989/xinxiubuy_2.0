@@ -18,14 +18,22 @@
      </div><!--menuContainer-->
     </div><!-- header -->
     <div class="content">
-     <router-view></router-view>
-    </div>
+     <keep-alive>
+       <router-view></router-view>
+     </keep-alive>   
+    </div><!--end content-->
   </div>
 </template>
 
 <script>
   export default {
     name: 'myspace',
+
+    beforeRouteEnter(to,from,next) {
+      console.log(to)
+      next()
+
+    },
    
     data() {
      return {
