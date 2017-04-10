@@ -227,6 +227,19 @@ let saveOrUpdateOrder = (req,res,next) => {
    }
  }
 
+ let authenticatedUser = (req,res,next) => {
+   if(req.user){
+    res.send({
+      user : req.user
+    })
+   }
+   else{
+    res.send({
+      msg : 'not authenticated'
+    })
+   }
+ }
+
 router.post('/uploadPics',uploadPics)
 router.post('/uploadProduct',uploadProduct)
 router.get('/getProducts',getProducts)
@@ -237,6 +250,7 @@ router.post('/saveNewTags',saveNewTags)
 router.post('/fetchManualUsers',fetchManualUsers)
 router.post('/saveNewUser',saveNewUser)
 router.post('/saveOrUpdateOrder',saveOrUpdateOrder)
+router.get('/authenticatedUser',authenticatedUser)
 
 module.exports = (passport) =>{
   router.post('/signup',passport.authenticate('signup'), (req,res) => {
@@ -303,6 +317,6 @@ module.exports = (passport) =>{
     })
    })(req, res, next)
   })
- 
+
   return router
 }

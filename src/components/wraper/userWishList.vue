@@ -1,6 +1,6 @@
 <template>
   <div class="userWishList">
-   userWishList is right here
+  
   </div>
 </template>
 

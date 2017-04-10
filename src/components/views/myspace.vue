@@ -3,7 +3,7 @@
     <div class="jumbtron" :style="jumbtronBg"></div>
     <div class="header">
      <div class="welcomeContainer">
-      <span style="font-size:30px;" class="inline">遇到你真美好, <i style="font-size:18px;">狂乱贵公子</i></span>
+      <span style="font-size:30px;" class="inline">遇到你真美好, <i style="font-size:18px;">{{user.username}}</i></span>
      </div><!--welcomeContainer-->
      <div class="menuContainer">
        <span :class="{'item clickable':true,'active':currentChild == 'wishes'}"
@@ -26,36 +26,51 @@
 </template>
 
 <script>
-  export default {
-    name: 'myspace',
+import Vue from 'vue'
+export default {
+  name: 'myspace',
 
-    beforeRouteEnter(to,from,next) {
-      console.log(to)
+  beforeRouteEnter(to,from,next) {
+     Vue.http.get('/authenticatedUser').then(res => {
+     if(res.body.user){
+      sessionStorage.setItem('authenticatedUser',JSON.stringify(res.body.user))
       next()
-
-    },
-   
-    data() {
-     return {
-      currentChild : 'wishes'
      }
-    },
-
-    methods: {
-     toChild(childName) {
-      this.currentChild = childName
-      this.$router.replace('/myspace/'+childName)
+     else{
+      next('/')
+      //next({ path : '/upload' })
      }
-    },
 
-    computed: {
-     jumbtronBg() {
-      return {
-       backgroundImage: 'url('+'\''+'/static/jumbtron/jumbtron3.png'+'\')'
-      }
-     }
+     console.log(sessionStorage.getItem('authenticatedUser'))
+   })
+  },
+ 
+  data() {
+   return {
+    currentChild : 'wishes',
+    user         :  JSON.parse(sessionStorage.getItem('authenticatedUser'))
+   }
+  },
+
+  created() {
+
+  },
+
+  methods: {  
+   toChild(childName) {
+    this.currentChild = childName
+    this.$router.replace('/myspace/'+childName)
+   }
+  },
+
+  computed: {
+   jumbtronBg() {
+    return {
+     backgroundImage: 'url('+'\''+'/static/jumbtron/jumbtron3.png'+'\')'
     }
+   }
   }
+}
 </script>
 
 <style lang="scss" scoped>

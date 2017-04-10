@@ -64,7 +64,7 @@ export default {
      */
      let data = new FormData()
      
-     data.append('username','xubin')
+     data.append('username','狂乱贵公子')
      data.append('password','paker19189')
      data.append('phoneNumber','0659657708')
 
@@ -76,8 +76,8 @@ export default {
     logIn() {
      let data = new FormData()
      
-     data.append('username','xubin')
-     data.append('password','paker1989')
+     data.append('username','狂乱贵公子')
+     data.append('password','paker19189')
 
      this.$http.post('/login',data).then( (res) => {
       if(res.body.user)

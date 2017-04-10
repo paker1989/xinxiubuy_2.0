@@ -21,7 +21,6 @@
   import NavHelper from 'components//NavHelper'
   import FilterBar from 'components/filterBar'
   import store from '../../store'
-  import Vue from 'vue'
 
   export default {
     name: 'generalView',
