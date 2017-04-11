@@ -64,9 +64,11 @@ export default {
      */
      let data = new FormData()
      
-     data.append('username','狂乱贵公子')
+     data.append('username','晓之甜蜜的爱')
      data.append('password','paker19189')
      data.append('phoneNumber','0659657708')
+     data.append('wishedList',['58cd8677b23cd80759700c1e','58cd5050d4671c024d89b59e','58cd4f1dd4671c024d89b59d',
+      '58cd4ec3d4671c024d89b59c','58cd4dc2d4671c024d89b59a'])
 
      this.$http.post('signup',data).then( (res) => {
       this.$router.replace('/')
@@ -76,7 +78,7 @@ export default {
     logIn() {
      let data = new FormData()
      
-     data.append('username','狂乱贵公子')
+     data.append('username','晓之甜蜜的爱')
      data.append('password','paker19189')
 
      this.$http.post('/login',data).then( (res) => {

@@ -41,7 +41,7 @@ export default {
       //next({ path : '/upload' })
      }
 
-     console.log(sessionStorage.getItem('authenticatedUser'))
+  //   console.log(sessionStorage.getItem('authenticatedUser'))
    })
   },
  
@@ -109,7 +109,7 @@ export default {
     width: 100%;
     display: flex;
     justify-content: flex-start;
-    padding-left:50px;
+    padding-left:100px;
 
     & .item{
      position:relative;

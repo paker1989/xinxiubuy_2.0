@@ -52,6 +52,9 @@ export default {
   }/*end section*/
 
   & .wishContainer{
+    width: 90%;
+    margin: 0 auto;
+
   	& .header{
      text-align: left;
      margin-bottom: 1em;
