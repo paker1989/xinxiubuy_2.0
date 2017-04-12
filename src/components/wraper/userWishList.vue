@@ -3,35 +3,43 @@
    <div class="wishItemContainer">
      <productCard class="productWraper" v-for="item in displayList"
                  :product="item" :limitedText="50"/> 
+     <div class="more right" v-if="displayRightArrow" @click="goRight">
+       <circleStep :dir="'right'"/></circleStep>
+     </div> 
+     <div class="more left" v-if="displayLeftArrow" @click="goLeft">
+       <circleStep :dir="'left'"/></circleStep>
+     </div>
    </div><!--wishItemContainer end-->
   </div>
 </template>
 
 <script>
 import ProductCard from 'components/productCard'
-import { debounce } from '../../util'
+import CircleStep from 'components/rawHtmlComponent/circleStep'
 
 export default {
   name: 'userWishList', 
 
- // props:['userId'],
+  props:['displayAll'],
 
   data() {
     return {
-     wishList    : [],
-     displayList : [],
-     timer       : null
+     wishList         : [],
+     displayList      : [],
+     timer            : null,
+     offset           : 0,
+     displayLeftArrow : true,
+     displayRightArrow:true
     }
   },
 
   components: {
-   ProductCard
+   ProductCard,CircleStep
   },
 
   created() {
-   // console.log(this.user.wishedList)
     let user = JSON.parse(sessionStorage.getItem('authenticatedUser'))
-    //console.log(user.wishedList.length)
+
     user.wishedList.forEach( productId => {
       this.$http.post('/getProductById',{ id : productId}).then( res => {
         if(res.body.product){
@@ -46,23 +54,49 @@ export default {
   mounted() {
     this.$nextTick(() => {
       window.addEventListener('resize',this.resizeWindow)
-    //  this.resizeWindow()
+      this.resizeWindow()
     })  
   },
 
   methods: {
     resizeWindow(event) {
-      //console.log('wishItemContainer : '+$('.wishItemContainer').innerWidth())
-      //console.log('item : '+$('.productWraper').outerWidth(true))
       if(this.timer) clearTimeout(this.timer)
 
       this.timer = setTimeout(() => {
         let containerWidth = $('.wishItemContainer').innerWidth(),
             itemOuterWidth = $('.productWraper').outerWidth(true)|| 228,
-            eleNumber      = Math.floor(containerWidth/itemOuterWidth) 
+            eleNumber      = Math.floor(containerWidth/itemOuterWidth)
 
-            this.displayList = this.wishList.slice(0,eleNumber)
+            this.offset = 0
+            this.displayList = this.wishList.slice(0,Math.min(this.wishList.length,eleNumber))
+            this.setArrowStatus()
           },100)
+
+    },
+
+    goRight() {
+      let currentShowNb    = this.displayList.length,
+          lastDisplayIndex = this.offset+currentShowNb-1, 
+          maxIndex         = this.wishList.length - 1, 
+          toOffset         = (maxIndex-lastDisplayIndex)>currentShowNb?currentShowNb:(maxIndex-lastDisplayIndex)
+
+      this.offset += toOffset
+      this.displayList = this.wishList.slice(this.offset,this.offset+currentShowNb)
+      this.setArrowStatus()
+    },
+
+    goLeft() {
+      let currentShowNb = this.displayList.length,
+          toOffset      = this.offset>currentShowNb?currentShowNb:this.offset
+
+      this.offset -= toOffset
+      this.displayList = this.wishList.slice(this.offset,this.offset+currentShowNb)   
+      this.setArrowStatus()
+    },
+
+    setArrowStatus() {
+      this.displayRightArrow = this.offset+this.displayList.length != this.wishList.length
+      this.displayLeftArrow  = this.offset != 0
     }
 
   }
@@ -86,8 +120,22 @@ export default {
     display: flex;
     flex-wrap:wrap;
     width: 100%;
-    justify-content: flex-start;
-  }
+    justify-content: center;
+
+    & .more{
+     position:absolute;
+     top:50%;
+     transform: translatey(-50%);
+    }
+
+    & .more.right{
+      right:0;
+    }
+
+    & .more.left{
+      left:0;
+    }
+  }/*end wishItemContainer*/
  }
  
 </style>  
