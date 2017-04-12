@@ -68,7 +68,8 @@ export default {
      data.append('password','paker19189')
      data.append('phoneNumber','0659657708')
      data.append('wishedList',['58cd8677b23cd80759700c1e','58cd5050d4671c024d89b59e','58cd4f1dd4671c024d89b59d',
-      '58cd4ec3d4671c024d89b59c','58cd4dc2d4671c024d89b59a'])
+      '58cd4ec3d4671c024d89b59c','58cd4dc2d4671c024d89b59a','58d910f7d22ec94fd86d1710','58d404295ea49d744ce1d5f3',
+      '58d26c4a3a9a5412b8260921'])
 
      this.$http.post('signup',data).then( (res) => {
       this.$router.replace('/')

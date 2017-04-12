@@ -60,10 +60,18 @@ let getProducts = (req,res,next) => {
 
 let getProductById = (req,res,next) => {
   Product.findById(req.body.id,(err,data) => {
-   res.send({
-     msg:'success',
-     product:util.wrapItem(data,rootPicPath)
-   })
+   if(err){
+     res.send({
+       msg:err
+     })
+   }
+   else{
+     res.send({
+       msg:'success',
+       product:util.wrapItem(data,rootPicPath)
+     })    
+   }
+
   })
 }
 

@@ -17,5 +17,11 @@ module.exports = {
            +(rawDate.getMonth()+1)+'月'
            +rawDate.getDate()+'日'
 
+  },
+
+  debounce(callback,timer,delay) {
+    console.log('util debounce')
+    if(timer) clearTimeout(timer)
+     timer = setTimeout(callback,delay)
   }
 }

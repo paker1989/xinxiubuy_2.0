@@ -9,6 +9,8 @@
 
 <script>
 import ProductCard from 'components/productCard'
+import { debounce } from '../../util'
+
 export default {
   name: 'userWishList', 
 
@@ -18,6 +20,7 @@ export default {
     return {
      wishList    : [],
      displayList : [],
+     timer       : null
     }
   },
 
@@ -31,9 +34,11 @@ export default {
     //console.log(user.wishedList.length)
     user.wishedList.forEach( productId => {
       this.$http.post('/getProductById',{ id : productId}).then( res => {
-        if(res.body.product)
-          this.wishList.push(res.body.product)
-          this.displayList.push(res.body.product)
+        if(res.body.product){
+           this.wishList.push(res.body.product)
+          this.displayList.push(res.body.product)         
+        }
+
       })
     }) 
   },
@@ -49,13 +54,17 @@ export default {
     resizeWindow(event) {
       //console.log('wishItemContainer : '+$('.wishItemContainer').innerWidth())
       //console.log('item : '+$('.productWraper').outerWidth(true))
+      if(this.timer) clearTimeout(this.timer)
 
-      let containerWidth = $('.wishItemContainer').innerWidth(),
-          itemOuterWidth = $('.productWraper').outerWidth(true)|| 228,
-          eleNumber      = Math.floor(containerWidth/itemOuterWidth) 
+      this.timer = setTimeout(() => {
+        let containerWidth = $('.wishItemContainer').innerWidth(),
+            itemOuterWidth = $('.productWraper').outerWidth(true)|| 228,
+            eleNumber      = Math.floor(containerWidth/itemOuterWidth) 
 
-          this.displayList = this.wishList.slice(0,eleNumber)
+            this.displayList = this.wishList.slice(0,eleNumber)
+          },100)
     }
+
   }
 }
 </script>

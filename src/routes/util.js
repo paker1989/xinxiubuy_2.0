@@ -10,6 +10,8 @@ module.exports = {
   },
 
   wrapItem : function(product,prefix){
+    if(!product) return 
+      
     let wrapItem = {
          id          : product._id,
          title       : product.productName,
