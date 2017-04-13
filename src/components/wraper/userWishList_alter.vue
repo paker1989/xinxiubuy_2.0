@@ -1,17 +1,18 @@
 <template>
   <div class="userWishList">
-   <div class="wishItemWraper">
-    <div class="wishItemContainer">
+   <div class="wishItemContainer">
+    <transition-group name="availableCats" tag="div" class="availableCatWraper">
      <productCard class="productWraper" v-for="item in displayList"
                  :product="item" :limitedText="50"/> 
-     </div><!--end wishItemContainer-->
+    </transition-group>
      <div class="more right" v-if="displayRightArrow" @click="goRight">
        <circleStep :dir="'right'"/></circleStep>
      </div> 
      <div class="more left" v-if="displayLeftArrow" @click="goLeft">
        <circleStep :dir="'left'"/></circleStep>
      </div>
-   </div><!--wishItemWraper end-->
+   </div><!--wishItemContainer end-->
+  </div>
 </template>
 
 <script>
@@ -30,7 +31,7 @@ export default {
      timer            : null,
      offset           : 0,
      displayLeftArrow : true,
-     displayRightArrow: true
+     displayRightArrow:true
     }
   },
 
@@ -39,33 +40,31 @@ export default {
   },
 
   created() {
-    this.loadData()
+    let user = JSON.parse(sessionStorage.getItem('authenticatedUser'))
+
+    user.wishedList.forEach( productId => {
+      this.$http.post('/getProductById',{ id : productId}).then( res => {
+        if(res.body.product){
+           this.wishList.push(res.body.product)
+          this.displayList.push(res.body.product)         
+        }
+
+      })
+    }) 
   },
 
   mounted() {
     this.$nextTick(() => {
       window.addEventListener('resize',this.resizeWindow)
+      this.resizeWindow()
     })  
   },
 
   methods: {
-    loadData() {
-     let user = JSON.parse(sessionStorage.getItem('authenticatedUser'))
-
-     this.$http.post('/getProductByIds',{ids : user.wishedList}).then( res => {
-      if(res.body.products){
-        Array.prototype.push.apply(this.wishList,res.body.products)
-        Array.prototype.push.apply(this.displayList,res.body.products)
-        this.resizeWindow()  
-      }
-     })
-    },
-
     resizeWindow(event) {
       if(this.timer) clearTimeout(this.timer)
 
       this.timer = setTimeout(() => {
-         console.log('resize')
         let containerWidth = $('.wishItemContainer').innerWidth(),
             itemOuterWidth = $('.productWraper').outerWidth(true)|| 228,
             eleNumber      = Math.floor(containerWidth/itemOuterWidth)
@@ -85,7 +84,7 @@ export default {
 
       this.offset += toOffset
       this.displayList = this.wishList.slice(this.offset,this.offset+currentShowNb)
-      this.setArrowStatus()   
+      this.setArrowStatus()
     },
 
     goLeft() {
@@ -118,16 +117,12 @@ export default {
     margin:2px 4px;
   }
 
-  & .wishItemWraper{
+  & .wishItemContainer{
     position: relative;
-
-    & .wishItemContainer{
-      position: relative;
-      display: flex;
-      flex-wrap:wrap;
-      width: 100%;
-      justify-content: center;
-    }
+    display: flex;
+    flex-wrap:wrap;
+    width: 100%;
+    justify-content: center;
 
     & .more{
      position:absolute;
@@ -142,39 +137,7 @@ export default {
     & .more.left{
       left:0;
     }
-   }/*end wishItemWraper*/
-   
-   /*
-   & .animation-left{
-    animation-name: toggle-left;
-    animation-duration: .6s;
-    animation-timing-function: linear;
-   }
-
-   & .animation-right{
-    animation-name: toggle-right;
-    animation-duration: .6s;
-    animation-timing-function: linear;
-   }
-   */
+  }/*end wishItemContainer*/
  }
-
-   /*
-   @keyframes toggle-left {
-      0%   {transform: translatex(0);}
-      50%  {transform: translatex(10%);opacity:0;}
-      75%  {transform: translatex(15%);opacity:0;}
-      85%  {transform: translatex(20%);opacity:0;}
-      100% {transform: translatex(0);opacity:1}
-  }
-
-   @keyframes toggle-right {
-      0%   {transform: translatex(0);}
-      50%  {transform: translatex(-10%);opacity:0;}
-      75%  {transform: translatex(-15%);opacity:0;}
-      85%  {transform: translatex(-20%);opacity:0;}
-      100% {transform: translatex(0);opacity:1}
-   }
-   */
  
 </style>  

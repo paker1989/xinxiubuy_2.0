@@ -75,6 +75,26 @@ let getProductById = (req,res,next) => {
   })
 }
 
+let getProductByIds = (req,res,next) => {
+   Product.find({ _id : { '$in' : req.body.ids } },(err,data) => {
+     if(err){
+      res.status(404).redirect('/') 
+     }else{
+        let wrapedProducts = new Array() 
+
+        data.forEach( product => {
+        wrapedProducts.push(util.wrapItem(product,rootPicPath))
+       }) 
+
+       res.send({
+         msg:'success',
+         products:wrapedProducts
+       })
+
+     }
+    })
+}
+
 let getProductByTag = (req, res, next) => {
  // productCollection.find({}).toArray((err,data) => {
  Product.find({ tags : { '$in' : [req.body.category] } },(err,data) => {
@@ -252,6 +272,7 @@ router.post('/uploadPics',uploadPics)
 router.post('/uploadProduct',uploadProduct)
 router.get('/getProducts',getProducts)
 router.post('/getProductById',getProductById)
+router.post('/getProductByIds',getProductByIds)
 router.post('/getProductByTag',getProductByTag)
 router.post('/fetchAllTags',fetchAllTags)
 router.post('/saveNewTags',saveNewTags)
