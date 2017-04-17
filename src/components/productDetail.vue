@@ -106,12 +106,6 @@
      this.fetchData()
     },
 
-    mounted() {
-     this.isDescOverSize = this.displayBrefDesc = 
-                            this.product.description.length > this.$store.state.maxLengthBrefDescrp
-     $('.ui.rating').rating()
-    },
-
     methods: {
       togglePicture(index) {
        this.currentImgIndex = index
@@ -125,28 +119,27 @@
         this.$set(this.selectedValue,option,val)
       },
 
+      init() {
+       this.isDescOverSize = this.displayBrefDesc = 
+                              this.product.description.length > this.$store.state.maxLengthBrefDescrp
+       $('.ui.rating').rating()        
+      },
+
       fetchData() {
         this.product = this.$store.getters.itemById(this.id)
-        //debugger
-        /*
-        this.isDescOverSize = this.displayBrefDesc = 
-                              this.product.description.length > this.$store.state.maxLengthBrefDescrp
-         $('.ui.rating').rating()
-         */
-     /*
-       this.product = this.$store.getters.productDetail(this.id)
-       if(this.product == 'undefined')
-        this.$http.post('/getProductById',{id : this.id}).then((res) => {
-         this.product = res.body.product
-         this.$store.commit('SET_ITEM',{product:this.product})
-         
-         this.isDescOverSize = this.displayBrefDesc = 
-                              this.product.description.length > this.$store.state.maxLengthBrefDescrp
-         $('.ui.rating').rating()
-        },(error)=>{
-         
-        })
-      */
+        if(!this.product){
+          this.product = this.$http.post('getProductById',{id:this.id}).then(res => {
+            if(res.body.product){
+              this.product = res.body.product
+              this.init()
+            }
+            else{
+              this.$router.replace('/home')
+            }
+          })
+        }else{
+          this.init()
+        }
       }
     }
   }
