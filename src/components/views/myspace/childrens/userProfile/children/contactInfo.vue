@@ -1,5 +1,5 @@
 <template>
-  <div class="userProfile">
+  <div class="contactInfo">
    <div class="userProfile-title">
     <h1 class="text-nav bold">用户资料</h1>
    </div><!--end userProfile title-->
@@ -60,7 +60,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
- .userProfile{
+ .contactInfo{
    position: relative;
    width: 100%;
    min-height: 60vh;
@@ -118,39 +118,8 @@ export default {
      & tr td:last-child{
       padding:20px 30px;
      }
-     
-     /*
-     & tr:last-child td{
-      border-bottom:none;
-     }
-     */
     }
    }/* end userProfile-details*/
-
-   & .action{
-    width: 100%;
-    display: flex;
-    padding-top:40px;
-    padding-right:40px;
-    justify-content: flex-end;
-    align-items:center;
-
-    & .clickable:hover{
-      cursor: pointer;
-    }
-
-    & .edit, & .cancel{
-      margin-left:20px;
-    }
-
-    & .edit{
-     color:#6ba045;
-    }
-
-    & .cancel{
-     color:lighten(red,10%);
-    }
-   }/*end action*/
 
    & .switch-enter{
     opacity: 0;
