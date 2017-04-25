@@ -1,8 +1,9 @@
 <template>
-  <div class="contactInfo">
-     <div class="userProfile-title">
-      <h1 class="text-nav bold">用户资料</h1>
-     </div><!--end userProfile title-->
+  <div class="userProfile">
+   <div class="userProfile-title">
+    <h1 class="text-nav bold">用户资料</h1>
+   </div><!--end userProfile title-->
+   <transition name="switch" mode="out-in">
      <div class="userProfile-details" v-if="edit==false">
        <table class="userProfile-details-table">
         <tbody >
@@ -17,22 +18,26 @@
         </tbody>
        </table>
      </div><!--end userProfile-details-->
+   </transition>
+   <transition name="switch" mode="out-in">
      <div class="edit-userProfile" v-if="edit">
       <custInput :placeholder="'姓名'" :modelValue="newUsername"  v-on:modelEmited="setNewUserName"
                  :class="{'invalid':errorMessage['newUsername']}" />
       <custInput :placeholder="'电话'" :modelValue="newPhoneNumber" v-on:modelEmited="setNewPhoneNumber"
                  :class="{'invalid':errorMessage['newPhoneNumber']}"/>
      </div><!--end editing userProfile-->
-     <div class="errorMessageWraper" v-show="edit">
-       <ul>
-         <li v-for="key in Object.keys(errorMessage)">{{errorMessage[key]}}</li>
-       </ul>
-     </div><!--errorMessageWraper--> 
+   </transition>
+   <div class="errorMessageWraper" v-show="edit">
+     <ul>
+       <li v-for="key in Object.keys(errorMessage)">{{errorMessage[key]}}</li>
+     </ul>
+   </div><!--errorMessageWraper-->
   </div>
 </template>
 
 <script>
 import CustInput from 'components/custTag/custInput'
+	
 export default {
   name: 'userProfile',
   
@@ -55,9 +60,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
- .contactInfo{
+ .userProfile{
    position: relative;
    width: 100%;
+   min-height: 60vh;
+   border-right:2px solid #F6F7FA;
 
    & .userProfile-title{
     width: 100%;
@@ -69,6 +76,7 @@ export default {
    }
 
    & .userProfile-details, & .edit-userProfile, & .errorMessageWraper{
+     width: 30%;
      padding: 0 40px;    
    }
 
@@ -110,7 +118,22 @@ export default {
      & tr td:last-child{
       padding:20px 30px;
      }
+     
+     /*
+     & tr:last-child td{
+      border-bottom:none;
+     }
+     */
     }
    }/* end userProfile-details*/
+
+   & .switch-enter{
+    opacity: 0;
+    transform: translateX(-20px);
+   }
+
+   & .switch-enter-active{
+    transition: all .3s linear;
+   } 	
  }
 </style>

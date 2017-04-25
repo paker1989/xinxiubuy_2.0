@@ -1,15 +1,19 @@
 <template>
   <div class="userProfile">
-
+    <contactInfo class="contactInfo"/>
+    <resetPwdModal/>
   </div>
 </template>
 
 <script>
+import ContactInfo from './children/contactInfo'
+import ResetPwdModal from './children/ResetPwdModal'
+
 export default {
   name: 'userProfile',
   
   components: {
-   CustInput
+   ContactInfo,ResetPwdModal
   },
 
   data() {
@@ -26,5 +30,9 @@ export default {
    position: relative;
    width: 100%;
    min-height: 60vh;
+
+   & .contactInfo{
+    width: 30%;
+   }
  }
 </style>
