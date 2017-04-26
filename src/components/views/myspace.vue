@@ -9,11 +9,13 @@
        <span :class="{'item clickable':true,'active':currentChild == 'wishes'}"
              @click="toChild('wishes')">收藏
        </span>
+     <!--
        <span :class="{'item clickable':true,'active':currentChild == 'orders'}" 
               @click="toChild('orders')">订单
        </span>
+      -->
        <span :class="{'item clickable':true,'active':currentChild == 'profile'}"
-             @click="toChild('profile')">个人资料
+             @click="toChild('profile')">简介
        </span>
      </div><!--menuContainer-->
     </div><!-- header -->
