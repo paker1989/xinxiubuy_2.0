@@ -154,7 +154,7 @@
 </template>
 
 <script>
-import CustInput from 'components/rawHtmlComponent/custInput'
+import CustInput from 'components/custTag/custInput'
 import {uuid,formatDate } from '../util'
 
 function calculateTotalNb(orderedProducts){

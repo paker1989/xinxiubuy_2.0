@@ -16,7 +16,7 @@
 
 <script>
 import ProductCard from 'components/productCard'
-import CircleStep from 'components/rawHtmlComponent/circleStep'
+import CircleStep from 'components/custTag/circleStep'
 
 export default {
   name: 'userWishList', 
@@ -51,7 +51,7 @@ export default {
   methods: {
     loadData() {
      let user = JSON.parse(sessionStorage.getItem('authenticatedUser'))
-
+     console.log(user)
      this.$http.post('/getProductByIds',{ids : user.wishedList}).then( res => {
       if(res.body.products){
         Array.prototype.push.apply(this.wishList,res.body.products)

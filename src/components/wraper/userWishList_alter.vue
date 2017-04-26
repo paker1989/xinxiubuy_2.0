@@ -17,7 +17,7 @@
 
 <script>
 import ProductCard from 'components/productCard'
-import CircleStep from 'components/rawHtmlComponent/circleStep'
+import CircleStep from 'components/custTag/circleStep'
 
 export default {
   name: 'userWishList', 

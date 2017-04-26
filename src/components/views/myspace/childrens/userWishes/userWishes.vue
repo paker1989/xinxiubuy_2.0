@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import UserWishList from 'components/wraper/userWishList'
+import UserWishList from 'components/views/myspace/childrens/userWishes/children/userWishList'
 export default {
   name: 'userWishes',
 
@@ -23,7 +23,7 @@ export default {
   
   data() {
   	return {
-    
+     
   	}
   },
   

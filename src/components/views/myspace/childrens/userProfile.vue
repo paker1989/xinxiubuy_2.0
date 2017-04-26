@@ -127,31 +127,6 @@ export default {
     }
    }/* end userProfile-details*/
 
-   & .action{
-    width: 100%;
-    display: flex;
-    padding-top:40px;
-    padding-right:40px;
-    justify-content: flex-end;
-    align-items:center;
-
-    & .clickable:hover{
-      cursor: pointer;
-    }
-
-    & .edit, & .cancel{
-      margin-left:20px;
-    }
-
-    & .edit{
-     color:#6ba045;
-    }
-
-    & .cancel{
-     color:lighten(red,10%);
-    }
-   }/*end action*/
-
    & .switch-enter{
     opacity: 0;
     transform: translateX(-20px);

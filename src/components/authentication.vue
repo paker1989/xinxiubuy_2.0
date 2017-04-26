@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import CustInput from 'components/rawHtmlComponent/custInput'
+import CustInput from 'components/custTag/custInput'
 
 export default {
   name: 'authentication',

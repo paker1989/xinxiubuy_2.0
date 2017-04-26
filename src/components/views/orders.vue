@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import CustInput from 'components/rawHtmlComponent/custInput'
-import CustCheckbox from 'components/rawHtmlComponent/CustCheckbox'
+import CustInput from 'components/custTag/custInput'
+import CustCheckbox from 'components/custTag/CustCheckbox'
 import store from '../../store'
 
 import staticOrderJson from 'assets/orders'

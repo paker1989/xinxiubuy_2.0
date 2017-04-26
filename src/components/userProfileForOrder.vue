@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import CustInput from 'components/rawHtmlComponent/custInput'
+import CustInput from 'components/custTag/custInput'
 
 function isFieldEmpty(field){
  return !field || field.replace(/^\s+|\s+$/g,'').trim().length == 0

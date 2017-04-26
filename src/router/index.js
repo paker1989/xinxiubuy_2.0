@@ -6,10 +6,10 @@ import productUploader from 'components/wraper/uploader'
 import orders from 'components/views/orders'
 import orderWraper from 'components/views/orderWraper'
 import xinxiuRecCats from 'components/views/xinxiuRecCats'
-import myspace from 'components/views/myspace'
-import userWishes from 'components/userWishes'
-import userOrders from 'components/userOrders'
-import userProfile from 'components/userProfile'
+import myspace from 'components/views/myspace/myspace'
+import userWishes from 'components/views/myspace/childrens/userWishes/userWishes'
+import userOrders from 'components/views/myspace/childrens/userOrders'
+import userProfile from 'components/views/myspace/childrens/userProfile/userProfile'
 
 
 //temp
