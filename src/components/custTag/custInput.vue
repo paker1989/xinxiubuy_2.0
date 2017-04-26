@@ -1,11 +1,16 @@
 <template>
   <div :class="{'custInput':true,'keyWord-filled':keyWordFilled,'hidden-by-icon':hideByIcon}" 
        :data-name="placeholder" :style="width">
-    <input v-if="type!='textarea'" type="text" class="input"
+    <input v-if="!type" type="text" class="input"
            v-model="model" 
            @focus="inputFocus=true" 
            @blur="inputFocus=false"
-           @keyup="emitInput">
+           @keyup="emitInput"><!--type: text-->
+    <input v-if="type=='password'" type="password" class="input"
+           v-model="model" 
+           @focus="inputFocus=true" 
+           @blur="inputFocus=false"
+           @keyup="emitInput"><!--type: password-->
     <div @click="toggle=!toggle" v-if="icon">
       <icon :name="icon" class="icon" v-show="icon" scale=".9"/>
     </div>
@@ -13,7 +18,7 @@
            v-model="model" 
            @focus="inputFocus=true" 
            @blur="inputFocus=false"
-           @keyup="emitInput">
+           @keyup="emitInput"><!--type: textarea-->
     </textarea>
   </div>
 </template>

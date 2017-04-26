@@ -1,19 +1,21 @@
 <template>
+ <transition name="fade">
   <div class="resetPwdModal">
     <div class="modal-wraper">
       <div class="modal-container">
-       <div class="inputWraper">
-        <custInput :placeholder="'旧密码'" class="input"/>
-        <custInput :placeholder="'新密码'" class="input"/>
-        <custInput :placeholder="'确认新密码'" class="input"/> 
-        <div class="actionWraper">
-          <input type="button" class="ui button" value="确认"/>
-          <input type="button" class="ui button" value="取消"/>
-        </div>        
-       </div>
-      </div><!--end modal container-->
+         <div class="inputWraper">
+          <custInput :placeholder="'旧密码'" :type="'password'" class="input"/>
+          <custInput :placeholder="'新密码'" :type="'password'" class="input"/>
+          <custInput :placeholder="'确认新密码'" :type="'password'" class="input"/> 
+          <div class="actionWraper">
+            <input type="button" class="ui button" value="确认" @click="confirmReset"/>
+            <input type="button" class="ui button" value="取消" @click="cancelReset"/>
+          </div>        
+         </div>
+       </div><!--end modal container-->
     </div>
-  </div>
+   </div>
+  </transition>
 </template>
 
 <script>
@@ -23,6 +25,16 @@ export default {
 
   data() {
    return {
+   }
+  },
+
+  methods: {
+   cancelReset() {
+    this.$emit('cancelReset')
+   },
+
+   confirmReset() {
+    this.$emit('confirmReset')
    }
   },
 
@@ -53,9 +65,9 @@ export default {
       max-width: 400px;
       margin: 0 auto;
       padding:20px 30px;
-      background-color:#fff;
+      background-color: #fff;
       box-shadow:0 2px 8px rgba(0, 0, 0, .33);
-      transition: all .3s ease;
+      transition: all .4s ease;
       border-radius:3px;
 
       & .inputWraper{
@@ -74,6 +86,19 @@ export default {
       }
     }
   }
-
  }
+
+    /*transition effect*/
+   .fade-enter{
+    opacity: 0;
+   }
+
+   .fade-leave-active{
+    opacity: 0;
+   }
+
+   .fade-enter .modal-container,
+   .fade-leave-active .modal-container{
+    transform: scale(1.1);
+   }
 </style>
