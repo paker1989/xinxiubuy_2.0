@@ -10,6 +10,7 @@ import myspace from 'components/views/myspace/myspace'
 import userWishes from 'components/views/myspace/childrens/userWishes/userWishes'
 import userOrders from 'components/views/myspace/childrens/userOrders'
 import userProfile from 'components/views/myspace/childrens/userProfile/userProfile'
+import homepage from 'components/views/homepage/homepage'
 
 
 //temp
@@ -25,6 +26,7 @@ const routes = [
  {path: '/orders',name: 'orders', component: orders,meta: {keepAlive:true}},
  {path: '/xinxiuRecCats',name: 'xinxiuRecCats', component: xinxiuRecCats},
  {path: '/authentication',name: 'authentication', component: authentication},
+ {path: '/homepage',name: 'homepage', component: homepage},
  {path: '/myspace',
   name: 'myspace', 
   component: myspace,
