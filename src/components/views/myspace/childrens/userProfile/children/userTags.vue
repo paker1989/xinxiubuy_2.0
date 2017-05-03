@@ -34,7 +34,7 @@ export default {
   /*border:1px solid black;*/
   max-width: 600px;
   text-align: left;
-  padding-left:20px;
+  padding-left:40px;
 
   & .text-tag{
     margin:.4em 1em;

@@ -65,7 +65,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: flex-start; 
-    padding-left:20px;
+    padding-left:40px;
    }
 
    & .userProfile-details, & .edit-userProfile, & .errorMessageWraper{

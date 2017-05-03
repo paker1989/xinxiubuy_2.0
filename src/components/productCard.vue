@@ -22,7 +22,13 @@
     <a href="" class="text-tag more" v-for="tag in product.tags">{{tag}}</a> 
     <a class="text-content description more">查看</a>     
    </div>
-
+   
+   <div class="adminOption" v-if="isAdmin">
+     <router-link :to="'/upload/'+product.id">
+      <icon name="pencil" scale="1" class="clickable" ></icon>
+     </router-link>
+     <icon name="trash" scale="1" class="clickable"></icon>
+   </div>
   </div><!--product info end -->
 </template>
 
@@ -34,8 +40,9 @@ export default {
 
   data () {
     return {
-      currentSlide:1,
-      intervaler: null
+      currentSlide  : 1,
+      intervaler    : null,
+      isAdmin       : sessionStorage.getItem('authenticatedUser') && JSON.parse(sessionStorage.getItem('authenticatedUser')).isAdmin
     }
   },
 
@@ -66,7 +73,7 @@ export default {
   },
 
   mounted () {
-      this.togglePictures()    
+    this.togglePictures()    
   }
 }
 </script>
@@ -256,6 +263,19 @@ export default {
       opacity: 0;
      }
 
+     & .adminOption{
+      position:absolute;
+      bottom:10px;
+      right: 10px;
+      z-index: 4;
+     
+     &>*{
+      margin-right: 10px;
+     }
+    }
+
     }/*hover over*/
+
+
   }
 </style>

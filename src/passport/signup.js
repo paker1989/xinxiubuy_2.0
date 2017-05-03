@@ -30,7 +30,8 @@ module.exports = function(passport){
                         newUser.username = username;
                         newUser.password = createHash(password);
                         newUser.phoneNumber = req.body.phoneNumber;
-                        newUser.wishedList = req.body.wishedList.split(',');
+                        newUser.wishedList = req.body.wishedList.split(',')
+                        if(req.body.isAdmin) newUser.isAdmin = req.body.isAdmin
 
                         // save the user
                         newUser.save(function(err) {

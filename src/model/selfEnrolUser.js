@@ -10,7 +10,8 @@ var userSchema = new Schema({
 	selectedTags      : {type : [String],           default: ['店长推荐']},
 	wishedList        : {type : Schema.Types.Mixed, default: []},
 	selfCreatedOrders : {type : Schema.Types.Mixed, default: []},
-    createdDate       : {type : Date,               default:Date.now}
+    createdDate       : {type : Date,               default:Date.now},
+    isAdmin           : Boolean
 })
 
 var selfEnrollUser = mongoose.model('selfEnrollUser',userSchema);
