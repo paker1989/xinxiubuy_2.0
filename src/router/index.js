@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import generalView from 'components/views/generalView'
 import productDetailWraper from 'components/views/productDetailWraper'
-import productUploader from 'components/wraper/uploader'
+import productUploader from 'components/views/uploader/uploader'
 import orders from 'components/views/orders'
 import orderWraper from 'components/views/orderWraper'
 import xinxiuRecCats from 'components/views/xinxiuRecCats'
@@ -12,15 +12,21 @@ import userOrders from 'components/views/myspace/childrens/userOrders'
 import userProfile from 'components/views/myspace/childrens/userProfile/userProfile'
 import homepage from 'components/views/homepage/homepage'
 
+//temp
+
+
 
 //temp
 import authentication from 'components/authentication'
+import cropUploader from 'components/views/uploader/children/newImgUploader'
 
 Vue.use(Router)
 
 const routes = [
  {path: '/', name: 'generalView',component: generalView},
  {path: '/upload/:id?', name: 'productUploader',component: productUploader},
+ //temp
+ {path: '/cropUploader', name: 'cropUploader',component: cropUploader},
  {path: '/product/:id',name: 'productDetailWraper', component: productDetailWraper},
  {path: '/order/:id?/orderStatus/:status?',name: 'orderWraper', component: orderWraper},
  {path: '/orders',name: 'orders', component: orders,meta: {keepAlive:true}},

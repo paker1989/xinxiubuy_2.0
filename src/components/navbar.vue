@@ -9,6 +9,7 @@
         <router-link to="/orders" class="text-nav">订单</router-link>
         <router-link to="/xinxiuRecCats" class="text-nav">店长推荐</router-link>
         <router-link to="/homepage" class="text-nav">新首页</router-link>
+        <router-link to="/cropUploader" class="text-nav">新上传</router-link>
         <!--temp menu -->
         <!--
         <router-link to="/authentication" class="text-nav">登录</router-link>
