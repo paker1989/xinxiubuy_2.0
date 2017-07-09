@@ -20,6 +20,7 @@
       <button>裁剪</button>
       <button @click="cancelCrop">取消</button>
      </footer>
+     <input type="range"  v-model="scale" min="100" max="200" step="1" @input="cropZoom">
     </div><!--previewContainer-->
    </div><!--cropContainer-->
   </div>
@@ -33,6 +34,8 @@ export default {
  	return {
  		oncrop       : false,
  		dataResult   : '',
+    autoSetWidth : 0,
+    autoSetHeight: 0,
  		previewWidth : 0,
  		previewHeight: 0,
  		previewLeft  : 0,
@@ -46,7 +49,9 @@ export default {
                    limitWidth  :400*3,
                    limitHeight :400*3              
  		              },
-    grabbing     : false
+    grabbing     : false,
+    scale        : 100
+
  	}
  },
 
@@ -80,12 +85,12 @@ export default {
       	let nw = this.img.naturalWidth,
       	    nh = this.img.naturalHeight
       	if(nw>nh){
-         this.previewHeight = Math.min(nh,this.options.height)
-         this.previewWidth = Math.round(this.previewHeight*nw/nh)
+         this.autoSetHeight = this.previewHeight = Math.min(nh,this.options.height)
+         this.autoSetWidth = this.previewWidth = Math.round(this.previewHeight*nw/nh)
       	}
       	else{
-         this.previewWidth  = Math.min(nw,this.options.width)
-         this.previewHeight = Math.round(this.previewWidth*nh/nw)
+         this.autoSetWidth = this.previewWidth  = Math.min(nw,this.options.width)
+         this.autoSetHeight = this.previewHeight = Math.round(this.previewWidth*nh/nw)
       	}
       	this.previewLeft = -( this.previewWidth-this.options.width)/2
       	this.previewTop  = -(this.previewHeight-this.options.height)/2
@@ -140,6 +145,25 @@ export default {
 
   cancelCrop() {
    this.oncrop = false
+  },
+
+  cropZoom()  {
+    let scaleLevel = this.scale/100,
+        oldPreviewW = this.previewWidth,
+        oldPreviewH = this.previewHeight
+
+    if(this.autoSetWidth > this.autoSetHeight){
+      this.previewWidth = Math.min(this.options.limitWidth,this.autoSetWidth * scaleLevel)
+      this.previewHeight = this.previewWidth*this.autoSetHeight/this.autoSetWidth
+    }
+    else{
+      this.previewHeight = Math.min(this.options.limitHeight,this.autoSetHeight * scaleLevel)
+      this.previewWidth = this.previewHeight*this.autoSetWidth/this.autoSetHeight 
+    }
+
+    this.previewTop = this.previewTop*(this.previewWidth/oldPreviewW)
+    this.previewLeft = this.previewLeft*(this.previewWidth/oldPreviewW)     
+
   }
 
  }
@@ -197,7 +221,7 @@ export default {
             cursor: grabbing
           }
         }
-       }
+       }/*section*/
 
        & footer{
           position: relative;
@@ -208,8 +232,44 @@ export default {
             border:1px solid #eee;
             outline: none;
           }
+       }/*footer*/
+
+       & input[type="range"]{
+        appearance: none;
+        outline: none;
+        position:absolute;
+        bottom:70px;
+        left:50%;
+        transform: translate3d(-50%,0,0);
+        z-index: 999;
+
+        &::-webkit-slider-thumb{
+          appearance:none;
+          outline: none;
+          border: 1px solid #ccc;   
+          height: 20px;   
+          width: 20px;   
+          border-radius: 10px;   
+          background: #ffffff;   
+          cursor: pointer;   
+          margin-top: -10px; /* 在Chrome下你需要定义一个margin值, 但在Firefox和IE下，是自动的 */  
+         /* box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; */
+        }
+
+        &::-webkit-slider-runnable-track {
+          width: 50%;   
+          height: 4.4px;   
+          cursor: pointer;   
+         /* box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;  */ 
+          background: lighten(#ff5722,10%);   
+          border-radius: 1.3px;   
+          border:none;       
+        }
+
        }
-     }
+
+     }/*previewContainer*/
+
  	}/*crop container*/
 
  }
